@@ -109,8 +109,6 @@ public class Besoin extends BDD
       }
       return besoins;  
    } 
-<<<<<<< Updated upstream
-=======
 ///////////////////////////////////////////////////////////////////   
     public static void createBesoin(int service, String description, String titre, double volumeTaches, double tauxJourHomme, Date dateBesoin, Date dateFin) throws Exception {
         Connection connection = null;
@@ -186,7 +184,6 @@ public class Besoin extends BDD
     }
 }
 
->>>>>>> Stashed changes
 
 
 }

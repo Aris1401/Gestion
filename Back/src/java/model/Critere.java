@@ -5,8 +5,6 @@
  */
 package model;
 
-<<<<<<< Updated upstream
-=======
 import dbAccess.ConnectTo;
 import generalisationIante.BDD;
 import java.sql.Connection;
@@ -15,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
->>>>>>> Stashed changes
 /**
  *
  * @author BEST
@@ -41,8 +38,6 @@ public class Critere extends BDD
         this.nom = nom;
     }
 
-<<<<<<< Updated upstream
-=======
     public Critere(int id, String nom) {
         this.id = id;
         this.nom = nom;
@@ -128,5 +123,4 @@ public class Critere extends BDD
     }
   
    
->>>>>>> Stashed changes
 }
