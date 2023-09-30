@@ -5,11 +5,13 @@
  */
 package model;
 
+import generalisationIante.BDD;
+
 /**
  *
  * @author BEST
  */
-public class CritereCV 
+public class CritereCV extends BDD
 {
  	int id;
 	int critere;
@@ -47,5 +49,17 @@ public class CritereCV
     public void setIdCV(int idCV) {
         this.idCV = idCV;
     }
+///////////////////////////////////////////////////////////
+    public void insertCritereCV(String  critere,double note,String idCV,boolean check,String sousCritere)
+    {
+        CritereBesoin critereBesoin=new CritereBesoin();
+        CritereCV critereCV =new CritereCV();
+         int criteree=Integer.parseInt(critere);
+         int idCVv =Integer.parseInt(idCV);
+         int sousCriteree=Integer.parseInt (sousCritere);
+         note= critereBesoin.getValeurCritere(criteree,sousCriteree, check);
+         critereCV.dontSave("id");
+         critereCV.save();
         
+    }
 }

@@ -156,7 +156,7 @@ public class BDD {
         return data;
     }
     public ArrayList<String[]> select(String condition){
-        String requete = "select * from "+this.getClass().getSimpleName()+" where 1=1 and "+condition;
+        String requete = "select * from "+this.getClass().getSimpleName()+condition;
         ArrayList<String[]> data = new ArrayList();
         try{
             String[] field = getField();

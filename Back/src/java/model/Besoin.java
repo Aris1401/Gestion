@@ -109,6 +109,84 @@ public class Besoin extends BDD
       }
       return besoins;  
    } 
+<<<<<<< Updated upstream
+=======
+///////////////////////////////////////////////////////////////////   
+    public static void createBesoin(int service, String description, String titre, double volumeTaches, double tauxJourHomme, Date dateBesoin, Date dateFin) throws Exception {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection = ConnectTo.postgreS();
+            String query = "INSERT INTO besoin (service, description, titre, volumeTaches, tauxJourHomme, dateBesoin, dateFin) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, service);
+            preparedStatement.setString(2, description);
+            preparedStatement.setString(3, titre);
+            preparedStatement.setDouble(4, volumeTaches);
+            preparedStatement.setDouble(5, tauxJourHomme);
+            preparedStatement.setDate(6, dateBesoin);
+            preparedStatement.setDate(7, dateFin);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+   
+    public static void createBesoinToday(int service, String description, String titre, double volumeTaches, double tauxJourHomme, Date dateFin) throws Exception {
+    Connection connection = null;
+    PreparedStatement preparedStatement = null;
+
+    try {
+        connection = ConnectTo.postgreS();
+        String query = "INSERT INTO besoin (service, description, titre, volumeTaches, tauxJourHomme, dateBesoin, dateFin) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, service);
+        preparedStatement.setString(2, description);
+        preparedStatement.setString(3, titre);
+        preparedStatement.setDouble(4, volumeTaches);
+        preparedStatement.setDouble(5, tauxJourHomme);
+        Calendar calendar = Calendar.getInstance();
+        Date dateBesoin = new Date(calendar.getTime().getTime());
+        preparedStatement.setDate(6, dateBesoin);
+        preparedStatement.setDate(7, dateFin);
+        preparedStatement.executeUpdate();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        if (preparedStatement != null) {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+>>>>>>> Stashed changes
 
 
 }

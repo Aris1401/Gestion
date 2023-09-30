@@ -5,13 +5,15 @@
  */
 package model;
 
+import generalisationIante.BDD;
 import java.sql.Date;
+import java.time.LocalDate;
 
 /**
  *
  * @author BEST
  */
-public class CV
+public class CV extends BDD
 {
     	int id;
 	String nom ;
@@ -112,6 +114,26 @@ public class CV
     public void setBesoin(int besoin) {
         this.besoin = besoin;
     }
+ 
+//////////////////////////////////////////////////////////////////////////////////
+public void InsertCV(String id,String nom,String prenom,String adresse,String email,String contact,
+        String description,String dateNaissance,String diplomeFichier,String preuveTravailFichier,String besoin)
+{
+        CV cv=new CV();
+        int idC =Integer.parseInt(id);
+	String nomC =nom  ;
+	String prenomC =prenom;
+	String adresseC =adresse ;
+	String emailC =email;
+	int contactC =Integer.parseInt(contact);
+	String descriptionC =description ;
+	Date dateNaissanceC =Date.valueOf(dateNaissance);
+	String diplomeFichierC= diplomeFichier;
+	String preuveTravailFichierC =preuveTravailFichier;
+	int besoinC =Integer.parseInt(besoin) ;
         
+        cv.save();
+}       
+
         
 }
