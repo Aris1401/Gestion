@@ -5,9 +5,14 @@
  */
 package model;
 
+import dbAccess.ConnectTo;
 import generalisationIante.BDD;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  *
@@ -110,6 +115,7 @@ public class Besoin extends BDD
       return besoins;  
    } 
 ///////////////////////////////////////////////////////////////////   
+    
     public static void createBesoin(int service, String description, String titre, double volumeTaches, double tauxJourHomme, Date dateBesoin, Date dateFin) throws Exception {
         Connection connection = null;
         PreparedStatement preparedStatement = null;

@@ -199,4 +199,5 @@ public double  getValeurCritere(int idCritere,int idSousCritere,boolean check)
 }
 /////////////////////////////////////////////////////////////////////////////////  
 
+    }       
 }

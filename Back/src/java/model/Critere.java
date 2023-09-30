@@ -50,10 +50,9 @@ public class Critere extends BDD
     public static void insererCritere(String nom) throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-
+        String query = "INSERT INTO critere (nom) VALUES (?)";
         try {
             connection = ConnectTo.postgreS();
-            String query = "INSERT INTO critere (nom) VALUES (?)";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, nom);
             preparedStatement.executeUpdate();
@@ -82,12 +81,11 @@ public class Critere extends BDD
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        String query = "SELECT * FROM critere";
         try {
             connection = ConnectTo.postgreS();
-            String query = "SELECT * FROM critere";
             preparedStatement = connection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
-
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String nom = resultSet.getString("nom");
