@@ -1,23 +1,23 @@
-import Footer from "./components/Footer";
-import Header from "./components/Header";
-import ListGroup from "./components/ListGroup";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Admin from "./pages/Admin";
+import DashboardRoutes from "./Routes";
 
 function App() {
-  // let items = [
-  //   "Jonathan",
-  //   "Joseph",
-  //   "Jotaro",
-  //   "Josuke",
-  //   "Giorno",
-  //   "Jolyne",
-  //   "Johnny",
-  //   "Gappy",
-  // ];
-  // return <div><ListGroup items={items} heading="Jojos"></ListGroup></div>;
-  return <>
-    <Header></Header>
-    <Footer></Footer>
-  </>
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/admin" element={ <Admin /> }>
+          {DashboardRoutes.map((route, index) => {
+              if (route.page === "/admin") {
+                  return (
+                      <Route path={route.page + route.path} element={<route.element/>} />
+                  );
+              } else return null;
+          })}
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
