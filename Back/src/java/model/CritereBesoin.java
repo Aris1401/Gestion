@@ -5,8 +5,6 @@
  */
 package model;
 
-<<<<<<< Updated upstream
-=======
 import dbAccess.ConnectTo;
 import generalisationIante.BDD;
 import java.sql.Connection;
@@ -15,16 +13,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
->>>>>>> Stashed changes
 /**
  *
  * @author BEST
  */
-<<<<<<< Updated upstream
-public class CritereBesoin 
-=======
 public class CritereBesoin extends BDD
->>>>>>> Stashed changes
 {
     	int id;
 	int besoin;
@@ -65,10 +58,6 @@ public class CritereBesoin extends BDD
     public void setCoefficient(int coefficient) {
         this.coefficient = coefficient;
     }
-<<<<<<< Updated upstream
-        
-        
-=======
 
     public int getSousCritere() {
         return sousCritere;
@@ -210,5 +199,4 @@ public double  getValeurCritere(int idCritere,int idSousCritere,boolean check)
 }
 /////////////////////////////////////////////////////////////////////////////////  
 
->>>>>>> Stashed changes
 }
