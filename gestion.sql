@@ -90,21 +90,21 @@ CREATE TABLE CritereCV (
 );
 
 
-ALTER TABLE "Besoin" ADD CONSTRAINT "Besoin_fk0" FOREIGN KEY ("service") REFERENCES "Service"("id");
+ALTER TABLE Besoin ADD CONSTRAINT "Besoin_fk0" FOREIGN KEY (service) REFERENCES Service(id);
 
-ALTER TABLE "CritereBesoin" ADD CONSTRAINT "CritereBesoin_fk0" FOREIGN KEY ("besoin") REFERENCES "Besoin"("id");
-ALTER TABLE "CritereBesoin" ADD CONSTRAINT "CritereBesoin_fk1" FOREIGN KEY ("critere") REFERENCES "Critere"("id");
+ALTER TABLE CritereBesoin ADD CONSTRAINT "CritereBesoin_fk0" FOREIGN KEY (besoin) REFERENCES Besoin(id);
+ALTER TABLE CritereBesoin ADD CONSTRAINT "CritereBesoin_fk1" FOREIGN KEY (critere) REFERENCES Critere(id);
 
 
-ALTER TABLE "NoteSousCritere" ADD CONSTRAINT "NoteSousCritere_fk0" FOREIGN KEY ("sousCritere") REFERENCES "SousCritere"("id");
-ALTER TABLE "NoteSousCritere" ADD CONSTRAINT "NoteSousCritere_fk1" FOREIGN KEY ("critereBesoin") REFERENCES "CritereBesoin"("id");
+ALTER TABLE NoteSousCritere ADD CONSTRAINT "NoteSousCritere_fk0" FOREIGN KEY (sousCritere) REFERENCES SousCritere(id);
+ALTER TABLE NoteSousCritere ADD CONSTRAINT "NoteSousCritere_fk1" FOREIGN KEY (critereBesoin) REFERENCES CritereBesoin(id);
 
-ALTER TABLE "SousCritere" ADD CONSTRAINT "SousCritere_fk0" FOREIGN KEY ("critere") REFERENCES "Critere"("id");
+ALTER TABLE SousCritere ADD CONSTRAINT "SousCritere_fk0" FOREIGN KEY (critere) REFERENCES Critere(id);
 
-ALTER TABLE "CV" ADD CONSTRAINT "CV_fk0" FOREIGN KEY ("besoin") REFERENCES "Besoin"("id");
+ALTER TABLE CV ADD CONSTRAINT "CV_fk0" FOREIGN KEY (besoin) REFERENCES Besoin(id);
 
-ALTER TABLE "CritereCV" ADD CONSTRAINT "CritereCV_fk0" FOREIGN KEY ("critere") REFERENCES "Critere"("id");
-ALTER TABLE "CritereCV" ADD CONSTRAINT "CritereCV_fk1" FOREIGN KEY ("idCV") REFERENCES "CV"("id");
+ALTER TABLE CritereCV ADD CONSTRAINT "CritereCV_fk0" FOREIGN KEY (critere) REFERENCES Critere(id);
+ALTER TABLE CritereCV ADD CONSTRAINT "CritereCV_fk1" FOREIGN KEY (idCV) REFERENCES CV(id);
 
 
 
