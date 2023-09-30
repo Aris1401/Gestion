@@ -5,6 +5,13 @@
  */
 package model;
 
+import dbAccess.ConnectTo;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 /**
  *
  * @author BEST
@@ -38,6 +45,90 @@ public class SousCritere
     public void setCritere(int critere) {
         this.critere = critere;
     }
+    
+    public SousCritere(){
         
-        
+    }
+
+    public SousCritere(int id, String nom, int critere) {
+        this.setId(id);
+        this.setNom(nom);
+        this.setCritere(critere);
+    }
+    
+    public static void insertSousCritere(int id,String nom,int critere) throws Exception{
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String query = "insert into sousCritere(nom,critere)values(?,?)";
+        try {
+            connection = ConnectTo.postgreS();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, nom);
+            preparedStatement.setInt(2,critere);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    public static ArrayList<SousCritere> getAllSousCriteresByCritere(int critere) throws Exception{
+        ArrayList<SousCritere> sousCriteres = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        String query = "SELECT * FROM sousCritere where critere = ?";
+        try {
+            connection = ConnectTo.postgreS();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,critere);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                SousCritere sousCritere = new SousCritere();
+                sousCritere.setId(resultSet.getInt(1));
+                sousCritere.setNom(resultSet.getString(2));
+                sousCritere.setCritere(resultSet.getInt(3));
+                sousCriteres.add(sousCritere);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return sousCriteres;
+    }
 }
