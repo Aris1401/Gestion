@@ -8,6 +8,10 @@
         <servlet-name>InsertBesoinController</servlet-name>
         <servlet-class>controller.InsertBesoinController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>InsertCVController</servlet-name>
+        <servlet-class>controller.InsertCVController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ListeServiceController</servlet-name>
         <url-pattern>/ListeServiceController</url-pattern>
@@ -15,6 +19,10 @@
     <servlet-mapping>
         <servlet-name>InsertBesoinController</servlet-name>
         <url-pattern>/InsertBesoinController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InsertCVController</servlet-name>
+        <url-pattern>/InsertCVController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
