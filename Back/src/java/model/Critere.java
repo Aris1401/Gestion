@@ -6,6 +6,7 @@
 package model;
 
 import dbAccess.ConnectTo;
+import generalisationIante.BDD;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  *
  * @author BEST
  */
-public class Critere
+public class Critere extends BDD
 {
     int id;
     String nom;
@@ -118,4 +119,6 @@ public class Critere
         }
         return criteres;
     }
+  
+   
 }

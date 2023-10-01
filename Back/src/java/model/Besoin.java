@@ -127,6 +127,7 @@ public class Besoin extends BDD
       }
       return besoins;  
    } 
+///////////////////////////////////////////////////////////////////   
     
     public static void createBesoin(int service, String description, String titre, double volumeTaches, double tauxJourHomme, Date dateBesoin, Date dateFin) throws Exception {
         Connection connection = null;

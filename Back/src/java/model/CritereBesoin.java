@@ -6,6 +6,7 @@
 package model;
 
 import dbAccess.ConnectTo;
+import generalisationIante.BDD;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,12 +17,15 @@ import java.util.ArrayList;
  *
  * @author BEST
  */
-public class CritereBesoin
+public class CritereBesoin extends BDD
 {
     	int id;
 	int besoin;
 	int critere;
 	int coefficient;
+        ///////nanao JOIN de napina Variable 
+        int sousCritere;
+        double note;
 
     public int getId() {
         return id;
@@ -53,6 +57,22 @@ public class CritereBesoin
 
     public void setCoefficient(int coefficient) {
         this.coefficient = coefficient;
+    }
+
+    public int getSousCritere() {
+        return sousCritere;
+    }
+
+    public void setSousCritere(int sousCritere) {
+        this.sousCritere = sousCritere;
+    }
+
+    public double getNote() {
+        return note;
+    }
+
+    public void setNote(double note) {
+        this.note = note;
     }
 
     public CritereBesoin() {
@@ -144,5 +164,40 @@ public class CritereBesoin
         }
 
         return critereBesoins;
-    }       
+    }
+ //////////////////////////////////////////////////////////////////////////////////maka coeff anle client 
+public double  getValeurCritere(int idCritere,int idSousCritere,boolean check)
+{
+    
+    if(!check)
+    {
+        return 0;
+    }
+    double notee = 0;
+   CritereBesoin critereBesoin =new CritereBesoin();
+        String condition="JOIN NoteSousCritere ON CritereBesoin.idCritere=SousCritere.CritereBesoin WHERE CritereBesoin.critere = "
+                + idCritere + "AND NoteSousCritere.sousCritere = " +idSousCritere +"";
+       
+        ArrayList<String[]> critereBesoinBDD =critereBesoin.select(condition);
+        ArrayList<CritereBesoin> critereBesoins =new ArrayList<>();
+        
+        for(int i=0;i<critereBesoinBDD.size();i++)
+        {
+            CritereBesoin c =new CritereBesoin();
+            c.id= Integer.parseInt(critereBesoinBDD.get(id)[0]);
+            c.besoin=Integer.parseInt(critereBesoinBDD.get(id)[1]);
+            c.critere=Integer.parseInt(critereBesoinBDD.get(id)[2]);
+            c.coefficient=Integer.parseInt(critereBesoinBDD.get(id)[3]);
+            c.sousCritere=Integer.parseInt(critereBesoinBDD.get(id)[4]);
+            c.note=Double.parseDouble(critereBesoinBDD.get(id)[5]);
+            notee=c.coefficient*c.note;
+            critereBesoins.add(c);
+        }
+        
+        
+        return notee;
+}
+/////////////////////////////////////////////////////////////////////////////////  
+
+        
 }
