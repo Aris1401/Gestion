@@ -34,7 +34,7 @@ public class Service extends BDD
         this.nom = nom;
     }
  /////////////////////////////////////////////////
-        public ArrayList<Service> allPersonne()
+        public ArrayList<Service> allService()
    {
       Service service = new Service();
       ArrayList<String[]> serviceBDD =service.select();

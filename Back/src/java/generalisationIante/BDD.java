@@ -23,7 +23,7 @@ public class BDD {
     String table;
     
     public static String getBdaUrl(){
-        return "jdbc:postgresql://localhost:5432/candidat";
+        return "jdbc:postgresql://localhost:5432/gestion";
     }
     
     public static String getBdaUser(){
@@ -31,7 +31,7 @@ public class BDD {
     }
     
     public static String getBdaMdp(){
-        return "tiger";
+        return "root";
     }
     
     public void dontSave(String colm){
