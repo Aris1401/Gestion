@@ -116,11 +116,10 @@ public class CV extends BDD
     }
  
 //////////////////////////////////////////////////////////////////////////////////
-public void InsertCV(String id,String nom,String prenom,String adresse,String email,String contact,
+public void InsertCV(String nom,String prenom,String adresse,String email,String contact,
         String description,String dateNaissance,String diplomeFichier,String preuveTravailFichier,String besoin)
 {
         CV cv=new CV();
-        int idC =Integer.parseInt(id);
 	String nomC =nom  ;
 	String prenomC =prenom;
 	String adresseC =adresse ;
@@ -131,7 +130,7 @@ public void InsertCV(String id,String nom,String prenom,String adresse,String em
 	String diplomeFichierC= diplomeFichier;
 	String preuveTravailFichierC =preuveTravailFichier;
 	int besoinC =Integer.parseInt(besoin) ;
-        
+        cv.dontSave("id");
         cv.save();
 }       
 
