@@ -7,7 +7,7 @@ CREATE TABLE Personne (
 	dateNaissance DATE NOT NULL,
 	sexe integer NOT NULL,
 	contact integer NOT NULL,
-	isAdmin integer,
+	isAdmin integer
 );
 
 
