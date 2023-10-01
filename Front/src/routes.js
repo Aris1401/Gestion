@@ -1,4 +1,5 @@
 import React from 'react'
+import DetailsBesoin from './views/besoins/DetailsBesoin'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -99,6 +100,7 @@ const routes = [
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
   { path: '/besoin', name: 'Besoins', element: Besoins },
+  { path: '/besoin/:id/*', name: 'Details Besoin', element: DetailsBesoin},
 ]
 
 export default routes
