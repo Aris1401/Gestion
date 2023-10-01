@@ -13,6 +13,14 @@ const getRequestConfiguration = (authorization) => {
   return { headers }
 }
 
+const getRequestFormConfiguration = (authorization) => {
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+    }
+    if (authorization) headers.Authorization = `Bearer ${authorization}`
+    return { headers }
+  }
+
 export const makeRequest = ({
   url,
   values,
@@ -20,8 +28,9 @@ export const makeRequest = ({
   failureCallback,
   requestType = 'POST',
   authorization = null,
+  isFormData = false
 }) => {
-  const requestConfiguration = getRequestConfiguration(authorization)
+  const requestConfiguration = isFormData ? getRequestFormConfiguration(authorization) : getRequestConfiguration(authorization)
   let promise
 
   switch (requestType) {
