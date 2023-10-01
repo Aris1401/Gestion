@@ -31,7 +31,7 @@ public class BDD {
     }
     
     public static String getBdaMdp(){
-        return "tiger";
+        return "root";
     }
     
     public void dontSave(String colm){
