@@ -118,7 +118,7 @@ public class Besoin extends BDD
           b.setDescription(String.valueOf(besoinsBDD.get(i)[2]));
           b.setTitre(String.valueOf(besoinsBDD.get(i)[3]));
           b.setVolumeTaches(Double.parseDouble(besoinsBDD.get(i)[4]));
-          b.setTauxJourHomme(Integer.parseInt(besoinsBDD.get(i)[5]));
+          b.setTauxJourHomme(Double.parseDouble(besoinsBDD.get(i)[5]));
           b.setDateBesoin(Date.valueOf(besoinsBDD.get(i)[6]));
           b.setDateFin(Date.valueOf(besoinsBDD.get(i)[7]));
           b.setStatus(Integer.valueOf(besoinsBDD.get(i)[8]));
@@ -216,7 +216,7 @@ public class Besoin extends BDD
             connection = ConnectTo.postgreS();
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1,id);
-            resultSet = preparedStatement.executeQuery(query);
+            resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
                 besoin.setId(resultSet.getInt(1));

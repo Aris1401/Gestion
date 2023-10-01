@@ -16,11 +16,14 @@ import {
   CFormInput,
   CFormSelect,
   CFormTextarea,
+  CNavLink,
 } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
 import { makeRequest } from 'src/components/utility/Api'
 
 const Besoins = () => {
+  const location = useLocation()
   // Ajout besoin modal visibility
   const [ajoutBesoinVisibility, setAjoutBesoinVisibility] = useState(false)
 
@@ -28,7 +31,8 @@ const Besoins = () => {
   const [listeService, setListeService] = useState([])
   const getServicesDispo = () => {
     makeRequest({
-      url: 'GetServicesAPI',
+      url: 'ListeServiceController',
+      requestType: 'GET',
       successCallback: (data) => {
         let servicesToSelect = []
 
@@ -47,9 +51,9 @@ const Besoins = () => {
     })
   }
 
-  const gettingServices = useEffect(() => {
+  useEffect(() => {
     getServicesDispo()
-  })
+  }, [])
 
   // Creatting a table of all the needs
   const columns = [
@@ -75,6 +79,79 @@ const Besoins = () => {
     },
   ]
 
+  // Submitting form
+  const [service, setService] = useState()
+  const [titre, setTitre] = useState()
+  const [volumeTaches, setVolumeTaches] = useState()
+  const [tauxJourHomme, setTauxJourHomme] = useState()
+  const [description, setDescription] = useState()
+  const [dateFin, setDateFin] = useState()
+
+  const sendFormData = () => {
+    let formData = new FormData();
+    formData.set('service', service);
+    formData.set('titre', titre);
+    formData.set('volumeTaches', volumeTaches);
+    formData.set('tauxJourHomme', tauxJourHomme);
+    formData.set('description', description);
+    formData.set('dateFin', dateFin);
+
+    makeRequest({
+      url: 'InsertBesoinAPI',
+      values: formData,
+      successCallback: (data) => {
+        
+      },
+      failureCallback: (error) => {
+        alert(error)
+      },
+      isFormData: true
+    })
+  }
+
+  const handleSubmit = (event) => {
+    sendFormData()
+    event.preventDefault()
+
+    setService(0);
+    setTitre();
+    setVolumeTaches();
+    setTauxJourHomme();
+    setDescription();
+    setDateFin();
+  }
+
+  // Obtenir les besoins
+  const [listeBesoins, setListeBesoins] = useState([])
+
+  const getListeBesoins = () => {
+    makeRequest({
+      url: 'ListeBesoinAPI',
+      successCallback: (data) => {
+        let listeBesoinsRow = []
+
+        data.forEach(besoin => {
+          listeBesoinsRow.push({
+            titre: besoin.titre,
+            dateBesoin: besoin.dateBesoin,
+            status: besoin.status == 0 ? 'En cours' : 'Ferme',
+            more: <CNavLink to={`${location.pathname}/${besoin.id}`} component={NavLink}>Plus infos</CNavLink>,
+            _cellProps: { id: { scope: 'row' } },
+          })
+        })
+
+        setListeBesoins(listeBesoinsRow)
+      },
+      failureCallback: (error) => {
+
+      }
+    })
+  }
+
+  useEffect(() => {
+    getListeBesoins()
+  }, [ajoutBesoinVisibility])
+
   return (
     <>
       <CCard style={{ padding: '1rem' }}>
@@ -99,7 +176,7 @@ const Besoins = () => {
               </CCol>
             </CRow>
             <CRow>
-              <CTable columns={columns} items={[]}></CTable>
+              <CTable columns={columns} items={listeBesoins}></CTable>
             </CRow>
           </CContainer>
         </CCardBody>
@@ -111,7 +188,7 @@ const Besoins = () => {
           setAjoutBesoinVisibility(false)
         }}
       >
-        <CForm>
+        <CForm onSubmit={handleSubmit}>
           <CModalHeader
             onClose={() => {
               setAjoutBesoinVisibility(false)
@@ -126,7 +203,9 @@ const Besoins = () => {
                   <CFormLabel htmlFor="depuisService">Depuis</CFormLabel>
                 </CCol>
                 <CCol>
-                  <CFormSelect id="depuisService" options={['Services', ...listeService]} />
+                  <CFormSelect id="depuisService" options={['Services', ...listeService]} value={service} onChange={(e) => {
+                    setService(e.target.value)
+                  }} />
                 </CCol>
               </CRow>
 
@@ -139,31 +218,67 @@ const Besoins = () => {
                   placeholder="Titre besoin"
                   feedbackInvalid="Veuillez remplir ceci"
                   required
+                  value={titre}
+                  onChange={(e) => {
+                    setTitre(e.target.value)
+                  }}
                 />
               </CRow>
 
               <CRow>
                 <CFormLabel>Proprietes de besoins</CFormLabel>
                 <CCol>
-                  <CFormInput type="number" placeholder="Volume taches" name="volumeHoraire" />
+                  <CFormInput
+                    type="number"
+                    placeholder="Volume taches"
+                    name="volumeTaches"
+                    value={volumeTaches}
+                    onChange={(e) => {
+                      setVolumeTaches(e.target.value)
+                    }}
+                  />
                 </CCol>
                 <CCol>
-                  <CFormInput type="number" placeholder="Taux jour/homme" name="tauJourHomme" />
+                  <CFormInput
+                    type="number"
+                    placeholder="Taux jour/homme"
+                    name="tauxJourHomme"
+                    value={tauxJourHomme}
+                    onChange={(e) => {
+                      setTauxJourHomme(e.target.value)
+                    }}
+                  />
                 </CCol>
               </CRow>
 
               <CRow>
-                <CFormTextarea name="description" row={3} label="Description"></CFormTextarea>
+                <CFormTextarea
+                  name="description"
+                  row={3}
+                  label="Description"
+                  value={description}
+                  onChange={(e) => {
+                    setDescription(e.target.value)
+                  }}
+                ></CFormTextarea>
               </CRow>
 
               <CRow>
-                <CFormInput name="dateFin" type="date" label="Date Fin" />
+                <CFormInput
+                  name="dateFin"
+                  type="date"
+                  label="Date Fin"
+                  value={dateFin}
+                  onChange={(e) => {
+                    setDateFin(e.target.value)
+                  }}
+                />
               </CRow>
             </CContainer>
           </CModalBody>
           <CModalFooter>
             <CRow>
-              <CButton type="submit">Ajouter</CButton>
+              <CButton type="submit" onClick={() => {setAjoutBesoinVisibility(false)}}>Ajouter</CButton>
             </CRow>
           </CModalFooter>
         </CForm>
