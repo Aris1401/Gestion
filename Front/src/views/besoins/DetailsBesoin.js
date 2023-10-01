@@ -52,8 +52,8 @@ const DetailsBesoin = () => {
 
           <Routes>
             <Route path='/' element={<BesoinMore />}>
-                <Route path='/criteres' element={<CritereCV besoin={besoin} />} />
-                <Route path='/cv' element={ <ListeCV besoin={besoin} /> } />
+                <Route path='/criteres' element={<CritereCV besoin={id} />} />
+                <Route path='/cv' element={ <ListeCV besoin={id} /> } />
             </Route>
           </Routes>
         </CContainer>
