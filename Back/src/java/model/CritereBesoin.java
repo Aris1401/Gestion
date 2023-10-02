@@ -91,11 +91,43 @@ public class CritereBesoin extends BDD
 
         try {
             connection = ConnectTo.postgreS();
-            String query = "INSERT INTO critere_besoin (besoin, critere, coefficient) VALUES (?, ?, ?)";
+            String query = "INSERT INTO critereBesoin (besoin, critere, coefficient) VALUES (?, ?, ?)";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, besoin);
             preparedStatement.setInt(2, critere);
             preparedStatement.setInt(3, coefficient);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    public static void updateCritereBesoin(int critere,int besoin,int coefficient)throws Exception{
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection = ConnectTo.postgreS();
+            String query = "update critereBesoin set coefficient = ? where besoin=? and critere =?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, coefficient);
+            preparedStatement.setInt(2, besoin);
+            preparedStatement.setInt(3, critere);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -125,7 +157,7 @@ public class CritereBesoin extends BDD
 
         try {
             connection = ConnectTo.postgreS();
-            String query = "SELECT * FROM critere_besoin WHERE besoin = ?";
+            String query = "SELECT * FROM critereBesoin WHERE besoin = ?";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, besoinId);
             resultSet = preparedStatement.executeQuery();
@@ -164,6 +196,60 @@ public class CritereBesoin extends BDD
         }
 
         return critereBesoins;
+    }
+    
+    public static boolean checkIfExist(int critere, int besoin) throws Exception {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        boolean exist = false;
+
+        try {
+            connection = ConnectTo.postgreS();
+            String query = "SELECT 1 FROM critereBesoin WHERE critere = ? AND besoin = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, critere);
+            preparedStatement.setInt(2, besoin);
+            resultSet = preparedStatement.executeQuery();
+
+            exist = resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return exist;
+    }
+
+    
+    public static void insertOrUpdate(int critere,int besoin,int coefficient) throws Exception{
+        boolean exist = CritereBesoin.checkIfExist(critere, besoin);
+        if(exist){
+            CritereBesoin.updateCritereBesoin(critere, besoin, coefficient);
+        }else{
+            CritereBesoin.insererCritereBesoin(besoin, critere, coefficient);
+        }
     }
  //////////////////////////////////////////////////////////////////////////////////maka coeff anle client 
 public double  getValeurCritere(int idCritere,int idSousCritere,boolean check)
