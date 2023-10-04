@@ -1,13 +1,18 @@
 import { CButton, CCol, CContainer, CForm, CFormInput, CFormLabel, CRow } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation, useParams } from 'react-router-dom'
 import { makeRequest } from 'src/components/utility/Api'
 
 const CritereCV = (props) => {
-    var currentPath = useLocation();
+  // Besoin alternative
+  const { id } = useParams()
+  const location = useLocation()
 
   // Obtenir les critres
   const [criteres, setCriteres] = useState([])
+  const [criteresInputs, setCriteresInputs] = useState({})
+  const [sousCriteres, setSousCriteres] = useState({})
+
   const getCriteres = () => {
     makeRequest({
       url: 'ListeCritereAPI',
@@ -22,31 +27,29 @@ const CritereCV = (props) => {
 
   useEffect(() => {
     getCriteres()
-  }, [])
+  }, [location])
 
   // Notes de criteres
-  const [criteresInputs, setCriteresInputs] = useState({})
-
   const initializeCriteresCoefs = () => {
+    if (!props.besoin) return
+
     criteres.forEach((critere) => {
       makeRequest({
-        url: `CoefficientCritereAPI?besoin=${props.besoin}&critere=${critere.id}`,
+        url: `CoefficientCritereAPI?besoin=${props.besoin.id ? props.besoin.id : id}&critere=${
+          critere.id
+        }`,
         requestType: 'GET',
         successCallback: (data) => {
           let tempInputs = criteresInputs
           tempInputs[critere.id] = data.coefficient
 
           setCriteresInputs(tempInputs)
-
-          console.log(criteresInputs)
         },
       })
     })
   }
 
   // Sous critere
-  const [sousCriteres, setSousCriteres] = useState({})
-
   const getSousCritere = () => {
     criteres.forEach((critere) => {
       makeRequest({
@@ -57,16 +60,14 @@ const CritereCV = (props) => {
           tempDictionnary[critere.id] = data
 
           setSousCriteres(tempDictionnary)
-
-          console.log(sousCriteres)
         },
       })
     })
   }
 
   useEffect(() => {
-    getSousCritere()
     initializeCriteresCoefs()
+    getSousCritere()
   }, [criteres])
 
   return (
@@ -91,7 +92,9 @@ const CritereCV = (props) => {
 
                       setCriteresInputs(tempInputs)
                     }}
-                    value={criteresInputs[critere.id]}
+                    value={
+                      criteresInputs[critere.id] !== undefined ? criteresInputs[critere.id] : 0
+                    }
                   />
                 </CCol>
 
@@ -103,9 +106,7 @@ const CritereCV = (props) => {
                         return (
                           <CRow key={index + 2000}>
                             <CCol key={sousCritere.id}>
-                              <CFormLabel htmlFor={sousCritere.nom}>
-                                {sousCritere.nom}
-                              </CFormLabel>
+                              <CFormLabel htmlFor={sousCritere.nom}>{sousCritere.nom}</CFormLabel>
                             </CCol>
 
                             <CCol>

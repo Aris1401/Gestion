@@ -10,10 +10,12 @@ import {
   CNavItem,
   CNavLink,
 } from '@coreui/react'
-import { NavLink, Outlet, Route, Routes, useParams } from 'react-router-dom'
-import React from 'react'
+import { NavLink, Outlet, Route, Routes, useLocation, useParams } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import CritereCV from './CriteresCV/CritereCV'
+import ListeCV from './ListeCV/ListeCV'
 
-const BesoinMore = () => {
+const BesoinMore = (props) => {
   return (
     <CContainer style={{ marginTop: '1rem' }}>
       <CRow>
@@ -35,7 +37,10 @@ const BesoinMore = () => {
       </CRow>
 
       <CRow>
-        <Outlet />
+        <Routes>
+          <Route path="/criteres" element={<CritereCV besoin={props.besoin} />} />
+          <Route path="/cv" element={<ListeCV besoin={props.besoin} />} />
+        </Routes>
       </CRow>
     </CContainer>
   )
