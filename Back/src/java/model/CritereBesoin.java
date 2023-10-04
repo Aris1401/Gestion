@@ -149,7 +149,7 @@ public class CritereBesoin extends BDD
         }
     }
     
-    public static ArrayList<CritereBesoin> getByIdBesoin(int besoinId) throws Exception {
+  public static ArrayList<CritereBesoin> getNoteCritere(int besoinId, int critereId) throws Exception {
         ArrayList<CritereBesoin> critereBesoins = new ArrayList<>();
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -157,9 +157,10 @@ public class CritereBesoin extends BDD
 
         try {
             connection = ConnectTo.postgreS();
-            String query = "SELECT * FROM critereBesoin WHERE besoin = ?";
+            String query = "SELECT * FROM criterebesoin WHERE besoin = ? and critere = ?";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, besoinId);
+            preparedStatement.setInt(2, critereId);
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {

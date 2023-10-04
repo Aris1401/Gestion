@@ -11,7 +11,7 @@ import {
   CNavLink,
 } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
-import { NavLink, Outlet, Route, Routes, useParams } from 'react-router-dom'
+import { NavLink, Outlet, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { makeRequest } from 'src/components/utility/Api'
 import ListeCV from './ListeCV/ListeCV'
 import BesoinMore from './BesoinMore'
@@ -33,15 +33,18 @@ const DetailsBesoin = () => {
     })
   }
 
+  // Location
+  const location = useLocation()
+
   useEffect(() => {
     getDetailsBesoins()
-  }, [])
+  }, [location])
 
   return (
     <CCard style={{ padding: '1rem' }}>
       <CCardTitle>{besoin.titre}</CCardTitle>
       <CCardSubtitle className="mb-2 text-medium-emphasis">{besoin.description}</CCardSubtitle>
-
+      
       <CCardBody>
         <CContainer>
           <CRow>
@@ -50,12 +53,7 @@ const DetailsBesoin = () => {
             {/* Nombre de personne a avoir */}
           </CRow>
 
-          <Routes>
-            <Route path='/' element={<BesoinMore />}>
-                <Route path='/criteres' element={<CritereCV besoin={besoin} />} />
-                <Route path='/cv' element={ <ListeCV besoin={besoin} /> } />
-            </Route>
-          </Routes>
+          <BesoinMore besoin={besoin} />
         </CContainer>
       </CCardBody>
     </CCard>
