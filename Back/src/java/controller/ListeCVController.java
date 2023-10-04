@@ -4,8 +4,10 @@
  */
 package controller;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -14,28 +16,28 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.CV;
 import model.CritereBesoin;
 
 /**
  *
- * @author Henintsoa & Hery
+ * @author ITU
  */
-@WebServlet(name = "AjoutCritereController", urlPatterns = {"/AjoutCritereController"})
-public class AjoutCritereBesoinController extends HttpServlet {
-protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+@WebServlet(name = "ListeCVController", urlPatterns = {"/ListeCVController"})
+public class ListeCVController extends HttpServlet {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            if(request.getParameter("besoin")!=null&&request.getParameter("critere")!=null&&request.getParameter("coefficient")!=null){
-                int besoin = Integer.parseInt(request.getParameter("besoin"));
-                int critere = Integer.parseInt(request.getParameter("critere"));
-                int coefficient = Integer.parseInt(request.getParameter("coefficient"));
-                CritereBesoin.insererCritereBesoin(besoin, critere, coefficient);
-                RequestDispatcher requestDispatcher = request.getRequestDispatcher("pageSuivante.jsp");
-                requestDispatcher.forward(request, response);
-            }else{
-                throw new Exception("Something is null");
-            }
+            int besoin = Integer.parseInt(request.getParameter("besoin"));
+            ArrayList<CV> allCVForBesoins = CV.getAllCVForBesoin(besoin);
+            Gson gson = new Gson();
+            String json = gson.toJson(allCVForBesoins);
+            response.setHeader("Access-Control-Allow-Origin", "*"); 
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            
+            response.getWriter().println(json);
         }
     }
 

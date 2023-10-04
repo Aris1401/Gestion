@@ -5,9 +5,15 @@
  */
 package model;
 
+import dbAccess.ConnectTo;
 import generalisationIante.BDD;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 /**
  *
@@ -114,25 +120,79 @@ public class CV extends BDD
     public void setBesoin(int besoin) {
         this.besoin = besoin;
     }
+    
+    public static ArrayList<CV> getAllCVForBesoin(int besoin) throws Exception{
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ArrayList<CV> allCV = new ArrayList<>();
+        String query = "SELECT * FROM CV where besoin = ?";
+        try {
+            connection = ConnectTo.postgreS();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,besoin);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                CV cv = new CV();
+                cv.setId(resultSet.getInt(1));
+                cv.setNom(resultSet.getString(2));
+                cv.setPrenom(resultSet.getString(3));
+                cv.setAdresse(resultSet.getString(4));
+                cv.setEmail(resultSet.getString(5));
+                cv.setContact(resultSet.getInt(6));
+                cv.setDescription(resultSet.getString(7));
+                cv.setDateNaissance(resultSet.getDate(8));
+                cv.setDiplomeFichier(resultSet.getString(9));
+                cv.setPreuveTravailFichier(resultSet.getString(10));
+                cv.setBesoin(resultSet.getInt(11));
+                allCV.add(cv);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return allCV;
+    }
  
 //////////////////////////////////////////////////////////////////////////////////
-public void InsertCV(String nom,String prenom,String adresse,String email,String contact,
+    public void InsertCV(String nom,String prenom,String adresse,String email,String contact,
         String description,String dateNaissance,String diplomeFichier,String preuveTravailFichier,String besoin)
-{
+    {
         CV cv=new CV();
-	String nomC =nom  ;
-	String prenomC =prenom;
-	String adresseC =adresse ;
-	String emailC =email;
-	int contactC =Integer.parseInt(contact);
-	String descriptionC =description ;
-	Date dateNaissanceC =Date.valueOf(dateNaissance);
-	String diplomeFichierC= diplomeFichier;
-	String preuveTravailFichierC =preuveTravailFichier;
-	int besoinC =Integer.parseInt(besoin) ;
+        String nomC =nom  ;
+        String prenomC =prenom;
+        String adresseC =adresse ;
+        String emailC =email;
+        int contactC =Integer.parseInt(contact);
+        String descriptionC =description ;
+        Date dateNaissanceC =Date.valueOf(dateNaissance);
+        String diplomeFichierC= diplomeFichier;
+        String preuveTravailFichierC =preuveTravailFichier;
+        int besoinC =Integer.parseInt(besoin) ;
         cv.dontSave("id");
         cv.save();
-}       
+    }       
 
         
 }
