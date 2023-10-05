@@ -23,9 +23,8 @@ public class CritereBesoin extends BDD
 	int besoin;
 	int critere;
 	int coefficient;
-        ///////nanao JOIN de napina Variable 
-        int sousCritere;
-        double note;
+//        int sousCritere;
+//        double note;
 
     public int getId() {
         return id;
@@ -59,21 +58,21 @@ public class CritereBesoin extends BDD
         this.coefficient = coefficient;
     }
 
-    public int getSousCritere() {
-        return sousCritere;
-    }
-
-    public void setSousCritere(int sousCritere) {
-        this.sousCritere = sousCritere;
-    }
-
-    public double getNote() {
-        return note;
-    }
-
-    public void setNote(double note) {
-        this.note = note;
-    }
+//    public int getSousCritere() {
+//        return sousCritere;
+//    }
+//
+//    public void setSousCritere(int sousCritere) {
+//        this.sousCritere = sousCritere;
+//    }
+//
+//    public double getNote() {
+//        return note;
+//    }
+//
+//    public void setNote(double note) {
+//        this.note = note;
+//    }
 
     public CritereBesoin() {
     }
@@ -275,9 +274,9 @@ public double  getValeurCritere(int idCritere,int idSousCritere,boolean check)
             c.besoin=Integer.parseInt(critereBesoinBDD.get(id)[1]);
             c.critere=Integer.parseInt(critereBesoinBDD.get(id)[2]);
             c.coefficient=Integer.parseInt(critereBesoinBDD.get(id)[3]);
-            c.sousCritere=Integer.parseInt(critereBesoinBDD.get(id)[4]);
-            c.note=Double.parseDouble(critereBesoinBDD.get(id)[5]);
-            notee=c.coefficient*c.note;
+//            c.sousCritere=Integer.parseInt(critereBesoinBDD.get(id)[4]);
+//            c.note=Double.parseDouble(critereBesoinBDD.get(id)[5]);
+//            notee=c.coefficient*c.note;
             critereBesoins.add(c);
         }
         
