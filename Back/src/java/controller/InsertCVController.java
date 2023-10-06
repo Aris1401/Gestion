@@ -35,7 +35,7 @@ public class InsertCVController extends HttpServlet {
         String preuveTravailFichier=request.getParameter("preuveTravilFichier");
         String besoin=request.getParameter("besoin");
                         
-        cv. InsertCV( nom, prenom, adresse, email, contact,description, dateNaissance, diplomeFichier, preuveTravailFichier, besoin);
+        // cv.InsertCV( nom, prenom, adresse, email, contact,description, dateNaissance, diplomeFichier, preuveTravailFichier, besoin);
     }
 
     @Override
