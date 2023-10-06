@@ -98,6 +98,7 @@ CREATE  TABLE gestion.notesouscritere (
 	id                   integer  NOT NULL  ,
 	souscritere          integer    ,
 	besoin               integer    ,
+	note                 decimal(18,5)    ,
 	CONSTRAINT pk_notesouscritere PRIMARY KEY ( id ),
 	CONSTRAINT fk_notesouscritere_besoin FOREIGN KEY ( besoin ) REFERENCES gestion.besoin( id )   ,
 	CONSTRAINT fk_notesouscritere_souscritere FOREIGN KEY ( souscritere ) REFERENCES gestion.souscritere( id )   
