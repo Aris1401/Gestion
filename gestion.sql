@@ -1,117 +1,145 @@
-CREATE TABLE Personne (
-	id serial PRIMARY KEY,
-	nom varchar(255) NOT NULL,
-	prenom varchar(255) NOT NULL,
-	email varchar(255) NOT NULL UNIQUE,
-	motDePasse varchar(255) NOT NULL,
-	dateNaissance DATE NOT NULL,
-	sexe integer NOT NULL,
-	contact integer NOT NULL,
-	isAdmin integer
-);
 
+CREATE  TABLE critere ( 
+	id                   integer  NOT NULL  ,
+	nom                  varchar(255)    ,
+	CONSTRAINT pk_critere PRIMARY KEY ( id )
+ );
 
+CREATE  TABLE profil ( 
+	id                   integer  NOT NULL  ,
+	nom                  varchar(255)    ,
+	rang                 integer DEFAULT 0   ,
+	CONSTRAINT pk_profil PRIMARY KEY ( id )
+ );
 
-CREATE TABLE Service (
-	id serial PRIMARY KEY,
-	nom varchar(255) NOT NULL
-);
+CREATE  TABLE service ( 
+	id                   integer  NOT NULL  ,
+	nom                  varchar(255)    ,
+	CONSTRAINT pk_service PRIMARY KEY ( id )
+ );
 
+CREATE  TABLE souscritere ( 
+	id                   integer  NOT NULL  ,
+	critere              integer    ,
+	nom                  varchar(255)    ,
+	CONSTRAINT pk_souscritere PRIMARY KEY ( id ),
+	CONSTRAINT fk_souscritere_critere FOREIGN KEY ( critere ) REFERENCES critere( id )   
+ );
 
+CREATE  TABLE personne ( 
+	id                   integer  NOT NULL  ,
+	nom                  varchar(255)    ,
+	prenom               varchar(255)    ,
+	email                varchar(255)    ,
+	motdepasse           varchar(255)    ,
+	datenaissance        date    ,
+	sexe                 integer    ,
+	contact              varchar(255)    ,
+	profil               integer    ,
+	CONSTRAINT pk_personne PRIMARY KEY ( id ),
+	CONSTRAINT fk_personne_profil FOREIGN KEY ( profil ) REFERENCES profil( id )   
+ );
 
-CREATE TABLE Besoin (
-	id serial PRIMARY KEY,
-	service integer NOT NULL,
-	description TEXT NOT NULL,
-	titre varchar(255) NOT NULL,
-	volumeTaches DECIMAL(18,5) NOT NULL DEFAULT '0',
-	tauxJourHomme DECIMAL(18,5) NOT NULL DEFAULT '0',
-	dateBesoin DATE NOT NULL,
-	dateFin DATE NOT NULL,
-	status integer NOT NULL DEFAULT '0'
-);
+CREATE  TABLE posteservice ( 
+	id                   integer  NOT NULL  ,
+	service              integer    ,
+	titreposte           varchar(255)    ,
+	CONSTRAINT pk_posteservice PRIMARY KEY ( id ),
+	CONSTRAINT fk_posteservice_service FOREIGN KEY ( service ) REFERENCES service( id )   
+ );
 
+CREATE  TABLE besoin ( 
+	id                   integer  NOT NULL  ,
+	service              integer    ,
+	description          text    ,
+	titre                text    ,
+	posteservice         integer    ,
+	volumetaches         numeric(18,5) DEFAULT 0   ,
+	tauxjourhomme        numeric(18,5) DEFAULT 0   ,
+	datebesoin           date DEFAULT CURRENT_DATE   ,
+	datefin              date    ,
+	status               integer    ,
+	CONSTRAINT pk_besoin PRIMARY KEY ( id ),
+	CONSTRAINT fk_besoin_service FOREIGN KEY ( service ) REFERENCES service( id )   ,
+	CONSTRAINT fk_besoin_posteservice FOREIGN KEY ( posteservice ) REFERENCES posteservice( id )   
+ );
 
+CREATE  TABLE criterebesoin ( 
+	id                   integer  NOT NULL  ,
+	besoin               integer    ,
+	critere              integer    ,
+	coefficient          numeric(18,5) DEFAULT 0   ,
+	CONSTRAINT pk_criterebesoin PRIMARY KEY ( id ),
+	CONSTRAINT fk_criterebesoin_besoin FOREIGN KEY ( besoin ) REFERENCES besoin( id )   
+ );
 
-CREATE TABLE CritereBesoin (
-	id serial PRIMARY KEY,
-	besoin integer NOT NULL,
-	critere integer NOT NULL,
-	coefficient integer NOT NULL DEFAULT '0'
-);
+CREATE  TABLE cv ( 
+	id                   integer  NOT NULL  ,
+	nom                  varchar(255)    ,
+	prenom               varchar(255)    ,
+	adresse              varchar(255)    ,
+	email                varchar(255)    ,
+	contact              varchar(255)    ,
+	description          text    ,
+	datenaissance        date DEFAULT CURRENT_DATE   ,
+	preuvediplome        varchar(255)    ,
+	preuvetravail        varchar(255)    ,
+	besoin               integer  NOT NULL  ,
+	personne             integer    ,
+	status               integer    ,
+	dateecriture         date DEFAULT CURRENT_DATE   ,
+	CONSTRAINT pk_cv PRIMARY KEY ( id ),
+	CONSTRAINT fk_cv_besoin FOREIGN KEY ( besoin ) REFERENCES besoin( id )   ,
+	CONSTRAINT fk_cv_personne FOREIGN KEY ( personne ) REFERENCES personne( id )   
+ );
 
+CREATE  TABLE notesouscritere ( 
+	id                   integer  NOT NULL  ,
+	souscritere          integer    ,
+	besoin               integer    ,
+	note                 decimal(18,5)    ,
+	CONSTRAINT pk_notesouscritere PRIMARY KEY ( id ),
+	CONSTRAINT fk_notesouscritere_besoin FOREIGN KEY ( besoin ) REFERENCES besoin( id )   ,
+	CONSTRAINT fk_notesouscritere_souscritere FOREIGN KEY ( souscritere ) REFERENCES souscritere( id )   
+ );
 
+CREATE  TABLE reponsecv ( 
+	id                   integer  NOT NULL  ,
+	cv                   integer    ,
+	critere              integer    ,
+	souscritere          integer    ,
+	CONSTRAINT pk_reponsecv PRIMARY KEY ( id ),
+	CONSTRAINT fk_reponsecv_cv FOREIGN KEY ( cv ) REFERENCES cv( id )   ,
+	CONSTRAINT fk_reponsecv_critere FOREIGN KEY ( critere ) REFERENCES critere( id )   ,
+	CONSTRAINT fk_reponsecv_souscritere FOREIGN KEY ( souscritere ) REFERENCES souscritere( id )   
+ );
 
-CREATE TABLE Critere (
-	id serial PRIMARY KEY,
-	nom varchar(255) NOT NULL
-);
+CREATE  TABLE testquestionnaire ( 
+	id                   integer  NOT NULL  ,
+	besoin               integer    ,
+	question             text    ,
+	estchoixmultiple     boolean    ,
+	note                 numeric(18,5) DEFAULT 0   ,
+	CONSTRAINT pk_testquestionnaire PRIMARY KEY ( id ),
+	CONSTRAINT fk_testquestionnaire_besoin FOREIGN KEY ( besoin ) REFERENCES besoin( id )   
+ );
 
+CREATE  TABLE choixreponse ( 
+	id                   integer  NOT NULL  ,
+	questionnaire        integer    ,
+	reponse              text    ,
+	note                 numeric(18,5) DEFAULT 0   ,
+	CONSTRAINT pk_choixreponse PRIMARY KEY ( id ),
+	CONSTRAINT fk_choixreponse FOREIGN KEY ( questionnaire ) REFERENCES testquestionnaire( id )   
+ );
 
-
-CREATE TABLE NoteSousCritere (
-	id serial PRIMARY KEY,
-	sousCritere integer NOT NULL,
-	note DECIMAL(18,5) NOT NULL DEFAULT '0',
-	critereBesoin integer NOT NULL
-);
-
-
-
-CREATE TABLE SousCritere (
-	id serial PRIMARY KEY,
-	nom varchar(255) NOT NULL,
-	critere integer NOT NULL
-);
-
-
-
-CREATE TABLE CV (
-	id serial PRIMARY KEY,
-	nom varchar(255) NOT NULL,
-	prenom varchar(255) NOT NULL,
-	adresse varchar(255) NOT NULL,
-	email varchar(255) NOT NULL,
-	contact integer NOT NULL,
-	description TEXT NOT NULL,
-	dateNaissance DATE NOT NULL,
-	diplomeFichier TEXT NOT NULL,
-	preuveTravailFichier TEXT NOT NULL,
-	besoin integer NOT NULL
-);
-
-
-
-CREATE TABLE CritereCV (
-	id serial PRIMARY KEY,
-	critere integer NOT NULL,
-	note DECIMAL(18,5) NOT NULL DEFAULT '0',
-	idCV integer NOT NULL
-);
-
-
-ALTER TABLE Besoin ADD CONSTRAINT "Besoin_fk0" FOREIGN KEY (service) REFERENCES Service(id);
-
-ALTER TABLE CritereBesoin ADD CONSTRAINT "CritereBesoin_fk0" FOREIGN KEY (besoin) REFERENCES Besoin(id);
-ALTER TABLE CritereBesoin ADD CONSTRAINT "CritereBesoin_fk1" FOREIGN KEY (critere) REFERENCES Critere(id);
-
-
-ALTER TABLE NoteSousCritere ADD CONSTRAINT "NoteSousCritere_fk0" FOREIGN KEY (sousCritere) REFERENCES SousCritere(id);
-ALTER TABLE NoteSousCritere ADD CONSTRAINT "NoteSousCritere_fk1" FOREIGN KEY (critereBesoin) REFERENCES CritereBesoin(id);
-
-ALTER TABLE SousCritere ADD CONSTRAINT "SousCritere_fk0" FOREIGN KEY (critere) REFERENCES Critere(id);
-
-ALTER TABLE CV ADD CONSTRAINT "CV_fk0" FOREIGN KEY (besoin) REFERENCES Besoin(id);
-
-ALTER TABLE CritereCV ADD CONSTRAINT "CritereCV_fk0" FOREIGN KEY (critere) REFERENCES Critere(id);
-ALTER TABLE CritereCV ADD CONSTRAINT "CritereCV_fk1" FOREIGN KEY (idCV) REFERENCES CV(id);
-
-
-
-
-
-
-
-
-
-
+CREATE  TABLE reponsequestionnaire ( 
+	id                   integer  NOT NULL  ,
+	questionnaire        integer    ,
+	reponse              integer    ,
+	cv                   integer    ,
+	CONSTRAINT pk_reponsequestionnaire PRIMARY KEY ( id ),
+	CONSTRAINT fk_reponsequestionnaire FOREIGN KEY ( questionnaire ) REFERENCES testquestionnaire( id )   ,
+	CONSTRAINT fk_reponse_choix_questionnaire FOREIGN KEY ( reponse ) REFERENCES choixreponse( id )   ,
+	CONSTRAINT fk_reponsequestionnaire_cv FOREIGN KEY ( cv ) REFERENCES cv( id )   
+ );
