@@ -38,6 +38,7 @@ public class InsertBesoinAPI extends HttpServlet {
         Besoin besoin = new Besoin();
         besoin.setService(Integer.parseInt(request.getParameter("service")));
         besoin.setTitre(request.getParameter("titre"));
+        besoin.setPosteService(Integer.parseInt(request.getParameter("posteService")));
         besoin.setVolumeTaches(Double.parseDouble(request.getParameter("volumeTaches")));
         besoin.setTauxJourHomme(Double.parseDouble(request.getParameter("tauxJourHomme")));
         besoin.setDescription(request.getParameter("description"));
