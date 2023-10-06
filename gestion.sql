@@ -1,25 +1,25 @@
 
 CREATE  TABLE critere ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	nom                  varchar(255)    ,
 	CONSTRAINT pk_critere PRIMARY KEY ( id )
  );
 
 CREATE  TABLE profil ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	nom                  varchar(255)    ,
 	rang                 integer DEFAULT 0   ,
 	CONSTRAINT pk_profil PRIMARY KEY ( id )
  );
 
 CREATE  TABLE service ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	nom                  varchar(255)    ,
 	CONSTRAINT pk_service PRIMARY KEY ( id )
  );
 
 CREATE  TABLE souscritere ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	critere              integer    ,
 	nom                  varchar(255)    ,
 	CONSTRAINT pk_souscritere PRIMARY KEY ( id ),
@@ -27,7 +27,7 @@ CREATE  TABLE souscritere (
  );
 
 CREATE  TABLE personne ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	nom                  varchar(255)    ,
 	prenom               varchar(255)    ,
 	email                varchar(255)    ,
@@ -41,7 +41,7 @@ CREATE  TABLE personne (
  );
 
 CREATE  TABLE posteservice ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	service              integer    ,
 	titreposte           varchar(255)    ,
 	CONSTRAINT pk_posteservice PRIMARY KEY ( id ),
@@ -49,7 +49,7 @@ CREATE  TABLE posteservice (
  );
 
 CREATE  TABLE besoin ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	service              integer    ,
 	description          text    ,
 	titre                text    ,
@@ -65,7 +65,7 @@ CREATE  TABLE besoin (
  );
 
 CREATE  TABLE criterebesoin ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	besoin               integer    ,
 	critere              integer    ,
 	coefficient          numeric(18,5) DEFAULT 0   ,
@@ -74,7 +74,7 @@ CREATE  TABLE criterebesoin (
  );
 
 CREATE  TABLE cv ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	nom                  varchar(255)    ,
 	prenom               varchar(255)    ,
 	adresse              varchar(255)    ,
@@ -94,7 +94,7 @@ CREATE  TABLE cv (
  );
 
 CREATE  TABLE notesouscritere ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	souscritere          integer    ,
 	besoin               integer    ,
 	note                 decimal(18,5)    ,
@@ -104,7 +104,7 @@ CREATE  TABLE notesouscritere (
  );
 
 CREATE  TABLE reponsecv ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	cv                   integer    ,
 	critere              integer    ,
 	souscritere          integer    ,
@@ -115,7 +115,7 @@ CREATE  TABLE reponsecv (
  );
 
 CREATE  TABLE testquestionnaire ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	besoin               integer    ,
 	question             text    ,
 	estchoixmultiple     boolean    ,
@@ -125,7 +125,7 @@ CREATE  TABLE testquestionnaire (
  );
 
 CREATE  TABLE choixreponse ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	questionnaire        integer    ,
 	reponse              text    ,
 	note                 numeric(18,5) DEFAULT 0   ,
@@ -134,7 +134,7 @@ CREATE  TABLE choixreponse (
  );
 
 CREATE  TABLE reponsequestionnaire ( 
-	id                   integer  NOT NULL  ,
+	id                   serial  NOT NULL  ,
 	questionnaire        integer    ,
 	reponse              integer    ,
 	cv                   integer    ,

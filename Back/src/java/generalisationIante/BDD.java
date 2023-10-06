@@ -23,7 +23,7 @@ public class BDD {
     String table;
     
     public static String getBdaUrl(){
-        return "jdbc:postgresql://localhost:5432/gestion";
+        return "jdbc:postgresql://localhost:5432/gestion_2";
     }
     
     public static String getBdaUser(){
