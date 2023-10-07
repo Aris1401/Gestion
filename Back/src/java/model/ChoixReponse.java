@@ -4,6 +4,11 @@
  */
 package model;
 
+import dbAccess.ConnectTo;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 /**
  *
  * @author Henintsoa & Hery
@@ -56,5 +61,34 @@ public class ChoixReponse {
         this.setNote(note);
     }
     
-    
+    public static void ajoutChoixReponse(int questionnaire, String reponse, double note)throws Exception{
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String query = "insert into choixreponse(questionnaire,reponse,note)values(?,?,?)";
+        try {
+            connection = ConnectTo.postgreS();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,questionnaire);
+            preparedStatement.setString(2,reponse);
+            preparedStatement.setDouble(4,note);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {//2860
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }   
 }

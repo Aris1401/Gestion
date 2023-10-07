@@ -4,6 +4,13 @@
  */
 package model;
 
+import dbAccess.ConnectTo;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 /**
  *
  * @author Henintsoa & Hery
@@ -46,5 +53,47 @@ public class Profil {
         this.setRang(rang);
     }
     
-    
+    public static ArrayList<Profil> getAllProfiles()throws Exception{
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ArrayList<Profil> allProfils = new ArrayList<>();
+        String query = "SELECT * FROM profil";
+        try {
+            connection = ConnectTo.postgreS();
+            preparedStatement = connection.prepareStatement(query);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Profil profil = new Profil();
+                profil.setId(resultSet.getInt(1));
+                profil.setNom(resultSet.getString(2));
+                profil.setRang(resultSet.getInt(3));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return allProfils;
+    }
 }
