@@ -23,9 +23,8 @@ public class CritereBesoin extends BDD
 	int besoin;
 	int critere;
 	int coefficient;
-        ///////nanao JOIN de napina Variable 
-        int sousCritere;
-        double note;
+//        int sousCritere;
+//        double note;
 
     public int getId() {
         return id;
@@ -59,21 +58,21 @@ public class CritereBesoin extends BDD
         this.coefficient = coefficient;
     }
 
-    public int getSousCritere() {
-        return sousCritere;
-    }
-
-    public void setSousCritere(int sousCritere) {
-        this.sousCritere = sousCritere;
-    }
-
-    public double getNote() {
-        return note;
-    }
-
-    public void setNote(double note) {
-        this.note = note;
-    }
+//    public int getSousCritere() {
+//        return sousCritere;
+//    }
+//
+//    public void setSousCritere(int sousCritere) {
+//        this.sousCritere = sousCritere;
+//    }
+//
+//    public double getNote() {
+//        return note;
+//    }
+//
+//    public void setNote(double note) {
+//        this.note = note;
+//    }
 
     public CritereBesoin() {
     }
@@ -149,7 +148,7 @@ public class CritereBesoin extends BDD
         }
     }
     
-    public static ArrayList<CritereBesoin> getByIdBesoin(int besoinId) throws Exception {
+  public static ArrayList<CritereBesoin> getNoteCritere(int besoinId, int critereId) throws Exception {
         ArrayList<CritereBesoin> critereBesoins = new ArrayList<>();
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -157,9 +156,10 @@ public class CritereBesoin extends BDD
 
         try {
             connection = ConnectTo.postgreS();
-            String query = "SELECT * FROM critereBesoin WHERE besoin = ?";
+            String query = "SELECT * FROM criterebesoin WHERE besoin = ? and critere = ?";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, besoinId);
+            preparedStatement.setInt(2, critereId);
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
@@ -274,9 +274,9 @@ public double  getValeurCritere(int idCritere,int idSousCritere,boolean check)
             c.besoin=Integer.parseInt(critereBesoinBDD.get(id)[1]);
             c.critere=Integer.parseInt(critereBesoinBDD.get(id)[2]);
             c.coefficient=Integer.parseInt(critereBesoinBDD.get(id)[3]);
-            c.sousCritere=Integer.parseInt(critereBesoinBDD.get(id)[4]);
-            c.note=Double.parseDouble(critereBesoinBDD.get(id)[5]);
-            notee=c.coefficient*c.note;
+//            c.sousCritere=Integer.parseInt(critereBesoinBDD.get(id)[4]);
+//            c.note=Double.parseDouble(critereBesoinBDD.get(id)[5]);
+//            notee=c.coefficient*c.note;
             critereBesoins.add(c);
         }
         

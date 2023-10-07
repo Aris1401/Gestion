@@ -4,24 +4,25 @@
  */
 package controller;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Besoin;
+import model.CritereBesoin;
 
 /**
  *
  * @author aris
  */
-@WebServlet(name = "InsertBesoinAPI", urlPatterns = {"/InsertBesoinAPI"})
-@MultipartConfig
-public class InsertBesoinAPI extends HttpServlet {
+@WebServlet(name = "CoefficientCritereAPI", urlPatterns = {"/CoefficientCritereAPI"})
+public class CoefficientCritereAPI extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,19 +35,24 @@ public class InsertBesoinAPI extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        Besoin besoin = new Besoin();
-        besoin.setService(Integer.parseInt(request.getParameter("service")));
-        besoin.setTitre(request.getParameter("titre"));
-        besoin.setPosteService(Integer.parseInt(request.getParameter("posteService")));
-        besoin.setVolumeTaches(Double.parseDouble(request.getParameter("volumeTaches")));
-        besoin.setTauxJourHomme(Double.parseDouble(request.getParameter("tauxJourHomme")));
-        besoin.setDescription(request.getParameter("description"));
-        besoin.setDateFin(Date.valueOf(request.getParameter("dateFin")));
-        besoin.setDateBesoin(new Date(System.currentTimeMillis()));
+        int besoin = Integer.parseInt(request.getParameter("besoin"));
+        int critere = Integer.parseInt(request.getParameter("critere"));
         
-        besoin.dontSave("id");
-        besoin.save();
+        CritereBesoin c = new CritereBesoin(0, besoin, critere, 0);
+        
+        try {
+            ArrayList<CritereBesoin> criteresBesoin = CritereBesoin.getNoteCritere(besoin, critere);
+            c = criteresBesoin.get(0);
+        } catch (Exception ex) {
+            
+        }
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(c);
+        response.setHeader("Access-Control-Allow-Origin", "*"); 
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().println(json);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

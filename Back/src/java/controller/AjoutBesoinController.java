@@ -27,14 +27,15 @@ public class AjoutBesoinController extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            if(request.getParameter("service")!=null&&request.getParameter("description")!=null&&request.getParameter("titre")!=null&&request.getParameter("volumeTaches")!=null&&request.getParameter("tauxJourHomme")!=null&&request.getParameter("dateFin")!=null){
+            if(request.getParameter("service")!=null&&request.getParameter("description")!=null&&request.getParameter("titre")!=null&&request.getParameter("posteService")!=null&&request.getParameter("volumeTaches")!=null&&request.getParameter("tauxJourHomme")!=null&&request.getParameter("dateFin")!=null){
                 int service = Integer.parseInt(request.getParameter("service"));
                 String description = request.getParameter("description");
                 String titre = request.getParameter("titre");
+                int posteService = Integer.parseInt(request.getParameter("posteService"));
                 double volumeTaches = Double.parseDouble(request.getParameter("volumeTaches"));
                 double tauxJourHomme = Double.parseDouble(request.getParameter("tauxJourHomme"));
                 Date dateFin = Date.valueOf(request.getParameter("dateFin"));
-                Besoin.createBesoinToday(service, description, titre, volumeTaches, tauxJourHomme, dateFin);
+                Besoin.createBesoinToday(service, description, titre, posteService, volumeTaches, tauxJourHomme, dateFin);
                 RequestDispatcher requestDispatcher = request.getRequestDispatcher("pageSuivante.jsp");
                 requestDispatcher.forward(request, response);
             }else{
