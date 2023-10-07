@@ -119,19 +119,23 @@ public class Personne extends BDD
        return personnes;  
     }
 ///////////////////////////////////////////////////////    
-    public boolean Login (String email,String motDePasse)
+    public int Login (String email,String motDePasse)
     {
-        boolean connect=false;
+        int  valeur=0;
         ArrayList<Personne> allPersonne=this.allPersonne();
         for(int i=0;i<allPersonne.size();i++)
         {
-            if(allPersonne.get(i).email==email && allPersonne.get(i).motDePasse==motDePasse)
+            if(allPersonne.get(i).email=="ok" && allPersonne.get(i).motDePasse=="ok")
             {
-                connect=true;
+               valeur=0;
+            }
+            else
+            {
+                valeur=1;
             }
         }
         
-        return connect;
+        return valeur;
     }
  ////////////////////////////////////////////////////////
 
