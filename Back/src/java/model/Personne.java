@@ -23,7 +23,7 @@ public class Personne extends BDD
     Date dateNaissance;
     int sexe;
     int contact;
-    int isAdmin;
+    int profil;
 
     public int getId() {
         return id;
@@ -89,13 +89,30 @@ public class Personne extends BDD
         this.contact = contact;
     }
 
-    public int getIsAdmin() {
-        return isAdmin;
+    public int getProfil() {
+        return profil;
     }
 
-    public void setIsAdmin(int isAdmin) {
-        this.isAdmin = isAdmin;
+    public void setProfil(int isAdmin) {
+        this.profil = isAdmin;
     }
+
+    public Personne() {
+    }
+
+    public Personne(int id, String nom, String prenom, String email, String motDePasse, Date dateNaissance, int sexe, int contact, int profil) {
+        this.setId(id);
+        this.setNom(nom);
+        this.setPrenom(prenom);
+        this.setEmail(email);
+        this.setMotDePasse(motDePasse);
+        this.setDateNaissance(dateNaissance);
+        this.setSexe(sexe);
+        this.setContact(contact);
+        this.setProfil(profil);
+    }
+    
+    
 ///////////////////////////////////////////////////////
     public ArrayList<Personne> allPersonne()
     {
@@ -109,11 +126,11 @@ public class Personne extends BDD
            p.setNom(String.valueOf(personneBDD.get(i)[1]));
            p.setPrenom(String.valueOf(personneBDD.get(i)[2]));
            p.setEmail(String.valueOf(personneBDD.get(i)[3]));
-           p.setDateNaissance(Date.valueOf(personneBDD.get(i)[4]));
-           p.setSexe(Integer.parseInt(personneBDD.get(i)[5]));
-           p.setContact(Integer.parseInt(personneBDD.get(i)[6]));
-           p.setIsAdmin(Integer.parseInt(personneBDD.get(i)[7]));
-           p.setMotDePasse(String.valueOf(personneBDD.get(i)[7]));
+           p.setMotDePasse(String.valueOf(personneBDD.get(i)[4]));
+           p.setDateNaissance(Date.valueOf(personneBDD.get(i)[5]));
+           p.setSexe(Integer.parseInt(personneBDD.get(i)[6]));
+           p.setContact(Integer.parseInt(personneBDD.get(i)[7]));
+           p.setProfil(Integer.parseInt(personneBDD.get(i)[8]));
          personnes.add(p);
        }
        return personnes;  

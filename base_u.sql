@@ -1,33 +1,34 @@
+CREATE SCHEMA IF NOT EXISTS gestion;
 
-CREATE  TABLE critere ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.critere ( 
+	id                   integer  NOT NULL  ,
 	nom                  varchar(255)    ,
 	CONSTRAINT pk_critere PRIMARY KEY ( id )
  );
 
-CREATE  TABLE profil ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.profil ( 
+	id                   integer  NOT NULL  ,
 	nom                  varchar(255)    ,
 	rang                 integer DEFAULT 0   ,
 	CONSTRAINT pk_profil PRIMARY KEY ( id )
  );
 
-CREATE  TABLE service ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.service ( 
+	id                   integer  NOT NULL  ,
 	nom                  varchar(255)    ,
 	CONSTRAINT pk_service PRIMARY KEY ( id )
  );
 
-CREATE  TABLE souscritere ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.souscritere ( 
+	id                   integer  NOT NULL  ,
 	critere              integer    ,
 	nom                  varchar(255)    ,
 	CONSTRAINT pk_souscritere PRIMARY KEY ( id ),
-	CONSTRAINT fk_souscritere_critere FOREIGN KEY ( critere ) REFERENCES critere( id )   
+	CONSTRAINT fk_souscritere_critere FOREIGN KEY ( critere ) REFERENCES gestion.critere( id )   
  );
 
-CREATE  TABLE personne ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.personne ( 
+	id                   integer  NOT NULL  ,
 	nom                  varchar(255)    ,
 	prenom               varchar(255)    ,
 	email                varchar(255)    ,
@@ -37,19 +38,19 @@ CREATE  TABLE personne (
 	contact              varchar(255)    ,
 	profil               integer    ,
 	CONSTRAINT pk_personne PRIMARY KEY ( id ),
-	CONSTRAINT fk_personne_profil FOREIGN KEY ( profil ) REFERENCES profil( id )   
+	CONSTRAINT fk_personne_profil FOREIGN KEY ( profil ) REFERENCES gestion.profil( id )   
  );
 
-CREATE  TABLE posteservice ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.posteservice ( 
+	id                   integer  NOT NULL  ,
 	service              integer    ,
 	titreposte           varchar(255)    ,
 	CONSTRAINT pk_posteservice PRIMARY KEY ( id ),
-	CONSTRAINT fk_posteservice_service FOREIGN KEY ( service ) REFERENCES service( id )   
+	CONSTRAINT fk_posteservice_service FOREIGN KEY ( service ) REFERENCES gestion.service( id )   
  );
 
-CREATE  TABLE besoin ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.besoin ( 
+	id                   integer  NOT NULL  ,
 	service              integer    ,
 	description          text    ,
 	titre                text    ,
@@ -60,21 +61,21 @@ CREATE  TABLE besoin (
 	datefin              date    ,
 	status               integer    ,
 	CONSTRAINT pk_besoin PRIMARY KEY ( id ),
-	CONSTRAINT fk_besoin_service FOREIGN KEY ( service ) REFERENCES service( id )   ,
-	CONSTRAINT fk_besoin_posteservice FOREIGN KEY ( posteservice ) REFERENCES posteservice( id )   
+	CONSTRAINT fk_besoin_service FOREIGN KEY ( service ) REFERENCES gestion.service( id )   ,
+	CONSTRAINT fk_besoin_posteservice FOREIGN KEY ( posteservice ) REFERENCES gestion.posteservice( id )   
  );
 
-CREATE  TABLE criterebesoin ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.criterebesoin ( 
+	id                   integer  NOT NULL  ,
 	besoin               integer    ,
 	critere              integer    ,
 	coefficient          numeric(18,5) DEFAULT 0   ,
 	CONSTRAINT pk_criterebesoin PRIMARY KEY ( id ),
-	CONSTRAINT fk_criterebesoin_besoin FOREIGN KEY ( besoin ) REFERENCES besoin( id )   
+	CONSTRAINT fk_criterebesoin_besoin FOREIGN KEY ( besoin ) REFERENCES gestion.besoin( id )   
  );
 
-CREATE  TABLE cv ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.cv ( 
+	id                   integer  NOT NULL  ,
 	nom                  varchar(255)    ,
 	prenom               varchar(255)    ,
 	adresse              varchar(255)    ,
@@ -89,57 +90,58 @@ CREATE  TABLE cv (
 	status               integer    ,
 	dateecriture         date DEFAULT CURRENT_DATE   ,
 	CONSTRAINT pk_cv PRIMARY KEY ( id ),
-	CONSTRAINT fk_cv_besoin FOREIGN KEY ( besoin ) REFERENCES besoin( id )   ,
-	CONSTRAINT fk_cv_personne FOREIGN KEY ( personne ) REFERENCES personne( id )   
+	CONSTRAINT fk_cv_besoin FOREIGN KEY ( besoin ) REFERENCES gestion.besoin( id )   ,
+	CONSTRAINT fk_cv_personne FOREIGN KEY ( personne ) REFERENCES gestion.personne( id )   
  );
 
-CREATE  TABLE notesouscritere ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.notesouscritere ( 
+	id                   integer  NOT NULL  ,
 	souscritere          integer    ,
 	besoin               integer    ,
 	note                 decimal(18,5)    ,
 	CONSTRAINT pk_notesouscritere PRIMARY KEY ( id ),
-	CONSTRAINT fk_notesouscritere_besoin FOREIGN KEY ( besoin ) REFERENCES besoin( id )   ,
-	CONSTRAINT fk_notesouscritere_souscritere FOREIGN KEY ( souscritere ) REFERENCES souscritere( id )   
+	CONSTRAINT fk_notesouscritere_besoin FOREIGN KEY ( besoin ) REFERENCES gestion.besoin( id )   ,
+	CONSTRAINT fk_notesouscritere_souscritere FOREIGN KEY ( souscritere ) REFERENCES gestion.souscritere( id )   
  );
 
-CREATE  TABLE reponsecv ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.reponsecv ( 
+	id                   integer  NOT NULL  ,
 	cv                   integer    ,
 	critere              integer    ,
 	souscritere          integer    ,
 	CONSTRAINT pk_reponsecv PRIMARY KEY ( id ),
-	CONSTRAINT fk_reponsecv_cv FOREIGN KEY ( cv ) REFERENCES cv( id )   ,
-	CONSTRAINT fk_reponsecv_critere FOREIGN KEY ( critere ) REFERENCES critere( id )   ,
-	CONSTRAINT fk_reponsecv_souscritere FOREIGN KEY ( souscritere ) REFERENCES souscritere( id )   
+	CONSTRAINT fk_reponsecv_cv FOREIGN KEY ( cv ) REFERENCES gestion.cv( id )   ,
+	CONSTRAINT fk_reponsecv_critere FOREIGN KEY ( critere ) REFERENCES gestion.critere( id )   ,
+	CONSTRAINT fk_reponsecv_souscritere FOREIGN KEY ( souscritere ) REFERENCES gestion.souscritere( id )   
  );
 
-CREATE  TABLE testquestionnaire ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.testquestionnaire ( 
+	id                   integer  NOT NULL  ,
 	besoin               integer    ,
 	question             text    ,
 	estchoixmultiple     boolean    ,
 	note                 numeric(18,5) DEFAULT 0   ,
 	CONSTRAINT pk_testquestionnaire PRIMARY KEY ( id ),
-	CONSTRAINT fk_testquestionnaire_besoin FOREIGN KEY ( besoin ) REFERENCES besoin( id )   
+	CONSTRAINT fk_testquestionnaire_besoin FOREIGN KEY ( besoin ) REFERENCES gestion.besoin( id )   
  );
 
-CREATE  TABLE choixreponse ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.choixreponse ( 
+	id                   integer  NOT NULL  ,
 	questionnaire        integer    ,
 	reponse              text    ,
 	note                 numeric(18,5) DEFAULT 0   ,
 	CONSTRAINT pk_choixreponse PRIMARY KEY ( id ),
-	CONSTRAINT fk_choixreponse FOREIGN KEY ( questionnaire ) REFERENCES testquestionnaire( id )   
+	CONSTRAINT fk_choixreponse FOREIGN KEY ( questionnaire ) REFERENCES gestion.testquestionnaire( id )   
  );
 
-CREATE  TABLE reponsequestionnaire ( 
-	id                   serial  NOT NULL  ,
+CREATE  TABLE gestion.reponsequestionnaire ( 
+	id                   integer  NOT NULL  ,
 	questionnaire        integer    ,
 	reponse              integer    ,
 	cv                   integer    ,
 	CONSTRAINT pk_reponsequestionnaire PRIMARY KEY ( id ),
-	CONSTRAINT fk_reponsequestionnaire FOREIGN KEY ( questionnaire ) REFERENCES testquestionnaire( id )   ,
-	CONSTRAINT fk_reponse_choix_questionnaire FOREIGN KEY ( reponse ) REFERENCES choixreponse( id )   ,
-	CONSTRAINT fk_reponsequestionnaire_cv FOREIGN KEY ( cv ) REFERENCES cv( id )   
+	CONSTRAINT fk_reponsequestionnaire FOREIGN KEY ( questionnaire ) REFERENCES gestion.testquestionnaire( id )   ,
+	CONSTRAINT fk_reponse_choix_questionnaire FOREIGN KEY ( reponse ) REFERENCES gestion.choixreponse( id )   ,
+	CONSTRAINT fk_reponsequestionnaire_cv FOREIGN KEY ( cv ) REFERENCES gestion.cv( id )   
  );
+

@@ -21,15 +21,16 @@ import java.util.Calendar;
  */
 public class Besoin extends BDD
 {
-    	int id;
-	int service ;
-	String  description;
-	String titre ;
-	double volumeTaches;
-	double tauxJourHomme ;
-	Date dateBesoin;
-	Date dateFin;
-        int status;
+    	private int id;
+	private int service ;
+	private String  description;
+	private String titre ;
+        private int posteService;
+	private double volumeTaches;
+	private double tauxJourHomme ;
+	private Date dateBesoin;
+	private Date dateFin;
+        private int status;
 
     public int getId() {
         return id;
@@ -62,6 +63,15 @@ public class Besoin extends BDD
     public void setTitre(String titre) {
         this.titre = titre;
     }
+
+    public int getPosteService() {
+        return posteService;
+    }
+
+    public void setPosteService(int posteService) {
+        this.posteService = posteService;
+    }
+    
 
     public double getVolumeTaches() {
         return volumeTaches;
@@ -102,6 +112,24 @@ public class Besoin extends BDD
     public void setStatus(int status) {
         this.status = status;
     }
+
+    public Besoin() {
+    }
+
+    public Besoin(int id, int service, String description, String titre, int posteService, double volumeTaches, double tauxJourHomme, Date dateBesoin, Date dateFin, int status) {
+        this.setId(id);
+        this.setService(service);
+        this.setDescription(description);
+        this.setTitre(titre);
+        this.setPosteService(posteService);
+        this.setVolumeTaches(volumeTaches);
+        this.setTauxJourHomme(tauxJourHomme);
+        this.setDateBesoin(dateBesoin);
+        this.setDateFin(dateFin);
+        this.setStatus(status);
+    }
+    
+    
     
     
 //////////////////////////////////////////////////////////////       
@@ -117,11 +145,12 @@ public class Besoin extends BDD
           b.setService(Integer.parseInt(besoinsBDD.get(i)[1]));
           b.setDescription(String.valueOf(besoinsBDD.get(i)[2]));
           b.setTitre(String.valueOf(besoinsBDD.get(i)[3]));
-          b.setVolumeTaches(Double.parseDouble(besoinsBDD.get(i)[4]));
-          b.setTauxJourHomme(Integer.parseInt(besoinsBDD.get(i)[5]));
-          b.setDateBesoin(Date.valueOf(besoinsBDD.get(i)[6]));
-          b.setDateFin(Date.valueOf(besoinsBDD.get(i)[7]));
-          b.setStatus(Integer.valueOf(besoinsBDD.get(i)[8]));
+          b.setPosteService(Integer.parseInt(besoinsBDD.get(i)[4]));
+          b.setVolumeTaches(Double.parseDouble(besoinsBDD.get(i)[5]));
+          b.setTauxJourHomme(Double.parseDouble(besoinsBDD.get(i)[6]));
+          b.setDateBesoin(Date.valueOf(besoinsBDD.get(i)[7]));
+          b.setDateFin(Date.valueOf(besoinsBDD.get(i)[8]));
+          b.setStatus(Integer.parseInt(besoinsBDD.get(i)[9]));
 
         besoins.add(b);
       }
@@ -129,22 +158,23 @@ public class Besoin extends BDD
    } 
 ///////////////////////////////////////////////////////////////////   
     
-    public static void createBesoin(int service, String description, String titre, double volumeTaches, double tauxJourHomme, Date dateBesoin, Date dateFin) throws Exception {
+    public static void createBesoin(int service, String description, String titre,int posteService,double volumeTaches, double tauxJourHomme, Date dateBesoin, Date dateFin) throws Exception {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             connection = ConnectTo.postgreS();
-            String query = "INSERT INTO besoin (service, description, titre, volumeTaches, tauxJourHomme, dateBesoin, dateFin,status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO besoin (service, description, titre, posteService, volumeTaches, tauxJourHomme, dateBesoin, dateFin,status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, service);
             preparedStatement.setString(2, description);
             preparedStatement.setString(3, titre);
-            preparedStatement.setDouble(4, volumeTaches);
-            preparedStatement.setDouble(5, tauxJourHomme);
-            preparedStatement.setDate(6, dateBesoin);
-            preparedStatement.setDate(7, dateFin);
-            preparedStatement.setInt(8, 0);
+            preparedStatement.setInt(4, posteService);
+            preparedStatement.setDouble(5, volumeTaches);
+            preparedStatement.setDouble(6, tauxJourHomme);
+            preparedStatement.setDate(7, dateBesoin);
+            preparedStatement.setDate(8, dateFin);
+            preparedStatement.setInt(9, 0);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -166,24 +196,24 @@ public class Besoin extends BDD
         }
     }
    
-    public static void createBesoinToday(int service, String description, String titre, double volumeTaches, double tauxJourHomme, Date dateFin) throws Exception {
+    public static void createBesoinToday(int service, String description, String titre, int posteService, double volumeTaches, double tauxJourHomme, Date dateFin) throws Exception {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-
         try {
             connection = ConnectTo.postgreS();
-            String query = "INSERT INTO besoin (service, description, titre, volumeTaches, tauxJourHomme, dateBesoin, dateFin, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO besoin (service, description, titre, posteService, volumeTaches, tauxJourHomme, dateBesoin, dateFin,status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, service);
             preparedStatement.setString(2, description);
             preparedStatement.setString(3, titre);
-            preparedStatement.setDouble(4, volumeTaches);
-            preparedStatement.setDouble(5, tauxJourHomme);
+            preparedStatement.setInt(4, posteService);
+            preparedStatement.setDouble(5, volumeTaches);
+            preparedStatement.setDouble(6, tauxJourHomme);
             Calendar calendar = Calendar.getInstance();
             Date dateBesoin = new Date(calendar.getTime().getTime());
-            preparedStatement.setDate(6, dateBesoin);
-            preparedStatement.setDate(7, dateFin);
-            preparedStatement.setInt(8, 0);
+            preparedStatement.setDate(7, dateBesoin);
+            preparedStatement.setDate(8, dateFin);
+            preparedStatement.setInt(9, 0);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -216,18 +246,19 @@ public class Besoin extends BDD
             connection = ConnectTo.postgreS();
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1,id);
-            resultSet = preparedStatement.executeQuery(query);
+            resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
                 besoin.setId(resultSet.getInt(1));
                 besoin.setService(resultSet.getInt(2));
                 besoin.setDescription(resultSet.getString(3));
                 besoin.setTitre(resultSet.getString(4));
-                besoin.setVolumeTaches(resultSet.getDouble(5));
-                besoin.setTauxJourHomme(resultSet.getDouble(6));
-                besoin.setDateBesoin(resultSet.getDate(7));
-                besoin.setDateFin(resultSet.getDate(8));
-                besoin.setStatus(resultSet.getInt(9));
+                besoin.setPosteService(resultSet.getInt(5));
+                besoin.setVolumeTaches(resultSet.getDouble(6));
+                besoin.setTauxJourHomme(resultSet.getDouble(7));
+                besoin.setDateBesoin(resultSet.getDate(8));
+                besoin.setDateFin(resultSet.getDate(9));
+                besoin.setStatus(resultSet.getInt(10));
             }
         } catch (Exception e) {
             throw e;

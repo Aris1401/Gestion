@@ -1,3 +1,19 @@
 /Back/build/
 /Back/dist/
 
+# NetBeans specific #
+/Back/nbproject/private/
+/Back/build/
+/Back/nbbuild/
+/Back/dist/
+/Back/nbdist/
+/Back/nbactions.xml
+/Back/nb-configuration.xml
+
+# Class Files #
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear

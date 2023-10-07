@@ -23,9 +23,8 @@ public class CritereBesoin extends BDD
 	int besoin;
 	int critere;
 	int coefficient;
-        ///////nanao JOIN de napina Variable 
-        int sousCritere;
-        double note;
+//        int sousCritere;
+//        double note;
 
     public int getId() {
         return id;
@@ -59,21 +58,21 @@ public class CritereBesoin extends BDD
         this.coefficient = coefficient;
     }
 
-    public int getSousCritere() {
-        return sousCritere;
-    }
-
-    public void setSousCritere(int sousCritere) {
-        this.sousCritere = sousCritere;
-    }
-
-    public double getNote() {
-        return note;
-    }
-
-    public void setNote(double note) {
-        this.note = note;
-    }
+//    public int getSousCritere() {
+//        return sousCritere;
+//    }
+//
+//    public void setSousCritere(int sousCritere) {
+//        this.sousCritere = sousCritere;
+//    }
+//
+//    public double getNote() {
+//        return note;
+//    }
+//
+//    public void setNote(double note) {
+//        this.note = note;
+//    }
 
     public CritereBesoin() {
     }
@@ -91,7 +90,7 @@ public class CritereBesoin extends BDD
 
         try {
             connection = ConnectTo.postgreS();
-            String query = "INSERT INTO critere_besoin (besoin, critere, coefficient) VALUES (?, ?, ?)";
+            String query = "INSERT INTO critereBesoin (besoin, critere, coefficient) VALUES (?, ?, ?)";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, besoin);
             preparedStatement.setInt(2, critere);
@@ -117,7 +116,39 @@ public class CritereBesoin extends BDD
         }
     }
     
-    public static ArrayList<CritereBesoin> getByIdBesoin(int besoinId) throws Exception {
+    public static void updateCritereBesoin(int critere,int besoin,int coefficient)throws Exception{
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection = ConnectTo.postgreS();
+            String query = "update critereBesoin set coefficient = ? where besoin=? and critere =?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, coefficient);
+            preparedStatement.setInt(2, besoin);
+            preparedStatement.setInt(3, critere);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+  public static ArrayList<CritereBesoin> getNoteCritere(int besoinId, int critereId) throws Exception {
         ArrayList<CritereBesoin> critereBesoins = new ArrayList<>();
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -125,9 +156,10 @@ public class CritereBesoin extends BDD
 
         try {
             connection = ConnectTo.postgreS();
-            String query = "SELECT * FROM critere_besoin WHERE besoin = ?";
+            String query = "SELECT * FROM criterebesoin WHERE besoin = ? and critere = ?";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, besoinId);
+            preparedStatement.setInt(2, critereId);
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
@@ -165,6 +197,60 @@ public class CritereBesoin extends BDD
 
         return critereBesoins;
     }
+    
+    public static boolean checkIfExist(int critere, int besoin) throws Exception {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        boolean exist = false;
+
+        try {
+            connection = ConnectTo.postgreS();
+            String query = "SELECT 1 FROM critereBesoin WHERE critere = ? AND besoin = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, critere);
+            preparedStatement.setInt(2, besoin);
+            resultSet = preparedStatement.executeQuery();
+
+            exist = resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return exist;
+    }
+
+    
+    public static void insertOrUpdate(int critere,int besoin,int coefficient) throws Exception{
+        boolean exist = CritereBesoin.checkIfExist(critere, besoin);
+        if(exist){
+            CritereBesoin.updateCritereBesoin(critere, besoin, coefficient);
+        }else{
+            CritereBesoin.insererCritereBesoin(besoin, critere, coefficient);
+        }
+    }
  //////////////////////////////////////////////////////////////////////////////////maka coeff anle client 
 public double  getValeurCritere(int idCritere,int idSousCritere,boolean check)
 {
@@ -188,9 +274,9 @@ public double  getValeurCritere(int idCritere,int idSousCritere,boolean check)
             c.besoin=Integer.parseInt(critereBesoinBDD.get(id)[1]);
             c.critere=Integer.parseInt(critereBesoinBDD.get(id)[2]);
             c.coefficient=Integer.parseInt(critereBesoinBDD.get(id)[3]);
-            c.sousCritere=Integer.parseInt(critereBesoinBDD.get(id)[4]);
-            c.note=Double.parseDouble(critereBesoinBDD.get(id)[5]);
-            notee=c.coefficient*c.note;
+//            c.sousCritere=Integer.parseInt(critereBesoinBDD.get(id)[4]);
+//            c.note=Double.parseDouble(critereBesoinBDD.get(id)[5]);
+//            notee=c.coefficient*c.note;
             critereBesoins.add(c);
         }
         
