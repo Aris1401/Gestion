@@ -139,7 +139,7 @@ public class Personne extends BDD
        }
        return personnes;  
     }
-///////////////////////////////////////////////////////    
+
     public static Compte Login (String email,String motDePasse)
     {
         Compte compte = new Compte();
