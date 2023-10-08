@@ -4,10 +4,12 @@
  */
 package model;
 
+import aris.bdd.generic.GenericDAO;
 import dbAccess.ConnectTo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
@@ -61,16 +63,26 @@ public class ChoixReponse {
         this.setNote(note);
     }
     
+    public static ArrayList<ChoixReponse> getChoixReponses(int questionnaire) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO choixDAO = new GenericDAO();
+        choixDAO.setCurrentClass(ChoixReponse.class);
+        choixDAO.addToSelection("questionnaire", questionnaire, "");
+        
+        return choixDAO.getFromDatabase(c);
+    }
+    
     public static void ajoutChoixReponse(int questionnaire, String reponse, double note)throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String query = "insert into choixreponse(questionnaire,reponse,note)values(?,?,?)";
+        String query = "insert into choixreponse(questionnaire,reponse,note) values (?,?,?)";
         try {
             connection = ConnectTo.postgreS();
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1,questionnaire);
             preparedStatement.setString(2,reponse);
-            preparedStatement.setDouble(4,note);
+            preparedStatement.setDouble(3,note);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

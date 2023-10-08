@@ -34,7 +34,7 @@ public class InsertBesoinAPI extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
         Besoin besoin = new Besoin();
         besoin.setService(Integer.parseInt(request.getParameter("service")));
         besoin.setTitre(request.getParameter("titre"));

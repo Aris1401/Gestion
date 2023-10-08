@@ -298,8 +298,7 @@ public class Besoin extends BDD
     }
     
     public static int getNombrePourBesoin(int id) throws Exception{
-        Besoin besoin = new Besoin();
-        besoin = Besoin.getBesoinById(id);
+        Besoin besoin = Besoin.getBesoinById(id);
         int nombrePersonne;
         double reponse = besoin.getVolumeTaches()/besoin.getTauxJourHomme();
         nombrePersonne = (int)reponse;

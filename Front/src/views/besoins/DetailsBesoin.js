@@ -16,8 +16,23 @@ import { makeRequest } from 'src/components/utility/Api'
 import ListeCV from './ListeCV/ListeCV'
 import BesoinMore from './BesoinMore'
 import CritereCV from './CriteresCV/CritereCV'
+import { CheckPageAuthority } from 'src/components/auth/CheckAuth'
+
+export const getBesoinDetails = (besoin) => {
+  return new Promise((resolve, reject) => {
+    makeRequest({
+      url: `InfosBesoinAPI?id=${besoin}`,
+      requestType: 'GET',
+      successCallback: (data) => {
+        resolve(data)
+      },
+    })
+  })
+} 
 
 const DetailsBesoin = () => {
+  CheckPageAuthority()
+
   // Get the id of the parameter
   const { id } = useParams()
 
