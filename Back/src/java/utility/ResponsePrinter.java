@@ -13,10 +13,15 @@ import javax.servlet.http.HttpServletResponse;
  * @author aris
  */
 public class ResponsePrinter {
+    public static void setCORS(HttpServletResponse res) {
+        res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        res.setHeader("Access-Control-Allow-Credentials", "true");
+    }
+    
     public static void PrintToJSON(HttpServletResponse res, Object obj) throws IOException {
         Gson gson = new Gson();
         String json = gson.toJson(obj);
-        res.setHeader("Access-Control-Allow-Origin", "*"); 
+        ResponsePrinter.setCORS(res);
         res.setContentType("application/json");
         res.setCharacterEncoding("UTF-8");
 

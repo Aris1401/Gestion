@@ -10,7 +10,7 @@ import {
     CRow,
 } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { json, useLocation, useParams } from 'react-router-dom'
 import { makeRequest } from 'src/components/utility/Api'
 
 const CritereCV = (props) => {
@@ -60,9 +60,9 @@ const CritereCV = (props) => {
     }
 
     const handleCritereInputsChange = (e) => {
-      const {id, value} = e.target
+        const { id, value } = e.target
 
-      setCriteresInputs(prev => ({...prev, [id]: value}))
+        setCriteresInputs((prev) => ({ ...prev, [id]: value }))
     }
 
     // Sous critere
@@ -101,51 +101,97 @@ const CritereCV = (props) => {
         getSousCritere()
     }, [criteres])
 
-    // Obtenir la note des sous-critere
-    const [notesSousCritere, setNotesSousCritere] = useState({})
-    const getNoteSousCritere = () => {
-        let tempNotesSousCriteres = {}
-
-        criteres.map((critere, index) => {
-            sousCriteres[critere.id].map((sousCritere, index) => {
-                makeRequest({
-                    url: `NoteSousCritereAPI?besoin=${id}&sousCritere=${sousCritere.id}`,
-                    requestType: 'GET',
-                    successCallback: (data) => {
-                        tempNotesSousCriteres = notesSousCritere
-                        tempNotesSousCriteres[sousCritere.id] = data
-                    },
-                    failureCallback: (error) => {
-                        alert(error)
-                    },
-                })
-            })
-        })
-
-        setNotesSousCritere(tempNotesSousCriteres)
-    }
-
-    useEffect(() => {
-        getNoteSousCritere()
-    }, [location])
-
     // Sous criteres inputs
     const [sousCritereInputs, setSousCritereInputs] = useState({})
     const handleSousCritereInputChange = (e) => {
-      const {id, value} = e.target
+        const { id, value } = e.target
 
-      setSousCritereInputs(prev => ({...prev, [id]: value}))
+        setSousCritereInputs((prev) => ({ ...prev, [id]: value }))
     }
 
+    // Initiliwing the sous critere note
+    const initializeSousCritereNote = () => {
+        let tempInputs = { ...sousCritereInputs }; // create a shallow copy of sousCritereInputs
     
+        let promises = []; // array to hold all the promises
+    
+        criteres.forEach((critere) => {
+            sousCriteres[critere.id].forEach((sousCritere) => {
+                // create a new promise for each request
+                let promise = new Promise((resolve, reject) => {
+                    makeRequest({
+                        url: `NoteSousCritereAPI?besoin=${
+                            props.besoin ? props.besoin.id : id
+                        }&sousCritere=${sousCritere.id}`,
+                        requestType: 'GET',
+                        successCallback: (data) => {
+                            tempInputs[sousCritere.id] = data.note;
+                            resolve(); // resolve the promise when the request is successful
+                        },
+                    });
+                });
+    
+                // add the promise to the array
+                promises.push(promise);
+            });
+        });
+    
+        // use Promise.all() to wait for all the promises to resolve
+        Promise.all(promises)
+            .then(() => {
+                setSousCritereInputs(tempInputs);
+            })
+            .catch((error) => {
+                console.error("An error occurred: ", error);
+                // handle the error
+            });
+    }
+
+    useEffect(() => {
+        initializeSousCritereNote()
+        console.log("TEST: " + JSON.stringify(sousCritereInputs))
+    }, [sousCriteres])
+
     // Submitting the form
+    const handleCritereNotationForm = (e) => {
+        // Preventing the deafult action of the form
+        e.preventDefault()
+
+        // Getting all the inputs of the form
+        console.log(JSON.stringify(sousCritereInputs))
+        console.log(JSON.stringify(criteresInputs))
+
+        // Looping through the critere inputs
+        for (var key in criteresInputs) {
+            makeRequest({
+                url: `AjoutCritereController?besoin=${id}&critere=${key}&coefficient=${criteresInputs[key]}`,
+                requestType: 'GET',
+                successCallback: (data) => {},
+                failureCallback: (error) => {
+                    alert(error)
+                },
+            })
+        }
+
+        // Looping through sous critere inputs
+        for (var key in sousCritereInputs) {
+            makeRequest({
+                url: `AjoutNoteSousCritereController?besoin=${id}&sousCritere=${key}&note=${sousCritereInputs[key]}`,
+                requestType: 'GET',
+                successCallback: (data) => {},
+                failureCallback: (error) => {
+                    alert(error)
+                },
+            })
+        }
+    }
 
     return (
         <CContainer style={{ marginTop: '1rem' }}>
             <CRow>
                 <h6>Modifier criteres de selection</h6>
             </CRow>
-            <CForm>
+            <CForm onSubmit={handleCritereNotationForm}>
                 <CRow>
                     {criteres.map((critere, index) => {
                         return (

@@ -5,6 +5,7 @@
  */
 package model;
 
+import aris.bdd.generic.GenericDAO;
 import dbAccess.ConnectTo;
 import generalisationIante.BDD;
 import java.sql.Connection;
@@ -26,7 +27,7 @@ public class CV extends BDD
     private String prenom ;
     private String adresse ;
     private String email ;
-    private int contact ;
+    private String contact ;
     private String description ;
     private Date dateNaissance ;
     private String preuvediplome;
@@ -76,11 +77,11 @@ public class CV extends BDD
         this.email = email;
     }
 
-    public int getContact() {
+    public String getContact() {
         return contact;
     }
 
-    public void setContact(int contact) {
+    public void setContact(String contact) {
         this.contact = contact;
     }
 
@@ -151,7 +152,7 @@ public class CV extends BDD
     public CV() {
     }
 
-    public CV(int id, String nom, String prenom, String adresse, String email, int contact, String description, Date dateNaissance, String preuvediplome, String preuvetravail, int besoin, int personne, int status, Date dateecriture) {
+    public CV(int id, String nom, String prenom, String adresse, String email, String contact, String description, Date dateNaissance, String preuvediplome, String preuvetravail, int besoin, int personne, int status, Date dateecriture) {
         this.setId(id);
         this.setNom(nom);
         this.setPrenom(prenom);
@@ -168,67 +169,17 @@ public class CV extends BDD
         this.setDateecriture(dateecriture);
     }
 
-    
-    
-    public static ArrayList<CV> getAllCVForBesoin(int besoin) throws Exception{
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        ArrayList<CV> allCV = new ArrayList<>();
-        String query = "SELECT * FROM CV where besoin = ?";
-        try {
-            connection = ConnectTo.postgreS();
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1,besoin);
-            resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                CV cv = new CV();
-                cv.setId(resultSet.getInt(1));
-                cv.setNom(resultSet.getString(2));
-                cv.setPrenom(resultSet.getString(3));
-                cv.setAdresse(resultSet.getString(4));
-                cv.setEmail(resultSet.getString(5));
-                cv.setContact(resultSet.getInt(6));
-                cv.setDescription(resultSet.getString(7));
-                cv.setDateNaissance(resultSet.getDate(8));
-                cv.setPreuvediplome(resultSet.getString(9));
-                cv.setPreuvetravail(resultSet.getString(10));
-                cv.setBesoin(resultSet.getInt(11));
-                cv.setPersonne(resultSet.getInt(12));
-                cv.setStatus(resultSet.getInt(13));
-                cv.setDateecriture(resultSet.getDate(14));
-                allCV.add(cv);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return allCV;
+    public static ArrayList<CV> getCVFromBesoin(int besoin) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO cvs = new GenericDAO();
+        cvs.setCurrentClass(CV.class);
+        cvs.addToSelection("besoin", besoin, "");
+        return cvs.getFromDatabase(c);
     }
  
 //////////////////////////////////////////////////////////////////////////////////
-    public void InsertCV(String nom,String prenom,String adresse,String email,int contact,String description,Date dateNaissance,String preuvediplome,String preuvetravail,int besoin,int personne,int status,Date dateecriture)
+    public void InsertCV(String nom,String prenom,String adresse,String email,String contact,String description,Date dateNaissance,String preuvediplome,String preuvetravail,int besoin,int personne,int status,Date dateecriture)
     {
         CV cv = new CV();
         cv.setId(id);
@@ -248,6 +199,7 @@ public class CV extends BDD
         cv.dontSave("id");
         cv.save();
     }       
+////////////////////////////////////////////////////////////////////////////////
 
         
 }

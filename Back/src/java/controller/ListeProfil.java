@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.PosteService;
 import model.Profil;
+import utility.ResponsePrinter;
 
 /**
  *
@@ -29,13 +30,14 @@ public class ListeProfil extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             ArrayList<Profil> allProfils = Profil.getAllProfiles();
-            Gson gson = new Gson();
-            String json = gson.toJson(allProfils);
-            response.setHeader("Access-Control-Allow-Origin", "*"); 
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            
-            response.getWriter().println(json);
+            ResponsePrinter.PrintToJSON(response, allProfils);
+//            Gson gson = new Gson();
+//            String json = gson.toJson(allProfils);
+//            response.setHeader("Access-Con
+//            response.setContentType("application/json");
+//            response.setCharacterEncoding("UTF-8");
+//            
+//            response.getWriter().println(json);
         }
     }
 

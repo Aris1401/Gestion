@@ -4,10 +4,8 @@
  */
 package controller;
 
-import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -15,15 +13,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Critere;
+import model.TestQuestionnaire;
 import utility.ResponsePrinter;
 
 /**
  *
  * @author aris
  */
-@WebServlet(name = "ListeCritereAPI", urlPatterns = {"/ListeCritereAPI"})
-public class ListeCritereAPI extends HttpServlet {
+@WebServlet(name = "ListeQuestions", urlPatterns = {"/ListeQuestions"})
+public class ListeQuestions extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,20 +34,12 @@ public class ListeCritereAPI extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ArrayList<Critere> criteres = null;
+        int besoin = Integer.parseInt(request.getParameter("besoin"));
         try {
-            criteres = Critere.getAllCriteres();
+            ResponsePrinter.PrintToJSON(response, TestQuestionnaire.getQuestionsFromBesoin(besoin));
         } catch (Exception ex) {
-            response.getWriter().println(ex.getMessage());
+            Logger.getLogger(ListeQuestions.class.getName()).log(Level.SEVERE, null, ex);
         }
-        ResponsePrinter.PrintToJSON(response, criteres);
-//        Gson gson = new Gson();
-//        String json = gson.toJson(criteres);
-//        response.setHeader("Acces
-//        response.setContentType("application/json");
-//        response.setCharacterEncoding("UTF-8");
-//
-//        response.getWriter().println(json);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

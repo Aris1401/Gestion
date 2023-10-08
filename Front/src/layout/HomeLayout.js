@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import HomeNavBar from 'src/components/clientSide/HomeNavBar'
 import Annonces from 'src/views/clientSide/Annonces'
 import Index from 'src/views/clientSide/Index'
+import Postuler from 'src/views/clientSide/Postuler'
 
 // Home routes 
 const homeRoutes = [
@@ -28,7 +29,8 @@ const HomeLayout = () => {
                 {homeRoutes.map((route, index) => {
                     return <Route key={index} path={ route.path } name={route.name} element={route.element} />
                 })}
-                <Route path="/" element={<Navigate to="acceuil  " replace />} />
+                <Route path="postuler/:besoin/*" name="Postuler" element={<Postuler />} />
+                <Route path="/" element={<Navigate to="acceuil" replace />} />
             </Routes>
         </CContainer>
     </>
