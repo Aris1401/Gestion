@@ -19,8 +19,8 @@ import java.util.ArrayList;
 public class SousCritere
 {
     	int id;
-	String nom ;
-	int critere;
+        int critere;
+	String nom ;	
 
     public int getId() {
         return id;
@@ -59,12 +59,12 @@ public class SousCritere
     public static void insertSousCritere(int id,String nom,int critere) throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String query = "insert into sousCritere(nom,critere)values(?,?)";
+        String query = "insert into sousCritere(critere,nom)values(?,?)";
         try {
             connection = ConnectTo.postgreS();
             preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, nom);
-            preparedStatement.setInt(2,critere);
+            preparedStatement.setInt(1, critere);
+            preparedStatement.setString(2,nom);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -100,6 +100,7 @@ public class SousCritere
             while (resultSet.next()) {
                 SousCritere sousCritere = new SousCritere();
                 sousCritere.setId(resultSet.getInt(1));
+
                 sousCritere.setNom(resultSet.getString(3));
                 sousCritere.setCritere(resultSet.getInt(2));
                 sousCriteres.add(sousCritere);
