@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.CritereBesoin;
+import utility.ResponsePrinter;
 
 /**
  *
@@ -46,13 +47,7 @@ public class CoefficientCritereAPI extends HttpServlet {
         } catch (Exception ex) {
             
         }
-        
-        Gson gson = new Gson();
-        String json = gson.toJson(c);
-        response.setHeader("Access-Control-Allow-Origin", "*"); 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().println(json);
+        ResponsePrinter.PrintToJSON(response, c);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -82,6 +82,7 @@ public class PosteService extends BDD{
         }
         
         return postes;
+    }
 
     public static ArrayList<PosteService> getPosteServiceByService(int service) throws Exception{
         Connection connection = null;

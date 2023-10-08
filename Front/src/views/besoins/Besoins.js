@@ -20,9 +20,12 @@ import {
 } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
+import { CheckPageAuthority } from 'src/components/auth/CheckAuth'
 import { makeRequest } from 'src/components/utility/Api'
 
 const Besoins = () => {
+  CheckPageAuthority()
+
   const location = useLocation()
   // Ajout besoin modal visibility
   const [ajoutBesoinVisibility, setAjoutBesoinVisibility] = useState(false)

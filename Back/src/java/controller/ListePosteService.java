@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.CV;
 import model.PosteService;
+import utility.ResponsePrinter;
 
 /**
  *
@@ -30,13 +31,14 @@ public class ListePosteService extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             int service = Integer.parseInt(request.getParameter("service"));
             ArrayList<PosteService> allPosteServices = PosteService.getPosteServiceByService(service);
-            Gson gson = new Gson();
-            String json = gson.toJson(allPosteServices);
-            response.setHeader("Access-Control-Allow-Origin", "*"); 
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
+            ResponsePrinter.PrintToJSON(response, allPosteServices);
+//            Gson gson = new Gson();
+//            String json = gson.toJson(allPosteServices);
+//            response.setHeader("Access-Contro
+//            response.setContentType("application/json");
+//            response.setCharacterEncoding("UTF-8");
             
-            response.getWriter().println(json);
+//            response.getWriter().println(json);
         }
     }
 

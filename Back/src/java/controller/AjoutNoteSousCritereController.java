@@ -24,18 +24,17 @@ import model.NoteSousCritere;
  */
 @WebServlet(name = "AjoutNoteSousCritereController", urlPatterns = {"/AjoutNoteSousCritereController"})
 public class AjoutNoteSousCritereController extends HttpServlet {
-protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            if(request.getParameter("sousCritere")!=null&&request.getParameter("note")!=null&&request.getParameter("critereBesoin")!=null){
+            if (request.getParameter("sousCritere") != null && request.getParameter("note") != null && request.getParameter("besoin") != null) {
                 int sousCritere = Integer.parseInt(request.getParameter("sousCritere"));
                 double note = Double.parseDouble(request.getParameter("note"));
-                int tauxJourHomme = Integer.parseInt(request.getParameter("critereBesoin"));
-                NoteSousCritere.addNoteSousCritere(sousCritere, note, sousCritere);
-                RequestDispatcher requestDispatcher = request.getRequestDispatcher("pageSuivante.jsp");
-                requestDispatcher.forward(request, response);
-            }else{
+                int besoin = Integer.parseInt(request.getParameter("besoin"));
+                NoteSousCritere.insertOrUpdate(sousCritere, besoin, (int) note);
+            } else {
                 throw new Exception("Something is null");
             }
         }
