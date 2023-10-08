@@ -4,18 +4,22 @@
  */
 package model;
 
+import aris.bdd.generic.GenericDAO;
+import dbAccess.ConnectTo;
+import generalisationIante.BDD;
 import dbAccess.ConnectTo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import java.util.ArrayList;
 
 /**
  *
  * @author Henintsoa & Hery
  */
-public class PosteService {
+public class PosteService extends BDD{
     private int id;
     private int service;
     private String titreposte;
@@ -53,6 +57,32 @@ public class PosteService {
         this.setTitreposte(titreposte);
     }
     
+
+    public static ArrayList<PosteService> getPosteServices() throws Exception {
+        ArrayList<PosteService> postes = new ArrayList<>();
+        
+        // Obtention des postes venant de la base de donnees
+        ArrayList<String[]> postesString = new PosteService().select();
+        for (String[] posteString : postesString) {
+            PosteService ps = new PosteService(Integer.parseInt(posteString[0]), Integer.parseInt(posteString[1]), posteString[2]);
+            postes.add(ps);
+        }
+        
+        return postes;
+    }
+    
+    public static ArrayList<PosteService> getPosteServices(int service) {
+        ArrayList<PosteService> postes = new ArrayList<>();
+        
+        // Obtention des postes venant de la base de donnees
+        ArrayList<String[]> postesString = new PosteService().select(" where service = " + service);
+        for (String[] posteString : postesString) {
+            PosteService ps = new PosteService(Integer.parseInt(posteString[0]), Integer.parseInt(posteString[1]), posteString[2]);
+            postes.add(ps);
+        }
+        
+        return postes;
+
     public static ArrayList<PosteService> getPosteServiceByService(int service) throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
