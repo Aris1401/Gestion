@@ -100,8 +100,9 @@ public class SousCritere
             while (resultSet.next()) {
                 SousCritere sousCritere = new SousCritere();
                 sousCritere.setId(resultSet.getInt(1));
-                sousCritere.setCritere(resultSet.getInt(2));
+
                 sousCritere.setNom(resultSet.getString(3));
+                sousCritere.setCritere(resultSet.getInt(2));
                 sousCriteres.add(sousCritere);
             }
         } catch (SQLException e) {
