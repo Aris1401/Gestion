@@ -1,4 +1,4 @@
-import { CButton, CCol, CContainer, CForm, CFormInput, CFormLabel, CRow } from '@coreui/react'
+import { CButton, CCol, CContainer, CForm, CFormInput, CFormLabel, CInputGroup, CInputGroupText, CRow } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { makeRequest } from 'src/components/utility/Api'
@@ -50,24 +50,39 @@ const CritereCV = (props) => {
   }
 
   // Sous critere
-  const getSousCritere = () => {
-    criteres.forEach((critere) => {
-      makeRequest({
-        url: `ListeSousCritereAPI?critere=${critere.id}`,
-        requestType: 'GET',
-        successCallback: (data) => {
-          let tempDictionnary = sousCriteres
-          tempDictionnary[critere.id] = data
-
-          setSousCriteres(tempDictionnary)
-        },
+  const getSousCritere = async () => {
+    let insertionSousCriteres = {}
+  
+    let requests = criteres.map((critere) =>
+      new Promise((resolve, reject) => {
+        makeRequest({
+          url: `ListeSousCritereAPI?critere=${critere.id}`,
+          requestType: 'GET',
+          successCallback: (data) => {
+            insertionSousCriteres[critere.id] = data
+            resolve()
+          },
+          errorCallback: (error) => {
+            reject(error)
+          }
+        })
       })
-    })
+    )
+  
+    try {
+      await Promise.all(requests)
+      console.log(insertionSousCriteres)
+      setSousCriteres(insertionSousCriteres)
+    } catch (error) {
+      console.error('Error:', error)
+    }
   }
 
+  // Initialiser les coefficients des criteres
   useEffect(() => {
     initializeCriteresCoefs()
     getSousCritere()
+
   }, [criteres])
 
   return (
@@ -98,29 +113,25 @@ const CritereCV = (props) => {
                   />
                 </CCol>
 
-                <CCol xs={1}></CCol>
+                <CCol xs={5}></CCol>
 
-                <CCol xs={10}>
-                  {sousCriteres[critere.id] != undefined
-                    ? sousCriteres[critere.id].map((sousCritere, index) => {
-                        return (
-                          <CRow key={index + 2000}>
-                            <CCol key={sousCritere.id}>
-                              <CFormLabel htmlFor={sousCritere.nom}>{sousCritere.nom}</CFormLabel>
-                            </CCol>
-
-                            <CCol>
-                              <CFormInput
-                                key={sousCritere.nom}
-                                name={sousCritere.nom}
-                                type="number"
-                                id={sousCritere.nom}
-                              />
-                            </CCol>
-                          </CRow>
-                        )
-                      })
-                    : null}
+                <CCol xs={6}>
+                  {sousCriteres[critere.id] !== undefined &&
+                    sousCriteres[critere.id].map((sousCritere, index_sous) => {
+                      return (
+                        <CRow key={index_sous + 2000}>
+                          <CInputGroup key={sousCritere.id}>
+                            <CInputGroupText>{sousCritere.nom}</CInputGroupText>
+                            <CFormInput
+                              key={sousCritere.nom}
+                              name={sousCritere.nom}
+                              type="number"
+                              id={sousCritere.nom}
+                            />
+                          </CInputGroup>
+                        </CRow>
+                      )
+                    })}
                 </CCol>
               </CRow>
             )
@@ -128,7 +139,7 @@ const CritereCV = (props) => {
         </CRow>
 
         <CRow>
-          <CButton type="submit">Modifier criteres</CButton>
+          <CButton style={{ marginTop: '1rem' }} type="submit">Modifier criteres</CButton>
         </CRow>
       </CForm>
     </CContainer>

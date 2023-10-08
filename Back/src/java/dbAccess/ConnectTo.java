@@ -16,7 +16,7 @@ public class ConnectTo {
         Connection connection = null;
         try {
             Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/gestion","postgres","root");
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/gestion_2","postgres","root");
   
         } catch (Exception e) {
             throw e;
