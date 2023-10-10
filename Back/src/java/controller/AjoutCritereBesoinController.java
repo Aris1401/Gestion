@@ -30,9 +30,7 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
                 int besoin = Integer.parseInt(request.getParameter("besoin"));
                 int critere = Integer.parseInt(request.getParameter("critere"));
                 int coefficient = Integer.parseInt(request.getParameter("coefficient"));
-                CritereBesoin.insererCritereBesoin(besoin, critere, coefficient);
-                RequestDispatcher requestDispatcher = request.getRequestDispatcher("pageSuivante.jsp");
-                requestDispatcher.forward(request, response);
+                CritereBesoin.insertOrUpdate(critere, besoin, coefficient);
             }else{
                 throw new Exception("Something is null");
             }

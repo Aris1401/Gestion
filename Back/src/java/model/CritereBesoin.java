@@ -206,7 +206,7 @@ public class CritereBesoin extends BDD
 
         try {
             connection = ConnectTo.postgreS();
-            String query = "SELECT 1 FROM critereBesoin WHERE critere = ? AND besoin = ?";
+            String query = "SELECT * FROM critereBesoin WHERE critere = ? AND besoin = ?";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, critere);
             preparedStatement.setInt(2, besoin);

@@ -20,9 +20,12 @@ import {
 } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
+import { CheckPageAuthority } from 'src/components/auth/CheckAuth'
 import { makeRequest } from 'src/components/utility/Api'
 
 const Besoins = () => {
+  CheckPageAuthority()
+
   const location = useLocation()
   // Ajout besoin modal visibility
   const [ajoutBesoinVisibility, setAjoutBesoinVisibility] = useState(false)
@@ -55,6 +58,41 @@ const Besoins = () => {
     getServicesDispo()
   }, [])
 
+  // Obtenir la liste des postes de ce service
+  const [listePostesService, setListePostesService] = useState([])
+  // Changing the postes according to the service selected
+  const [posteShown, setPostShown] = useState(false)
+
+  let getPostesServices = () => {
+    // alert(`PosteService?service=${service}`)
+    let posteServicesToSelect = []
+    let req = new Promise((resolve, reject) => {
+      makeRequest({
+        url: `PosteService?service=${service}`,
+        requestType: 'GET',
+        successCallback: (data) => {
+
+          data.forEach((poste) => {
+            posteServicesToSelect.push({
+              label: poste.titreposte,
+              value: poste.id,
+              service: poste.service,
+            })
+          })
+          
+          resolve()
+        },
+        failureCallback: (error) => {
+          alert(error)
+        },
+      })
+    })
+    
+    req.then(() => {
+      setListePostesService(posteServicesToSelect)
+    })
+  }
+
   // Creatting a table of all the needs
   const columns = [
     {
@@ -86,26 +124,26 @@ const Besoins = () => {
   const [tauxJourHomme, setTauxJourHomme] = useState()
   const [description, setDescription] = useState()
   const [dateFin, setDateFin] = useState()
+  const [posteService, setPosteService] = useState()
 
   const sendFormData = () => {
-    let formData = new FormData();
-    formData.set('service', service);
-    formData.set('titre', titre);
-    formData.set('volumeTaches', volumeTaches);
-    formData.set('tauxJourHomme', tauxJourHomme);
-    formData.set('description', description);
-    formData.set('dateFin', dateFin);
+    let formData = new FormData()
+    formData.set('service', service)
+    formData.set('titre', titre)
+    formData.set('volumeTaches', volumeTaches)
+    formData.set('tauxJourHomme', tauxJourHomme)
+    formData.set('description', description)
+    formData.set('dateFin', dateFin)
+    formData.set('posteService', posteService)
 
     makeRequest({
       url: 'InsertBesoinAPI',
       values: formData,
-      successCallback: (data) => {
-        
-      },
+      successCallback: (data) => {},
       failureCallback: (error) => {
         alert(error)
       },
-      isFormData: true
+      isFormData: true,
     })
   }
 
@@ -113,12 +151,13 @@ const Besoins = () => {
     sendFormData()
     event.preventDefault()
 
-    setService(0);
-    setTitre();
-    setVolumeTaches();
-    setTauxJourHomme();
-    setDescription();
-    setDateFin();
+    // Resetting the values
+    setService(0)
+    setTitre()
+    setVolumeTaches()
+    setTauxJourHomme()
+    setDescription()
+    setDateFin()
   }
 
   // Obtenir les besoins
@@ -130,27 +169,46 @@ const Besoins = () => {
       successCallback: (data) => {
         let listeBesoinsRow = []
 
-        data.forEach(besoin => {
+        data.forEach((besoin) => {
           listeBesoinsRow.push({
             titre: besoin.titre,
             dateBesoin: besoin.dateBesoin,
             status: besoin.status == 0 ? 'En cours' : 'Ferme',
-            more: <CNavLink to={`${location.pathname}/${besoin.id}`} component={NavLink}>Plus infos</CNavLink>,
+            more: (
+              <CNavLink to={`${location.pathname}/${besoin.id}`} component={NavLink}>
+                Plus infos
+              </CNavLink>
+            ),
             _cellProps: { id: { scope: 'row' } },
           })
         })
 
         setListeBesoins(listeBesoinsRow)
       },
-      failureCallback: (error) => {
-
-      }
+      failureCallback: (error) => {},
     })
   }
 
   useEffect(() => {
     getListeBesoins()
   }, [ajoutBesoinVisibility])
+
+  useEffect(() => {
+    getPostesServices()
+  }, [service])
+
+  useEffect(() => {
+    let hasId = false
+      listePostesService.forEach((ps) => {
+        // alert(`Poste s: ${ps.service} et service = ${service}`)
+        if (ps.service == service) {
+          setPostShown(true)
+          hasId = true
+        }
+      })
+
+      if (!hasId) setPostShown(false)
+  }, [listePostesService])
 
   return (
     <>
@@ -165,7 +223,7 @@ const Besoins = () => {
               <CCol>
                 <p>Liste des besoins</p>
               </CCol>
-              <CCol>
+              <CCol className='justify-content-end'>
                 <CButton
                   onClick={() => {
                     setAjoutBesoinVisibility(true)
@@ -203,11 +261,34 @@ const Besoins = () => {
                   <CFormLabel htmlFor="depuisService">Depuis</CFormLabel>
                 </CCol>
                 <CCol>
-                  <CFormSelect id="depuisService" options={['Services', ...listeService]} value={service} onChange={(e) => {
-                    setService(e.target.value)
-                  }} />
+                  <CFormSelect
+                    id="depuisService"
+                    options={['Services', ...listeService]}
+                    value={service}
+                    onChange={(e) => {
+                      setService(e.target.value)
+                    }}
+                  />
                 </CCol>
               </CRow>
+
+              {posteShown && (
+                <CRow>
+                  <CCol>
+                    <CFormLabel htmlFor="posteService">Poste</CFormLabel>
+                  </CCol>
+                  <CCol>
+                    <CFormSelect
+                      id="posteService"
+                      options={['Postes', ...listePostesService]}
+                      value={posteService}
+                      onChange={(e) => {
+                        setPosteService(e.target.value)
+                      }}
+                    />
+                  </CCol>
+                </CRow>
+              )}
 
               <CRow>
                 <CFormInput
@@ -278,7 +359,14 @@ const Besoins = () => {
           </CModalBody>
           <CModalFooter>
             <CRow>
-              <CButton type="submit" onClick={() => {setAjoutBesoinVisibility(false)}}>Ajouter</CButton>
+              <CButton
+                type="submit"
+                onClick={() => {
+                  setAjoutBesoinVisibility(false)
+                }}
+              >
+                Ajouter
+              </CButton>
             </CRow>
           </CModalFooter>
         </CForm>

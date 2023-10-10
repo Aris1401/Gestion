@@ -14,6 +14,7 @@ import { NavLink, Outlet, Route, Routes, useLocation, useParams } from 'react-ro
 import React, { useEffect } from 'react'
 import CritereCV from './CriteresCV/CritereCV'
 import ListeCV from './ListeCV/ListeCV'
+import Questionnaire from './Questionnaire/Questionnaire'
 
 const BesoinMore = (props) => {
   return (
@@ -31,7 +32,7 @@ const BesoinMore = (props) => {
             </CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink href="questionaires">Liste Questionnaires</CNavLink>
+            <CNavLink to="questionnaire" component={NavLink}>Liste Questionnaires</CNavLink>
           </CNavItem>
         </CNav>
       </CRow>
@@ -40,6 +41,7 @@ const BesoinMore = (props) => {
         <Routes>
           <Route path="/criteres" element={<CritereCV besoin={props.besoin} />} />
           <Route path="/cv" element={<ListeCV besoin={props.besoin} />} />
+          <Route path="/questionnaire" element={<Questionnaire besoin={props.besoin} />} />
         </Routes>
       </CRow>
     </CContainer>

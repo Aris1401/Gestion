@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.SousCritere;
+import utility.ResponsePrinter;
 
 /**
  *
@@ -39,13 +40,13 @@ public class ListeSousCritereAPI extends HttpServlet {
         
         try {
             ArrayList<SousCritere> sousCriteres = SousCritere.getAllSousCriteresByCritere(critere);
-            
-            Gson gson = new Gson();
-            String json = gson.toJson(sousCriteres);
-            response.setHeader("Access-Control-Allow-Origin", "*"); 
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().println(json);
+            ResponsePrinter.PrintToJSON(response, sousCriteres);
+//            Gson gson = new Gson();
+//            String json = gson.toJson(sousCriteres);
+//            response.setHeader("Access-Control-All
+//            response.setContentType("application/json");
+//            response.setCharacterEncoding("UTF-8");
+//            response.getWriter().println(json);
         } catch (Exception ex) {
             Logger.getLogger(ListeSousCritereAPI.class.getName()).log(Level.SEVERE, null, ex);
         }
