@@ -8,7 +8,7 @@ package model;
  *
  * @author Henintsoa & Hery
  */
-public class AvantageSignature {
+public class AvantageNature {
     private int id;
     private String nom;
 
@@ -28,11 +28,11 @@ public class AvantageSignature {
         this.nom = nom;
     }
 
-    public AvantageSignature() {
+    public AvantageNature() {
         
     }
 
-    public AvantageSignature(int id, String nom) {
+    public AvantageNature(int id, String nom) {
         this.setId(id);
         this.setNom(nom);
     }   
