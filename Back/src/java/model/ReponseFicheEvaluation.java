@@ -66,7 +66,5 @@ public class ReponseFicheEvaluation {
         this.setTexteReponse(texteReponse);
         this.setFicheposte(ficheposte);
         this.setDatereponse(datereponse);
-    }
-    
-    
+    }    
 }

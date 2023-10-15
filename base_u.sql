@@ -66,9 +66,9 @@ CREATE  TABLE congee (
 	id                   integer  NOT NULL  ,
 	datedebut            timestamp    ,
 	datefin              timestamp    ,
-	demade               integer    ,
+	demande               integer    ,
 	CONSTRAINT pk_congee PRIMARY KEY ( id ),
-	CONSTRAINT fk_congee_demandeconge FOREIGN KEY ( demade ) REFERENCES demandeconge( id )   
+	CONSTRAINT fk_congee_demandeconge FOREIGN KEY ( demande ) REFERENCES demandeconge( id )   
  );
 
 CREATE  TABLE personne ( 
@@ -218,7 +218,7 @@ CREATE  TABLE contrat (
 	cv                   integer    ,
 	typecontrat          integer    ,
 	salairebrut          decimal(18,5) DEFAULT 0   ,
-	debutcontrat         date    ,
+	datedebutcontrat         date    ,
 	datefincontrat       date    ,
 	datedebutessai       date    ,
 	datefinessai         date    ,

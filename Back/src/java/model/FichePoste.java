@@ -45,5 +45,5 @@ public class FichePoste {
         this.setId(id);
         this.setCv(cv);
         this.setContrat(contrat);
-    }    
+    }
 }
