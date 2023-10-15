@@ -62,8 +62,11 @@ const Question = (props) => {
                 </CListGroupItem>
             </CListGroup>
             <CCardFooter>
-                <CButton onClick={(e) => props.handleModificationQuestion(questionId)}>
+                <CButton onClick={(e) => props.onModification(questionId)}>
                     Modifier question
+                </CButton>
+                <CButton onClick={(e) => props.onDelete(questionId)}>
+                    Supprimer question
                 </CButton>
             </CCardFooter>
         </CCard>

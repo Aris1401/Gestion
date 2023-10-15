@@ -265,6 +265,17 @@ public class GenericDAO<T> {
 		return databaseResults;
 	}
 	
+        public void deleteFromDatabase(Connection c) throws SQLException, Exception {
+            if (c == null) throw new Exception("Connexion est null");
+            
+            // Creation de statement
+            Statement stat = c.createStatement();
+            
+            // Creation de la requete
+            String requete = "DELETE FROM " + getCurrentClassName() + " WHERE " + getCurrentSelection();
+            stat.executeUpdate(requete);
+        }
+        
 	public int saveInDatabse(Connection c) throws SQLException {
 		if (c == null) return -1;
 		

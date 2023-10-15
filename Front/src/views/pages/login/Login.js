@@ -27,11 +27,14 @@ const Login = () => {
     // User name and password inputs
     const [username, setUsername] = useState()
     const [password, setPassword] = useState()
+    // Navigation
+    const navigation = useNavigate()
 
     // Submitting the login form
     const handleLoginFormSubmit = (e) => {
         // Preventing from the default action
         e.preventDefault()
+
 
         // Sending form data
         let loginDetails = new FormData()
@@ -46,12 +49,15 @@ const Login = () => {
             successCallback: (data) => {
                 let compte = data
                 setError("")
+                
                 if (data != "Connected") setError(data);
+                else navigation("besoin")
             },
             failureCallback: (error) => {
                 alert(error)
             },
         })
+
     }
 
     return (

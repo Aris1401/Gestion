@@ -1,9 +1,11 @@
 import { CButton, CCol, CContainer, CRow, CTable } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { makeRequest } from 'src/components/utility/Api'
 
 const ListeCV = (props) => {
+  const location = useLocation()
+
   const listeCVTableColumns = [
     {
       key: 'nom',
@@ -38,26 +40,28 @@ const ListeCV = (props) => {
       url: `ListeCVController?besoin=${id}`,
       requestType: 'GET',
       successCallback: (data) => {
-        data.forEach((cv) => {
-          let tempCV = {
+        // Create a new array with all the cv objects
+        const newListeCV = data.map((cv) => {
+          return {
             nom: cv.nom,
             prenom: cv.prenom,
             email: cv.email,
             plus: <CButton>Afficher plus information</CButton>
           }
-
-          setListeCV([...listeCV, tempCV])
-        })
+        });
+  
+        // Update the state with the new array
+        setListeCV(newListeCV);
       }, 
       failureCallback: (error) => {
         alert(error)
       }
-    })
+    });
   }
 
   useEffect(() => {
     getAllCVForBesoin()
-  }, [])
+  }, [location])
 
   return (
     <CContainer style={{ marginTop: '1rem' }}>
