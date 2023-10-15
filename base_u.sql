@@ -271,6 +271,7 @@ CREATE  TABLE reponsequestionnaire (
 	CONSTRAINT fk_reponsequestionnaire_cv FOREIGN KEY ( cv ) REFERENCES cv( id )   
  );
 
+
 CREATE  TABLE superieurposte ( 
 	id                   integer  NOT NULL  ,
 	personne             integer    ,
@@ -339,4 +340,5 @@ COMMENT ON TABLE contrat IS 'Contrat: En cours - 0
 En attente - 10
 Terminer - 20
 Refuser - 50';
+
 
