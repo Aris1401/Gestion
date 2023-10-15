@@ -105,8 +105,8 @@ public class BDD {
         this.confirme(requete);
     }
     
-    public void deletePrestation(int idPrestation, String nomTable) {
-    String requete = "DELETE FROM " + nomTable + " WHERE idPrestation = " + idPrestation;
+    public void delete(int id, String nomTable) {
+    String requete = "DELETE FROM " + nomTable + " WHERE idPrestation = " + id;
     this.confirme(requete);
 }
 

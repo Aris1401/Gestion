@@ -3,34 +3,23 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/PosteService.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/InsertBesoinController.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/web/index.html</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/restful/controller/PosteService.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/aris/bdd/generic/GenericDAO.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/NoteCoefficient.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/NoteSousCritereAPI.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/ListeBesoinAPI.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/utility/ResponsePrinter.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/ListeServiceController.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/AjoutCritereBesoinController.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/InsertBesoinAPI.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/Personne.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/nbproject/build-impl.xml</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/web/WEB-INF/web.xml</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/AjoutReponseCV.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/ReponseCV.java</file>
             <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/ListeAnnonceAPI.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/Service.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/Annonce.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/InfosBesoinAPI.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/ListeCritereAPI.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/web/META-INF/context.xml</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/Critere.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/ListeSousCritereAPI.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/NoteSousCritere.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/Besoin.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/dbAccess/ConnectTo.java</file>
-            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/CoefficientCritereAPI.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/CV.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/aris/bdd/generic/GenericDAO.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/TestQuestionnaire.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/restful/controller/Questionnaire.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/generalisationIante/BDD.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/DejaPostuler.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/utility/Utils.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/NotesTest.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/ListeMeilleursCandidatures.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/NotesCV.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/AjoutReponseQuestionnaireController.java</file>
             <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/model/SousCritere.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/controller/InsertCVController.java</file>
+            <file>file:/E:/S5-ITU/Gestion%20Entreprise/Projets/Gestion/Back/src/java/restful/controller/SousCritere.java</file>
         </group>
     </open-files>
 </project-private>

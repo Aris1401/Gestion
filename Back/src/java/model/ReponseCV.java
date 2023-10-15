@@ -4,11 +4,16 @@
  */
 package model;
 
+import aris.bdd.generic.GenericDAO;
+import dbAccess.ConnectTo;
+import generalisationIante.BDD;
+import java.sql.Connection;
+
 /**
  *
  * @author Henintsoa & Hery
  */
-public class ReponseCV {
+public class ReponseCV extends BDD{
     private int id;
     private int cv;
     private int critere;
@@ -56,5 +61,12 @@ public class ReponseCV {
         this.setSouscritere(souscritere);
     }
     
-    
+    public static void insertReponseCV(int critere, int sousCritere, int cv) {
+        ReponseCV reponse = new ReponseCV();
+        reponse.setCritere(critere);
+        reponse.setSouscritere(sousCritere);
+        reponse.setCv(cv);
+        reponse.dontSave("id");
+        reponse.save();
+    }
 }

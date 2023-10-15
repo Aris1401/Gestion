@@ -40,9 +40,7 @@ public class NotesTest extends BDD
      double noteChoisReponse;
     
     
-//=>Fonction calcul note de test -> Liaison de la table reponseauestionnaire a choix reponse    
-//select* from reponseQuestionnaire join cv on reponseQuestionnaire,cv=cv.id join testQuestionnaire on cv.besoin =testQuestionnaire.besoin join choixReponse on 
-//    choixReponse.questionnaire=choixReponse.reponse 
+//=>Fonction calcul note de test -> Liaison de la table reponseauestionnaire a choix reponse     
 
     public int getId() {
         return id;

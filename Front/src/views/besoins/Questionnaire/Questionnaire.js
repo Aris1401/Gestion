@@ -20,6 +20,21 @@ import { useLocation, useParams } from 'react-router-dom'
 import Question from 'src/components/questionnaire/Question'
 import { makeRequest } from 'src/components/utility/Api'
 
+export const getListeQuestions = (besoin) => {
+    return new Promise((resolve, reject) => {
+        makeRequest({
+            url: `ListeQuestions?besoin=${besoin}`,
+            requestType: 'GET',
+            successCallback: (data) => {
+                resolve(data)
+            },
+            failureCallback: (error) => {
+                alert(error)
+            },
+        })
+    })
+}
+
 const Questionnaire = ({ props }) => {
     // Getting the current besoin
     const { id } = useParams()
@@ -88,7 +103,7 @@ const Questionnaire = ({ props }) => {
             url: `AjoutChoixReponseController?questionnaire=${questionSelected}&note=${noteReponse}&reponse=${reponse}`,
             requestType: 'GET',
             successCallback: (data) => {
-
+                getListeQuestions()
             },
             failureCallback: (error) => {
                 alert(error)
@@ -97,10 +112,22 @@ const Questionnaire = ({ props }) => {
 
         setModifQuestionVisibility(false)
 
-        getListeQuestions()
-
         setReponse("")
         setNoteReponse(0)
+    } 
+
+    // Handle question delete
+    const handleQuestionDelete = (question) => {
+        makeRequest({
+            url: `Questionnaire?questionnaire=${question}`,
+            requestType: 'DELETE',
+            successCallback: (data) => {
+                getListeQuestions()
+            },
+            failureCallback: (error) => {
+
+            }
+        })        
     }
 
     return (
@@ -119,7 +146,8 @@ const Questionnaire = ({ props }) => {
                                 key={listeQuestion.id}
                                 qid={listeQuestion.id}
                                 question={listeQuestion.question}
-                                handleModificationQuestion={handleModificationQuestion}
+                                onModification={handleModificationQuestion}
+                                onDelete={handleQuestionDelete}
                                 modalVisibility={modifQuestionVisibility}
                             />
                         )

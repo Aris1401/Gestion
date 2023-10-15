@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -178,11 +179,25 @@ public class CV extends BDD
         return cvs.getFromDatabase(c);
     }
  
+    public static CV dejaPostulter(int personne, int besoin) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO cvDAO = new GenericDAO();
+        cvDAO.setCurrentClass(CV.class);
+        cvDAO.addToSelection("personne", personne, "and");
+        cvDAO.addToSelection("besoin", besoin,"");
+        
+        ArrayList<CV> postulation = cvDAO.getFromDatabase(c);
+        if (!postulation.isEmpty()) return postulation.get(0);
+        
+        return null;
+    }
+    
 //////////////////////////////////////////////////////////////////////////////////
-    public void InsertCV(String nom,String prenom,String adresse,String email,String contact,String description,Date dateNaissance,String preuvediplome,String preuvetravail,int besoin,int personne,int status,Date dateecriture)
+    public void InsertCV(String nom,String prenom,String adresse,String email,String contact,String description,Date dateNaissance,String preuvediplome,String preuvetravail,int besoin,int personne)
     {
         CV cv = new CV();
-        cv.setId(id);
+        
         cv.setNom(nom);
         cv.setPrenom(prenom);
         cv.setAdresse(adresse);
@@ -194,12 +209,33 @@ public class CV extends BDD
         cv.setPreuvetravail(preuvetravail);
         cv.setBesoin(besoin);
         cv.setPersonne(personne);
-        cv.setStatus(status);
-        cv.setDateecriture(dateecriture);
+        cv.setStatus(1);
+        cv.setDateecriture(new Date(System.currentTimeMillis()));
         cv.dontSave("id");
         cv.save();
     }       
 ////////////////////////////////////////////////////////////////////////////////
 
-        
+    @Override
+    public String toString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        return "YourClassName{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", adresse='" + adresse + '\'' +
+                ", email='" + email + '\'' +
+                ", contact='" + contact + '\'' +
+                ", description='" + description + '\'' +
+                ", dateNaissance=" + (dateNaissance != null ? dateFormat.format(dateNaissance) : null) +
+                ", preuvediplome='" + preuvediplome + '\'' +
+                ", preuvetravail='" + preuvetravail + '\'' +
+                ", besoin=" + besoin +
+                ", personne=" + personne +
+                ", status=" + status +
+                ", dateecriture=" + (dateecriture != null ? dateFormat.format(dateecriture) : null) +
+                '}';
+    }
+
 }
