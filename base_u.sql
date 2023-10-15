@@ -253,3 +253,31 @@ CREATE TABLE gestion.reponseficheevaluation(
 	CONSTRAINT fk_reponseficheevaluation_ficheposte FOREIGN KEY ( ficheposte ) REFERENCES gestion.ficheposte ( id ),
 	CONSTRAINT fk_reponseficheevaluation_reponse FOREIGN KEY ( reponse ) REFERENCES gestion.choixreponseficheevaluation ( id )
 );
+
+/*------------------------------------------------------------------------------------------------*/
+
+CREATE TABLE gestion.configconge(
+	id                   integer  NOT NULL  ,
+	nomconfig			 varchar(255),
+	configvalue			 varchar(255),
+	CONSTRAINT pk_configconge PRIMARY KEY ( id )
+);
+
+CREATE TABLE demandeconge(
+	id                   integer  NOT NULL  ,
+	motif				 integer	,
+	datedebut			 timestamp	,
+	datefin				 timestamp	,
+	description			 text		,
+	status				 integer 	,
+	CONSTRAINT pk_demandeconge PRIMARY KEY ( id )
+);
+
+CREATE TABLE gestion.conge(
+	id                   integer  NOT NULL  ,
+	datedebut			 timestamp	,
+	datefin				 timestamp	,
+	demande				 integer,
+	CONSTRAINT pk_conge PRIMARY KEY ( id ),
+	CONSTRAINT fk_conge_demande FOREIGN KEY ( demande ) REFERENCES gestion.demandeconge(id)
+;)
