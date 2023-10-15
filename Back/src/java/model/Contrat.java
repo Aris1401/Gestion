@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import utility.Utils;
 
 /**
  *
@@ -261,5 +262,109 @@ public class Contrat {
                 }
             }
         }
+    }
+    
+    public static void acceptContratEssaieToIndetermine(int id,int typecontrat,double salairebrut)throws Exception{
+        Contrat.acceptContratEssaieToIndetermine(id, typecontrat, salairebrut);
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String query = "update contrat set matricule=? where id = ?";
+        try {
+            connection = ConnectTo.postgreS();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, Utils.getMatricule());
+            preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    public static void acceptContratEssaieToDetermine(int id,int typecontrat,double salairebrut,Date datedebutcontrat,Date datefincontrat)throws Exception{
+        Contrat.acceptContratEssaieToDetermine(id, typecontrat, salairebrut, datedebutcontrat, datefincontrat);
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String query = "update contrat set matricule=? where id = ?";
+        try {
+            connection = ConnectTo.postgreS();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, Utils.getMatricule());
+            preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    public static int getStatusContrat(int cv)throws Exception{
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try{
+            connection = dbAccess.ConnectTo.postgreS();
+            String sql = "SELECT status from contrat where cv = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, cv);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return 9999;
     }
 }

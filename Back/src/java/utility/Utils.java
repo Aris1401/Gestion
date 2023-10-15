@@ -68,10 +68,9 @@ public class Utils{
             connection = dbAccess.ConnectTo.postgreS();
             String sql = "SELECT getMatricule()";
             statement = connection.prepareStatement(sql);
-            resultSet = statement.executeQuery();{
+            resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt(1);
-            }
             }
         } catch (SQLException e) {
             e.printStackTrace();
