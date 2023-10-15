@@ -132,7 +132,7 @@ CREATE  TABLE gestion.choixreponse (
 	note                 numeric(18,5) DEFAULT 0   ,
 	CONSTRAINT pk_choixreponse PRIMARY KEY ( id ),
 	CONSTRAINT fk_choixreponse FOREIGN KEY ( questionnaire ) REFERENCES gestion.testquestionnaire( id )   
- );
+);
 
 CREATE  TABLE gestion.reponsequestionnaire ( 
 	id                   integer  NOT NULL  ,
@@ -145,3 +145,111 @@ CREATE  TABLE gestion.reponsequestionnaire (
 	CONSTRAINT fk_reponsequestionnaire_cv FOREIGN KEY ( cv ) REFERENCES gestion.cv( id )   
  );
 
+ /*-------------------------------------------------------------------------------------------------------------*/
+
+CREATE  TABLE gestion.embauche (
+	id                   integer  NOT NULL  ,
+	dateEmbauche		 timestamp	,
+	cv			 		 integer	,
+	CONSTRAINT pk_embauche PRIMARY KEY ( id ),
+	CONSTRAINT fk_embauche_cv FOREIGN KEY ( cv ) REFERENCES gestion.cv( id )
+);
+
+CREATE TABLE gestion.typecontrat(
+	id                   integer  NOT NULL  ,
+	nom					 varchar(255),
+	CONSTRAINT pk_typecontrat PRIMARY KEY ( id )
+);
+
+CREATE	TABLE gestion.contrat(
+	id                   integer  NOT NULL  ,
+	typecontrat			 integer	,
+	salairebrut			 decimal(18,5),
+	debutcontrat		 date		,
+	datefincontrat		 date		,
+	datedebutessai		 date	 	,
+	datefinessai		 date		,
+	embauche			 integer	,
+	status		 		 integer	,
+	matricule			 varchar(255),
+	CONSTRAINT pk_contrat PRIMARY KEY ( id ),
+	CONSTRAINT fk_contrat_typecontrat FOREIGN KEY ( typecontrat ) REFERENCES gestion.typecontrat( id ),
+	CONSTRAINT fk_contrat_embauche FOREIGN KEY ( embauche ) REFERENCES gestion.cv( embauche )
+);
+
+CREATE TABLE gestion.avantagenature(
+	id                   integer  NOT NULL  ,
+	nom					 varchar(255),
+	CONSTRAINT pk_avantagenature PRIMARY KEY ( id )
+);
+
+CREATE TABLE gestion.avantagenaturecontrat(
+	id                   integer  NOT NULL  ,
+	contrat				 integer	,
+	avantagenature		 integer	,
+	CONSTRAINT pk_avantagenaturecontrat PRIMARY KEY ( id ),
+	CONSTRAINT fk_avantagenaturecontrat_contrat FOREIGN KEY ( contrat ) REFERENCES gestion.contrat( id ),
+	CONSTRAINT fk_avantagenaturecontrat_avantagenature FOREIGN KEY ( avantagenature ) REFERENCES gestion.avantagenature( id )
+);
+
+CREATE TABLE gestion.ficheposte(
+	id                   integer  NOT NULL  ,
+	cv		 			 integer	,
+	contrat				 integer	,
+	CONSTRAINT pk_ficheposte PRIMARY KEY ( id ),
+	CONSTRAINT fk_ficheposte_contrat FOREIGN KEY ( contrat ) REFERENCES gestion.contrat( id ),
+	CONSTRAINT fk_avantagenaturecontrat_cv FOREIGN KEY ( cv ) REFERENCES gestion.cv( id )
+);
+
+CREATE TABLE gestion.superieurposte(
+	id                   integer  NOT NULL  ,
+	personne 			 integer	,
+	ficheposte			 integer	,
+	CONSTRAINT pk_superieurposte PRIMARY KEY ( id ),
+	CONSTRAINT fk_superieurposte_personne FOREIGN KEY ( personne ) REFERENCES gestion.personne( id ),
+	CONSTRAINT fk_superieurposte_ficheposte FOREIGN KEY ( ficheposte ) REFERENCES gestion.ficheposte( id )
+);
+
+CREATE TABLE gestion.responsabiliteposte(
+	id                   integer  NOT NULL  ,
+	personne 			 integer	,
+	ficheposte			 integer	,
+	CONSTRAINT pk_responsabiliteposte PRIMARY KEY ( id ),
+	CONSTRAINT fk_responsabiliteposte_personne FOREIGN KEY ( personne ) REFERENCES gestion.personne( id ),
+	CONSTRAINT fk_responsabiliteposte_ficheposte FOREIGN KEY ( ficheposte ) REFERENCES gestion.ficheposte( id )
+);
+
+CREATE TABLE gestion.ficheevaluation(
+	id                   integer  NOT NULL  ,
+	status				 integer 	,
+	CONSTRAINT pk_ficheevaluation PRIMARY KEY ( id )
+);
+
+CREATE TABLE gestion.questionficheevaluation(
+	id                   integer  NOT NULL  ,
+	question 			 text		,
+	ficheevaluation		 integer	,
+	service				 integer	,
+	CONSTRAINT pk_questionficheevaluation PRIMARY KEY ( id ),
+	CONSTRAINT fk_questionficheevaluation_ficheevaluation FOREIGN KEY ( ficheevaluation ) REFERENCES gestion.ficheevaluation( id ),
+	CONSTRAINT fk_questionficheevaluation_service FOREIGN KEY ( service ) REFERENCES gestion.service ( id )
+);
+
+CREATE TABLE gestion.choixreponseficheevaluation(
+	id                   integer  NOT NULL  ,
+	reponse				 integer	,
+	question 			 integer	,
+	CONSTRAINT pk_choixreponseficheevaluation PRIMARY KEY ( id ),
+	CONSTRAINT fk_choixreponseficheevaluation_question FOREIGN KEY ( question ) REFERENCES gestion.questionficheevaluation( id )
+);
+
+CREATE TABLE gestion.reponseficheevaluation(
+	id                   integer  NOT NULL  ,
+	reponse				 integer	,
+	textereponse		 varchar(255),
+	ficheposte			 integer	,
+	datereponse			 timestamp	,
+	CONSTRAINT pk_reponseficheevaluation PRIMARY KEY ( id ),
+	CONSTRAINT fk_reponseficheevaluation_ficheposte FOREIGN KEY ( ficheposte ) REFERENCES gestion.ficheposte ( id ),
+	CONSTRAINT fk_reponseficheevaluation_reponse FOREIGN KEY ( reponse ) REFERENCES gestion.choixreponseficheevaluation ( id )
+);
