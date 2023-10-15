@@ -263,7 +263,7 @@ CREATE TABLE gestion.configconge(
 	CONSTRAINT pk_configconge PRIMARY KEY ( id )
 );
 
-CREATE TABLE demandeconge(
+CREATE TABLE gestion.demandeconge(
 	id                   integer  NOT NULL  ,
 	motif				 integer	,
 	datedebut			 timestamp	,
