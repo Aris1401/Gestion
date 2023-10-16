@@ -61,7 +61,7 @@ public class ReponseQuestionnaire {
         this.setCv(cv);
     }
     
-    public static void ajoutReponseQuestionnaire(int questionnaire, String reponse, int cv)throws Exception{
+    public static void ajoutReponseQuestionnaire(int questionnaire, int reponse, int cv)throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         String query = "insert into reponsequestionnaire(questionnaire,reponse,cv)values(?,?,?)";
@@ -69,8 +69,8 @@ public class ReponseQuestionnaire {
             connection = ConnectTo.postgreS();
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1,questionnaire);
-            preparedStatement.setString(2,reponse);
-            preparedStatement.setInt(4,cv);
+            preparedStatement.setInt(2,reponse);
+            preparedStatement.setInt(3,cv);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

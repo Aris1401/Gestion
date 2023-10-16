@@ -5,6 +5,7 @@ import HomeNavBar from 'src/components/clientSide/HomeNavBar'
 import Annonces from 'src/views/clientSide/Annonces'
 import Index from 'src/views/clientSide/Index'
 import Postuler from 'src/views/clientSide/Postuler'
+import Test from 'src/views/clientSide/Test'
 
 // Home routes 
 const homeRoutes = [
@@ -30,6 +31,7 @@ const HomeLayout = () => {
                     return <Route key={index} path={ route.path } name={route.name} element={route.element} />
                 })}
                 <Route path="postuler/:besoin/*" name="Postuler" element={<Postuler />} />
+                <Route path="test/:besoin/*" name="CV" element={<Test />} />
                 <Route path="/" element={<Navigate to="acceuil" replace />} />
             </Routes>
         </CContainer>

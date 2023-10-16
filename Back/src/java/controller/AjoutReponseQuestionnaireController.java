@@ -13,7 +13,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.CV;
 import model.ChoixReponse;
+import model.Compte;
+import model.ReponseQuestionnaire;
+import utility.ResponsePrinter;
 
 /**
  *
@@ -23,13 +27,17 @@ import model.ChoixReponse;
 public class AjoutReponseQuestionnaireController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
-        response.setContentType("text/html;charset=UTF-8");
+        ResponsePrinter.setCORS(response);
         try (PrintWriter out = response.getWriter()) {
-            if(request.getParameter("questionnaire")!=null&&request.getParameter("reponse")!=null&&request.getParameter("cv")!=null){
+            if(request.getParameter("questionnaire")!=null&&request.getParameter("reponse")!=null){
                 int questionnaire = Integer.parseInt(request.getParameter("questionnaire"));
-                String reponse = request.getParameter("reponse");
-                int cv = Integer.parseInt(request.getParameter("cv"));
-                ChoixReponse.ajoutChoixReponse(questionnaire, reponse, cv);
+                int reponse = Integer.parseInt(request.getParameter("reponse"));
+                int besoin = Integer.parseInt(request.getParameter("besoin"));
+                if (request.getSession().getAttribute("user") != null) {
+                    Compte user = (Compte) request.getSession().getAttribute("user");
+                    CV cv = CV.dejaPostulter(user.getPersonneInformation().getId(), besoin);
+                    ReponseQuestionnaire.ajoutReponseQuestionnaire(questionnaire, reponse, cv.getId());
+                }
             }else{
                 throw new Exception("Something is null");
             }

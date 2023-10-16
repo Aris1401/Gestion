@@ -13,6 +13,35 @@ import React, { useEffect, useState } from 'react'
 import { json, useLocation, useParams } from 'react-router-dom'
 import { makeRequest } from 'src/components/utility/Api'
 
+export const getCriteresForCV = () => {
+    return new Promise((resolve, reject) => {
+        makeRequest({
+            url: 'ListeCritereAPI',
+            successCallback: (data) => {
+                resolve(data)
+            },
+            failureCallback: (error) => {
+                alert(error)
+            },
+        })
+    })
+}
+
+export const getSousCriteres = (critere) => {
+    return new Promise((resolve, reject) => {
+        makeRequest({
+            url: `ListeSousCritereAPI?critere=${critere.id}`,
+            requestType: 'GET',
+            successCallback: (data) => {
+                resolve(data)
+            },
+            errorCallback: (error) => {
+                reject(error)
+            },
+        })
+    })
+}
+
 const CritereCV = (props) => {
     // Besoin alternative
     const { id } = useParams()
@@ -111,10 +140,10 @@ const CritereCV = (props) => {
 
     // Initiliwing the sous critere note
     const initializeSousCritereNote = () => {
-        let tempInputs = { ...sousCritereInputs }; // create a shallow copy of sousCritereInputs
-    
-        let promises = []; // array to hold all the promises
-    
+        let tempInputs = { ...sousCritereInputs } // create a shallow copy of sousCritereInputs
+
+        let promises = [] // array to hold all the promises
+
         criteres.forEach((critere) => {
             sousCriteres[critere.id].forEach((sousCritere) => {
                 // create a new promise for each request
@@ -125,31 +154,31 @@ const CritereCV = (props) => {
                         }&sousCritere=${sousCritere.id}`,
                         requestType: 'GET',
                         successCallback: (data) => {
-                            tempInputs[sousCritere.id] = data.note;
-                            resolve(); // resolve the promise when the request is successful
+                            tempInputs[sousCritere.id] = data.note
+                            resolve() // resolve the promise when the request is successful
                         },
-                    });
-                });
-    
+                    })
+                })
+
                 // add the promise to the array
-                promises.push(promise);
-            });
-        });
-    
+                promises.push(promise)
+            })
+        })
+
         // use Promise.all() to wait for all the promises to resolve
         Promise.all(promises)
             .then(() => {
-                setSousCritereInputs(tempInputs);
+                setSousCritereInputs(tempInputs)
             })
             .catch((error) => {
-                console.error("An error occurred: ", error);
+                console.error('An error occurred: ', error)
                 // handle the error
-            });
+            })
     }
 
     useEffect(() => {
         initializeSousCritereNote()
-        console.log("TEST: " + JSON.stringify(sousCritereInputs))
+        console.log('TEST: ' + JSON.stringify(sousCritereInputs))
     }, [sousCriteres])
 
     // Submitting the form
@@ -184,6 +213,30 @@ const CritereCV = (props) => {
                 },
             })
         }
+    }
+
+    // Ajout de nouveau sous critere
+    const [newSousCritere, setNewSousCritere] = useState()
+    const handleNewSousCritereForm = (e, critere) => {
+        // Preventimg default action
+        e.preventDefault()
+
+        // Preparing the data
+        let add = new FormData()
+        add.set("critere", critere)
+        add.set("nom", newSousCritere)
+
+        // Sending the new sous critere
+        makeRequest({
+            url: `SousCritere`,
+            requestType: 'POST',
+            values: add,
+            successCallback: (data) => {
+                getCriteres()
+            }, failureCallback: (error) => {
+                alert(error)
+            }
+        })
     }
 
     return (
@@ -238,6 +291,12 @@ const CritereCV = (props) => {
                                                             }
                                                         />
                                                     </CInputGroup>
+
+                                                    {/* Ajouter nouveau sous critere */}
+                                                    <CForm onSubmit={(e) => handleNewSousCritereForm(e, critere.id)}>
+                                                        <CFormInput name='new-souscritere' id="new-souscritere" value={newSousCritere} onChange={(e) => {setNewSousCritere(e.target.value)}} />
+                                                        <CButton type='submit'>Ajouter</CButton>
+                                                    </CForm>
                                                 </CRow>
                                             )
                                         })}
