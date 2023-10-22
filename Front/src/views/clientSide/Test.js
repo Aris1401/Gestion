@@ -2,15 +2,17 @@ import {
     CButton,
     CCard,
     CCardBody,
+    CCardFooter,
     CCardHeader,
     CCol,
     CContainer,
     CForm,
     CFormCheck,
+    CNavLink,
     CRow,
 } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { getListeQuestions } from '../besoins/Questionnaire/Questionnaire'
 import { getReponsesQuestion } from 'src/components/questionnaire/Question'
 import { makeRequest } from 'src/components/utility/Api'
@@ -18,6 +20,8 @@ import { makeRequest } from 'src/components/utility/Api'
 const Test = () => {
     // Obtenir tout les questionnaire
     const { besoin } = useParams()
+
+    const navigate = useNavigate()
 
     const [listeQuestion, setListeQuestion] = useState([])
     useEffect(() => {
@@ -57,25 +61,37 @@ const Test = () => {
         }))
     }
 
-    const handleQuestionnaireFormSumbit = (e) => {
-        e.preventDefault()
-
+    const questionnaireRequests = async () => {
+        let promises = []
         listeQuestion.forEach((question) => {
             reponseQuestion[question.id].forEach((item) => {
                 if (reponsesCheckbox[item.id] == true) {
-                    makeRequest(({
-                        url: `AjoutReponseQuestionnaireController?questionnaire=${question.id}&reponse=${item.id}&besoin=${besoin}`,
-                        requestType: 'GET',
-                        successCallback: (data) => {
-
-                        },
-                        failureCallback: (error) => {
-                            alert(error)
-                        }
-                    }))
+                    promises.push(
+                        new Promise((resolve, reject) => {
+                            makeRequest(({
+                                url: `AjoutReponseQuestionnaireController?questionnaire=${question.id}&reponse=${item.id}&besoin=${besoin}`,
+                                requestType: 'GET',
+                                successCallback: (data) => {
+                                    resolve()     
+                                },
+                                failureCallback: (error) => {
+                                    alert(error)
+                                }
+                            }))
+                        })
+                    )
                 }
             })
         })
+
+        await Promise.all(promises)
+        return navigate("/acceuil/annonces")
+    }
+
+    const handleQuestionnaireFormSumbit = (e) => {
+        e.preventDefault()
+
+        questionnaireRequests()
     }
 
     return (
@@ -87,7 +103,7 @@ const Test = () => {
                     </CCardHeader>
 
                     <CCardBody>
-                        {listeQuestion.map((question, index) => {
+                        {listeQuestion.length > 0 ? listeQuestion.map((question, index) => {
                             return (
                                 <CRow key={question.id}>
                                     <CCol>
@@ -120,13 +136,23 @@ const Test = () => {
                                     </CCol>
                                 </CRow>
                             )
-                        })}
-                        <CRow>
-                            <CCol>
-                                <CButton type="submit">Valider questionnaire</CButton>
-                            </CCol>
-                        </CRow>
+                        }) : <h6>Aucune question disponible revenez plus tard...</h6>}
+
                     </CCardBody>
+                    <CCardFooter className='d-flex gap-2'>
+                        {listeQuestion.length > 0 && 
+                            <CRow>
+                                <CCol>
+                                    <CButton type="submit">Valider questionnaire</CButton>
+                                </CCol>
+                            </CRow>
+                        }
+                            <CNavLink to='/acceuil/annonces' component={NavLink}>
+                        <CButton>
+                                Retour aux annonces
+                        </CButton>
+                            </CNavLink>
+                    </CCardFooter>
                 </CForm>
             </CCard>
         </CContainer>

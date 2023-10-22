@@ -98,7 +98,7 @@ public class BDD {
         
         requete += string +" values "+ string1;
         this.confirme(requete );
-//          System.out.println(requete +"ppppppppppppppp");
+          System.out.println(requete +"ppppppppppppppp");
     }
     public void delete(){
         String requete = "delete from "+this.getClass().getSimpleName()+" ";

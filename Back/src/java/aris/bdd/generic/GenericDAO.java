@@ -265,6 +265,17 @@ public class GenericDAO<T> {
 		return databaseResults;
 	}
 	
+        public void updateInDatabase(Connection c) throws Exception {
+            if (c == null) throw  new Exception("Connection null");
+            
+            // Creation de statement
+            Statement stat = c.createStatement();
+            
+            // Requete
+            String requete = "UPDATE " + getCurrentClassName() + " SET " + getSetUpdate() + " WHERE " + getCurrentSelection();
+            stat.executeUpdate(requete);
+        }
+        
         public void deleteFromDatabase(Connection c) throws SQLException, Exception {
             if (c == null) throw new Exception("Connexion est null");
             

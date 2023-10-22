@@ -16,6 +16,8 @@ public class ResponsePrinter {
     public static void setCORS(HttpServletResponse res) {
         res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
         res.setHeader("Access-Control-Allow-Credentials", "true");
+        res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS, PUT");
+        
     }
     
     public static void PrintToJSON(HttpServletResponse res, Object obj) throws IOException {

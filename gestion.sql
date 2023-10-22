@@ -301,21 +301,35 @@ FROM ficheposte as fp
 join cv on fp.cv = cv.id
 join contrat as ct on ct.cv = cv.id;
 
-CREATE OR REPLACE VIEW notescv AS (select 
-cv.id, criterebesoin.coefficient, noteSOUsCRITERE.note 
+CREATE OR REPLACE VIEW notescv AS SELECT 
+    rc.cv AS cv_id,
+    SUM(nb.note * cb.coefficient) AS note_totale,
+    SUM(cb.coefficient) AS coefficient_total
+FROM reponsecv rc
+JOIN criterebesoin cb ON rc.critere = cb.critere
+JOIN notesouscritere nb ON rc.souscritere = nb.souscritere
+JOIN cv ON cv.id = rc.cv
+where cv.besoin = cb.besoin
+GROUP BY rc.cv;
+
+
+CREATE OR REPLACE VIEW notescv AS (select
+cv.id, sum(noteSOUsCRITERE.note * criterebesoin.coefficient) as total
 from reponseCV 
 JOIN cv ON cv.id= reponseCV.cv 
 LEFT JOIN noteSOUsCRITERE ON NoteSouscritere.besoin=cv.besoin 
-    and NoteSousCritere.sousCritere=reponseCV.SousCritere 
 LEFT JOIN critereBesoin ON CritereBesoin.besoin =NoteSousCritere.besoin 
-    AND critereBesoin.Critere=ReponseCV.Critere);
+group by cv.id
+);
 
-CREATE OR REPLACE VIEW notetest AS (select 
-cv.id as idCV, choixreponse.note 
-from reponseQuestionnaire 
-join cv on reponseQuestionnaire.cv=cv.id 
-join testQuestionnaire on cv.besoin =testQuestionnaire.besoin 
-join choixReponse on reponseQuestionnaire.questionnaire=choixReponse.questionnaire);
+
+CREATE OR REPLACE VIEW notetest AS
+SELECT cv.id as idCV, sum(choixreponse.note) as note
+FROM reponseQuestionnaire
+JOIN cv ON reponseQuestionnaire.cv=cv.id
+JOIN testQuestionnaire ON cv.besoin =testQuestionnaire.besoin
+JOIN choixReponse ON reponseQuestionnaire.questionnaire=choixReponse.questionnaire
+GROUP BY cv.id;
 
 COMMENT ON TABLE configconge IS 'Exemple:
 Nom: "Duree maximum congee"
