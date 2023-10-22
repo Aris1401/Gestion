@@ -19,13 +19,11 @@ import java.util.ArrayList;
  */
 public class CritereBesoin extends BDD
 {
-    	int id;
-	int besoin;
-	int critere;
-	int coefficient;
-//        int sousCritere;
-//        double note;
-
+    int id;
+    int besoin;
+    int critere;
+    int coefficient;
+        
     public int getId() {
         return id;
     }
@@ -57,22 +55,6 @@ public class CritereBesoin extends BDD
     public void setCoefficient(int coefficient) {
         this.coefficient = coefficient;
     }
-
-//    public int getSousCritere() {
-//        return sousCritere;
-//    }
-//
-//    public void setSousCritere(int sousCritere) {
-//        this.sousCritere = sousCritere;
-//    }
-//
-//    public double getNote() {
-//        return note;
-//    }
-//
-//    public void setNote(double note) {
-//        this.note = note;
-//    }
 
     public CritereBesoin() {
     }

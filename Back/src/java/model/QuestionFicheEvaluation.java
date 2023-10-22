@@ -12,6 +12,7 @@ public class QuestionFicheEvaluation {
     private int id;
     private String question;
     private int ficheEvaluation;
+    private int service;
 
     public int getId() {
         return id;
@@ -37,13 +38,22 @@ public class QuestionFicheEvaluation {
         this.ficheEvaluation = ficheEvaluation;
     }
 
+    public int getService() {
+        return service;
+    }
+
+    public void setService(int service) {
+        this.service = service;
+    }
+    
     public QuestionFicheEvaluation() {
         
     }
 
-    public QuestionFicheEvaluation(int id, String question, int ficheEvaluation) {
+    public QuestionFicheEvaluation(int id, String question, int ficheEvaluation, int service) {
         this.setId(id);
         this.setQuestion(question);
         this.setFicheEvaluation(ficheEvaluation);
+        this.setService(service);
     }
 }

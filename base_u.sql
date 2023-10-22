@@ -66,9 +66,9 @@ CREATE  TABLE congee (
 	id                   integer  NOT NULL  ,
 	datedebut            timestamp    ,
 	datefin              timestamp    ,
-	demade               integer    ,
+	demande               integer    ,
 	CONSTRAINT pk_congee PRIMARY KEY ( id ),
-	CONSTRAINT fk_congee_demandeconge FOREIGN KEY ( demade ) REFERENCES demandeconge( id )   
+	CONSTRAINT fk_congee_demandeconge FOREIGN KEY ( demande ) REFERENCES demandeconge( id )   
  );
 
 CREATE  TABLE personne ( 
@@ -218,7 +218,7 @@ CREATE  TABLE contrat (
 	cv                   integer    ,
 	typecontrat          integer    ,
 	salairebrut          decimal(18,5) DEFAULT 0   ,
-	debutcontrat         date    ,
+	datedebutcontrat         date    ,
 	datefincontrat       date    ,
 	datedebutessai       date    ,
 	datefinessai         date    ,
@@ -319,6 +319,47 @@ from gestion.reponseQuestionnaire
 join gestion.cv on reponseQuestionnaire.cv=cv.id 
 join gestion.testQuestionnaire on cv.besoin =testQuestionnaire.besoin 
 join gestion.choixReponse on reponseQuestionnaire.questionnaire=choixReponse.questionnaire);
+
+CREATE OR REPLACE VIEW vue_ficheposte AS
+SELECT
+    fp.id AS ficheposte_id,
+    fp.cv AS cv_id,
+    c.id AS contrat_id,
+    c.typecontrat AS typecontrat_id,
+    c.salairebrut,
+    c.datedebutcontrat,
+    c.datefincontrat,
+    rc.id AS reponsecv_id,
+    rc.critere AS critere_id,
+    cr.nom AS critere_nom,
+    rc.souscritere AS souscritere_id,
+    sc.nom AS souscritere_nom,
+    a.description AS annonce_description
+FROM
+    ficheposte AS fp
+    INNER JOIN contrat AS c ON fp.contrat = c.id
+    LEFT JOIN reponsecv AS rc ON fp.cv = rc.cv
+    LEFT JOIN critere AS cr ON rc.critere = cr.id
+    LEFT JOIN souscritere AS sc ON rc.souscritere = sc.id
+    LEFT JOIN annonce AS a ON fp.cv = a.cv;
+
+CREATE SEQUENCE matricule
+    START 1
+    INCREMENT 1
+    MAXVALUE 999999999
+    CYCLE;
+
+CREATE OR REPLACE FUNCTION getMatricule()
+RETURNS integer AS $$
+DECLARE
+    prochaine_valeur integer;
+BEGIN
+    SELECT nextval('matricule') INTO prochaine_valeur;
+    RETURN prochaine_valeur;
+END;
+$$ LANGUAGE plpgsql;
+
+
 
 COMMENT ON TABLE configconge IS 'Exemple:
 Nom: "Duree maximum congee"
