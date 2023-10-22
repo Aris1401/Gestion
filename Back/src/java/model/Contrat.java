@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import utility.Utils;
 
 /**
  *
@@ -17,10 +18,11 @@ import java.sql.SQLException;
  */
 public class Contrat {
     private int id;
+    private int cv;
     private int typecontrat;
     private double salairebrut;
-    private Date debutcontrat;
-    private Date datefincontrait;
+    private Date datedebutcontrat;
+    private Date datefincontrat;
     private Date datedebutessai;
     private Date datefinessai;
     private int embauche;
@@ -33,6 +35,14 @@ public class Contrat {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getCv() {
+        return cv;
+    }
+
+    public void setCv(int cv) {
+        this.cv = cv;
     }
 
     public int getTypecontrat() {
@@ -51,20 +61,20 @@ public class Contrat {
         this.salairebrut = salairebrut;
     }
 
-    public Date getDebutcontrat() {
-        return debutcontrat;
+    public Date getDatedebutcontrat() {
+        return datedebutcontrat;
     }
 
-    public void setDebutcontrat(Date debutcontrat) {
-        this.debutcontrat = debutcontrat;
+    public void setDatedebutcontrat(Date datedebutcontrat) {
+        this.datedebutcontrat = datedebutcontrat;
     }
 
-    public Date getDatefincontrait() {
-        return datefincontrait;
+    public Date getDatefincontrat() {
+        return datefincontrat;
     }
 
-    public void setDatefincontrait(Date datefincontrait) {
-        this.datefincontrait = datefincontrait;
+    public void setDatefincontrat(Date datefincontrat) {
+        this.datefincontrat = datefincontrat;
     }
 
     public Date getDatedebutessai() {
@@ -111,12 +121,13 @@ public class Contrat {
         
     }
 
-    public Contrat(int id, int typecontrat, double salairebrut, Date debutcontrat, Date datefincontrait, Date datedebutessai, Date datefinessai, int embauche, int status, String matricule) {
+    public Contrat(int id, int cv, int typecontrat, double salairebrut, Date datedebutcontrat, Date datefincontrat, Date datedebutessai, Date datefinessai, int embauche, int status, String matricule) {
         this.setId(id);
+        this.setCv(cv);
         this.setTypecontrat(typecontrat);
         this.setSalairebrut(salairebrut);
-        this.setDebutcontrat(debutcontrat);
-        this.setDatefincontrait(datefincontrait);
+        this.setDatedebutcontrat(datedebutcontrat);
+        this.setDatefincontrat(datefincontrat);
         this.setDatedebutessai(datedebutessai);
         this.setDatefinessai(datefinessai);
         this.setEmbauche(embauche);
@@ -125,14 +136,21 @@ public class Contrat {
     }
     
     
-    public static void insertContratEssai(int typecontrat, double salairebrut,Date datedebutessai, Date datefinessai, int embauche, int status, String matricule)throws Exception{
+    public static void insertContratEssai(int cv, Date datedebutessai, Date datefinessai,int embauche)throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String query = "insert into contrat(typecontrat,salairebrut,debutcontrat,datefincontrat,datedebutessai,datefinessai,embauche,status,matricule)values(?,?,?,?,?,?,?,?,?,?)";
+        String query = "insert into contrat(cv,typecontrat,salairebrut,datedebutcontrat,datefincontrat,datedebutessai,datefinessai,embauche,status,matricule)values(?,?,NULL,NULL,NULL,?,?,?,?,NULL)";
         try {
             connection = ConnectTo.postgreS();
             preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, typecontrat);
+
+            preparedStatement.setInt(1,cv);
+            preparedStatement.setInt(2, typecontrat);
+            preparedStatement.setDate(3, datedebutessai);
+            preparedStatement.setDate(4, datefinessai);
+            preparedStatement.setInt(5, embauche);
+            preparedStatement.setInt(6, 0);
+
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -161,8 +179,8 @@ public class Contrat {
         try {
             connection = ConnectTo.postgreS();
             preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, id);
-            preparedStatement.setInt(2, status);
+            preparedStatement.setInt(1, status);
+            preparedStatement.setInt(2, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -184,5 +202,171 @@ public class Contrat {
         }
     }
     
+    public static void updateContratToIndetermine(int id,int typecontrat,double salairebrut)throws Exception{
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String query = "update contrat set typecontrat=?,salairebrut=? where id = ?";
+        try {
+            connection = ConnectTo.postgreS();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, typecontrat);
+            preparedStatement.setDouble(2, salairebrut);
+            preparedStatement.setInt(3, typecontrat);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     
+    public static void updateContratToDetermine(int id,int typecontrat,double salairebrut,Date datedebutcontrat,Date datefincontrat)throws Exception{
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String query = "update contrat set typecontrat=?,salairebrut=?,datedebutcontrat=?,datefincontrat=? where id = ?";
+        try {
+            connection = ConnectTo.postgreS();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, typecontrat);
+            preparedStatement.setDouble(2, salairebrut);
+            preparedStatement.setDate(3, datedebutcontrat);
+            preparedStatement.setDate(4, datefincontrat);
+            preparedStatement.setInt(5, typecontrat);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    public static void acceptContratEssaieToIndetermine(int id,int typecontrat,double salairebrut)throws Exception{
+        Contrat.acceptContratEssaieToIndetermine(id, typecontrat, salairebrut);
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String query = "update contrat set matricule=? where id = ?";
+        try {
+            connection = ConnectTo.postgreS();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, Utils.getMatricule());
+            preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    public static void acceptContratEssaieToDetermine(int id,int typecontrat,double salairebrut,Date datedebutcontrat,Date datefincontrat)throws Exception{
+        Contrat.acceptContratEssaieToDetermine(id, typecontrat, salairebrut, datedebutcontrat, datefincontrat);
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String query = "update contrat set matricule=? where id = ?";
+        try {
+            connection = ConnectTo.postgreS();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, Utils.getMatricule());
+            preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    public static int getStatusContrat(int cv)throws Exception{
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try{
+            connection = dbAccess.ConnectTo.postgreS();
+            String sql = "SELECT status from contrat where cv = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, cv);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return 9999;
+    }
 }

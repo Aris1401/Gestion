@@ -21,8 +21,8 @@ public class NoteSousCritere
 {
     int id;
     int sousCritere;
-    double note;
     int besoin;
+    double note;
 
     public int getId() {
         return id;
@@ -39,21 +39,20 @@ public class NoteSousCritere
     public void setSousCritere(int sousCritere) {
         this.sousCritere = sousCritere;
     }
-
-    public double getNote() {
-        return note;
-    }
-
-    public void setNote(double note) {
-        this.note = note;
-    }
-
     public int getBesoin() {
         return besoin;
     }
 
     public void setBesoin(int besoin) {
         this.besoin = besoin;
+    }
+    
+    public double getNote() {
+        return note;
+    }
+
+    public void setNote(double note) {
+        this.note = note;
     }
 
     public NoteSousCritere() {
@@ -63,8 +62,8 @@ public class NoteSousCritere
     public NoteSousCritere(int id, int sousCritere, double note, int besoin) {
         this.id = id;
         this.sousCritere = sousCritere;
-        this.note = note;
         this.besoin = besoin;
+        this.note = note;
     }
     
     public static NoteSousCritere getNoteSousCritere(int sousCritere, int besoin) throws Exception {
@@ -81,17 +80,17 @@ public class NoteSousCritere
         return notes.get(0);
     }
     
-    public static void updateNoteSousCritere(int sousCritere,int besoin,int note)throws Exception{
+    public static void updateNoteSousCritere(int sousCritere,int besoin,double note)throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             connection = ConnectTo.postgreS();
-            String query = "update notesouscritere set note = ? where besoin=? and souscritere =?";
+            String query = "update notesouscritere set note = ? where souscritere =? and besoin =?";
             preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, note);
-            preparedStatement.setInt(2, besoin);
-            preparedStatement.setInt(3, sousCritere);
+            preparedStatement.setDouble(1, note);
+            preparedStatement.setInt(2, sousCritere);
+            preparedStatement.setInt(3, besoin);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -160,13 +159,13 @@ public class NoteSousCritere
     public static void addNoteSousCritere(int sousCritere,double note,int besoin) throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String query = "insert into noteSousCritere(sousCritere,note,besoin)values(?,?,?)";
+        String query = "insert into noteSousCritere(sousCritere,besoin,note)values(?,?,?)";
         try {
             connection = ConnectTo.postgreS();
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1,sousCritere);
-            preparedStatement.setDouble(2,note);
-            preparedStatement.setInt(3,besoin);
+            preparedStatement.setInt(2,besoin);
+            preparedStatement.setDouble(3,note);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
