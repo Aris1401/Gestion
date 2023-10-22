@@ -47,9 +47,11 @@ public class AjoutReponseCV extends HttpServlet {
                     Compte user = (Compte) request.getSession().getAttribute("user");
                     CV cv = CV.dejaPostulter(user.getPersonneInformation().getId(), besoin);
                     ReponseCV.insertReponseCV(critere, sousCritere, cv.getId());
+                } else {
+                    ResponsePrinter.PrintToJSON(response, "ERORORORRO");
                 }
             }else{
-                throw new Exception("Something is null");
+                ResponsePrinter.PrintToJSON(response, "ERORORORRO");
             }
         } catch (Exception ex) {
             ResponsePrinter.PrintToJSON(response, ex.getMessage());

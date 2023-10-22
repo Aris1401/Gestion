@@ -12,8 +12,11 @@ import {
 import React, { useEffect, useState } from 'react'
 import { makeRequest } from 'src/components/utility/Api'
 import AnnonceCard from '../../components/clientSide/AnnonceCard'
+import { CheckIfLoggedIn } from 'src/components/auth/CheckAuth'
 
 const Annonces = () => {
+    CheckIfLoggedIn()
+
     // Annonces de service selectionner
     const [selectionService, setSelectionService] = useState(-1)
 

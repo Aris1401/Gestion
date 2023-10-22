@@ -190,7 +190,26 @@ public class CV extends BDD
         ArrayList<CV> postulation = cvDAO.getFromDatabase(c);
         if (!postulation.isEmpty()) return postulation.get(0);
         
+        c.close();
+        
         return null;
+    }
+    
+    public static CV reponduAuTest(int personne, int besoin) throws Exception {
+        CV cv = CV.dejaPostulter(personne, besoin);
+        if (cv == null) return null;
+        
+        // Si a deja postuler
+        // Obtenir les reponses aux tests
+        Connection c = ConnectTo.postgreS();
+        GenericDAO reponses = new GenericDAO();
+        reponses.setCurrentClass(ReponseQuestionnaire.class);
+        reponses.addToSelection("cv", cv.getId(), "");
+        
+        ArrayList<ReponseQuestionnaire> reponsesArray = reponses.getFromDatabase(c);
+        if (reponsesArray.isEmpty()) return null;
+        
+        return cv;
     }
     
 //////////////////////////////////////////////////////////////////////////////////

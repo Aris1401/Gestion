@@ -61,7 +61,7 @@ const Question = (props) => {
                     })}
                 </CListGroupItem>
             </CListGroup>
-            <CCardFooter>
+            <CCardFooter className='d-flex gap-2 p-2'>
                 <CButton onClick={(e) => props.onModification(questionId)}>
                     Modifier question
                 </CButton>

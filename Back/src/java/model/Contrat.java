@@ -132,7 +132,7 @@ public class Contrat {
         try {
             connection = ConnectTo.postgreS();
             preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, nom);
+            preparedStatement.setInt(1, typecontrat);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
