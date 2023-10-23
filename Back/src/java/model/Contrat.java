@@ -143,12 +143,14 @@ public class Contrat {
         try {
             connection = ConnectTo.postgreS();
             preparedStatement = connection.prepareStatement(query);
+
             preparedStatement.setInt(1,cv);
-            preparedStatement.setInt(2, 1);
+            preparedStatement.setInt(2, typecontrat);
             preparedStatement.setDate(3, datedebutessai);
             preparedStatement.setDate(4, datefinessai);
             preparedStatement.setInt(5, embauche);
             preparedStatement.setInt(6, 0);
+
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

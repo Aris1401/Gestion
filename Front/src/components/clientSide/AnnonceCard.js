@@ -27,8 +27,28 @@ const AnnonceCard = (props) => {
         })
     }
 
+    // Check if has done test
+
     useEffect(() => {
         checkIfPostuler()
+    }, [])
+
+    // Check si a deja repondu au test
+    const [dejaReponduAuTest, setDejaReponduAuTest] = useState(false)
+    const checkIfReponduTest = () => {
+        makeRequest({
+            url:`DejaReponduAuTest?besoin=${props.annonce.besoin}`,
+            requestType: 'GET',
+            successCallback: (data) => {
+                setDejaReponduAuTest(data == null ? false : true)
+            },failureCallback: (error) => {
+                alert(error)
+            }
+        })
+    }
+
+    useEffect(() => {
+        checkIfReponduTest()
     }, [])
 
     return (
@@ -40,7 +60,9 @@ const AnnonceCard = (props) => {
                 <CCardText style={{ marginTop: '1rem' }}>
                     <b>Poste:</b> {props.annonce.titre}
                 </CCardText>
-                {!dejaPostuler ? 
+                {dejaReponduAuTest ? 
+                    <CButton className="justify-content-end">En attente</CButton>
+                : !dejaPostuler ? 
                     <CButton className="justify-content-end" href={`#/acceuil/postuler/${props.annonce.besoin}`}>Postuler</CButton>
                     :
                     <CButton className="justify-content-end" href={`#/acceuil/test/${props.annonce.besoin}`} >Faire le test</CButton>

@@ -76,10 +76,6 @@ const Questionnaire = ({ props }) => {
         })
     }
 
-    useEffect(() => {
-        getListeQuestions()
-    }, [location])
-
     // Handling question modification
     const [modifQuestionVisibility, setModifQuestionVisibility] = useState(false)
     const [questionSelected, setQuestionSelected] = useState()
@@ -129,6 +125,10 @@ const Questionnaire = ({ props }) => {
             }
         })        
     }
+
+    useEffect(() => {
+        getListeQuestions()
+    }, [location, modifQuestionVisibility])
 
     return (
         <>

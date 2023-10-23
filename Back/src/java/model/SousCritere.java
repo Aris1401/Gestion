@@ -5,6 +5,7 @@
  */
 package model;
 
+import aris.bdd.generic.GenericDAO;
 import dbAccess.ConnectTo;
 import generalisationIante.BDD;
 import java.sql.Connection;
@@ -111,5 +112,28 @@ public class SousCritere extends BDD
         
         sousCritere.dontSave("id");
         sousCritere.save();
+    }
+    
+    public static void modifierSousCritere(int id, String nom) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO sousCritere = new GenericDAO();
+        sousCritere.setCurrentClass(SousCritere.class);
+        sousCritere.addToSetUpdate("nom", nom);
+        sousCritere.addToSelection("id", id, "");
+        sousCritere.updateInDatabase(c);
+        
+        c.close();
+    }
+    
+    public static void deleteSousCritere(int id) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO sousCritere = new GenericDAO();
+        sousCritere.setCurrentClass(SousCritere.class);
+        sousCritere.addToSelection("id", id, "");
+        sousCritere.deleteFromDatabase(c);
+        
+        c.close();
     }
 }
