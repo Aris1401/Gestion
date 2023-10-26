@@ -212,6 +212,15 @@ public class CV extends BDD
         return cv;
     }
     
+    public static CV getCVById(int cv) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO cvs = new GenericDAO();
+        cvs.setCurrentClass(CV.class);
+        cvs.addToSelection("id", cv, "");
+        return cvs.getFromDatabase(c).isEmpty() ? null : (CV) cvs.getFromDatabase(c).get(0);
+    }
+    
 //////////////////////////////////////////////////////////////////////////////////
     public void InsertCV(String nom,String prenom,String adresse,String email,String contact,String description,Date dateNaissance,String preuvediplome,String preuvetravail,int besoin,int personne)
     {

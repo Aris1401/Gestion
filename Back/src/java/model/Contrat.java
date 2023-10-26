@@ -136,7 +136,7 @@ public class Contrat {
     }
     
     
-    public static void insertContratEssai(int cv, Date datedebutessai, Date datefinessai,int embauche)throws Exception{
+    public static void insertContratEssai(int cv, int typecontrat, Date datedebutessai, Date datefinessai,int embauche)throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         String query = "insert into contrat(cv,typecontrat,salairebrut,datedebutcontrat,datefincontrat,datedebutessai,datefinessai,embauche,status,matricule)values(?,?,NULL,NULL,NULL,?,?,?,?,NULL)";

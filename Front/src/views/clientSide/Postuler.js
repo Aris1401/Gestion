@@ -78,7 +78,7 @@ const Postuler = () => {
     // Reponses checkbox
     const [reponseCritere, setReponseCritere] = useState({})
     const hamdleReponseCritereChange = (e) => {
-        setReponseCritere((prev) => ({...prev, [e.target.id]: e.target.checked}))
+        setReponseCritere((prev) => ({ ...prev, [e.target.id]: e.target.checked }))
     }
 
     // CV inputs
@@ -96,15 +96,15 @@ const Postuler = () => {
         e.preventDefault()
 
         let cv = new FormData()
-        cv.set("nom", nom)
-        cv.set("prenom", prenom)
-        cv.set("addresse", addresse)
-        cv.set("dateNaissance", datenaissance)
-        cv.set("email", email)
-        cv.set("contact", contact)
-        cv.set("description", description)
-        cv.set("besoin", besoin)
-        
+        cv.set('nom', nom)
+        cv.set('prenom', prenom)
+        cv.set('addresse', addresse)
+        cv.set('dateNaissance', datenaissance)
+        cv.set('email', email)
+        cv.set('contact', contact)
+        cv.set('description', description)
+        cv.set('besoin', besoin)
+
         // Preuves de diplome
         for (let i = 0; i < preuveDiplome.length; i++) {
             cv.append(`preuveDiplome${i + 1}`, preuveDiplome[i])
@@ -115,40 +115,47 @@ const Postuler = () => {
             cv.append(`preuveDeTravail${i + 1}`, preuveDeTravail[i])
         }
 
-        makeRequest({
-            url: 'InsertCVController',
-            requestType: 'POST',
-            isFormData: true,
-            values: cv,
-            successCallback: (data) => {
-                return navigate("/acceuil/annonces")
-            }, 
-            failureCallback: (error) => {
-                alert(error)
-            }
-        })
+        let insertCVrequest = () => {
+            return new Promise((resolve, reject) => {
+                makeRequest({
+                    url: 'InsertCVController',
+                    requestType: 'POST',
+                    isFormData: true,
+                    values: cv,
+                    successCallback: (data) => {
+                        resolve()
+                    },
+                    failureCallback: (error) => {
+                        alert(error)
+                        reject()
+                    },
+                })
+            })
+        }
 
-        // Semding the critere values
-        listeCriteres.forEach((critere) => {
-            listeSousCritere[critere.id].forEach((item) => {
-                if (reponseCritere[item.id]) {
-                    makeRequest({
-                        url: `AjoutReponseCV?critere=${critere.id}&sousCritere=${item.id}&besoin=${besoin}`,
-                        requestType: 'GET',
-                        successCallback: (data) => {
-
-                        },
-                        failureCallback: (error) => {
-                            alert(error)
-                        }
-                    })
-                }
+        insertCVrequest().then(() => {
+            // Semding the critere values
+            listeCriteres.forEach((critere) => {
+                listeSousCritere[critere.id].forEach((item) => {
+                    if (reponseCritere[item.id]) {
+                        makeRequest({
+                            url: `AjoutReponseCV?critere=${critere.id}&sousCritere=${item.id}&besoin=${besoin}`,
+                            requestType: 'GET',
+                            successCallback: (data) => {
+                                return navigate('/acceuil/annonces')
+                            },
+                            failureCallback: (error) => {
+                                alert(error)
+                            },
+                        })
+                    }
+                })
             })
         })
 
         // Redirecting
-        redirect("/acceuil")
-    } 
+        redirect('/acceuil')
+    }
 
     return (
         <CContainer style={{ marginTop: '1rem', marginBottom: '3rem' }}>
@@ -299,8 +306,18 @@ const Postuler = () => {
                                                                               key={item.id}
                                                                               label={item.nom}
                                                                               id={item.id}
-                                                                              checked={reponseCritere[item.id] == undefined ? false : reponseCritere[item.id]}
-                                                                              onChange={hamdleReponseCritereChange}
+                                                                              checked={
+                                                                                  reponseCritere[
+                                                                                      item.id
+                                                                                  ] == undefined
+                                                                                      ? false
+                                                                                      : reponseCritere[
+                                                                                            item.id
+                                                                                        ]
+                                                                              }
+                                                                              onChange={
+                                                                                  hamdleReponseCritereChange
+                                                                              }
                                                                           />
                                                                       )
                                                                   },
@@ -316,7 +333,7 @@ const Postuler = () => {
 
                         <CRow className="d-grid gap-2">
                             <CCol className="d-grid gap-2">
-                                <CButton type='submit'>Postuler</CButton>
+                                <CButton type="submit">Postuler</CButton>
                             </CCol>
                         </CRow>
                     </CForm>

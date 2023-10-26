@@ -15,11 +15,12 @@ import {
     CModalTitle,
     CModalBody,
     CModalFooter,
+    CTable,
 } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
 import { NavLink, Outlet, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { makeRequest } from 'src/components/utility/Api'
-import ListeCV from './ListeCV/ListeCV'
+import ListeCV, { detailsCV } from './ListeCV/ListeCV'
 import BesoinMore from './BesoinMore'
 import CritereCV from './CriteresCV/CritereCV'
 import { CheckPageAuthority } from 'src/components/auth/CheckAuth'
@@ -32,6 +33,18 @@ export const getBesoinDetails = (besoin) => {
             successCallback: (data) => {
                 resolve(data)
             },
+        })
+    })
+}
+
+export const getNombrePersonnel = (besoin) => {
+    return new Promise((resolve, reject) => {
+        makeRequest({
+            url: `NombreMaximumCandidature?besoin=${besoin}`,
+            requestType: "GET",
+            successCallback: (data) => {
+                resolve(data)
+            }
         })
     })
 }
@@ -64,6 +77,16 @@ const DetailsBesoin = () => {
     // Liste candidatures modal
     const [visibilityListeCandidature, setVisibilityListeCandidature] = useState(false)
 
+    // Nombre de personnel
+    const [nombrePersonnel, setNombrePersonnel] = useState(0)
+    const [nombreCandidature, setNombreCandidature] = useState(0)
+    useState(() => {
+        getNombrePersonnel(id).then((data) => {
+            setNombreCandidature(data.entretient);
+            setNombrePersonnel(data.reel)
+        })
+    }, [])
+
     return (
         <>
             <CCard style={{ padding: '1rem' }}>
@@ -78,8 +101,14 @@ const DetailsBesoin = () => {
                             <CCol>
                                 <CButton onClick={() => setVisibilityListeCandidature(true)}>Afficher meilleures candidatures</CButton>
                             </CCol>
-                            <CCol>Volume de taches: {besoin.volumeTaches}h</CCol>
-                            <CCol>Taux Jour/Homme: {besoin.tauxJourHomme}jour/homme</CCol>
+                            <CCol>
+                                <CRow>
+                                    <CCol>Volume de taches: {besoin.volumeTaches}h</CCol>
+                                    <CCol>Taux Jour/Homme: {besoin.tauxJourHomme}jour/homme</CCol>
+                                </CRow>
+                            </CCol>
+                            <CCol>Personnel: { nombrePersonnel }Personnes</CCol>
+                            <CCol>Candidature: { nombreCandidature }Personnes</CCol>
                             {/* Nombre de personne a avoir */}
                         </CRow>
 
@@ -88,19 +117,21 @@ const DetailsBesoin = () => {
                 </CCardBody>
             </CCard>
 
-            <CModal
+            {/* <CModal
+            size='lg'
             visible={visibilityListeCandidature}
             onClose={() => setVisibilityListeCandidature(false)}>
                 <CModalHeader>
                     <CModalTitle>Liste des meilleurs candidatures</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
-                    <p>React Modal body text goes here.</p>
+                    
                 </CModalBody>
                 <CModalFooter>
                     <CButton onClick={() => setVisibilityListeCandidature(false)} color="secondary">Close</CButton>
+                    <CButton>Afficher agenda entretient</CButton>
                 </CModalFooter>
-            </CModal>
+            </CModal> */}
         </>
     )
 }

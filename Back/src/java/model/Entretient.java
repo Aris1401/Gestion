@@ -4,6 +4,7 @@
  */
 package model;
 
+import aris.bdd.generic.GenericDAO;
 import java.sql.Timestamp;
 
 /**
@@ -57,5 +58,11 @@ public class Entretient {
         this.setCv(cv);
         this.setDateEntretient(dateEntretient);
         this.setDureeentretient(dureeentretient);
+    }
+    
+    public static void insertEntretient(Timestamp dateEntretient, double dureeEntretient) {
+        GenericDAO entretienDAO = new GenericDAO();
+        entretienDAO.setCurrentClass(Entretient.class);
+        
     }
 }
