@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.ChoixReponse;
+import utility.ResponsePrinter;
 
 /**
  *
@@ -23,16 +24,16 @@ import model.ChoixReponse;
 public class AjoutChoixReponseController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            if(request.getParameter("questionnaire")!=null&&request.getParameter("reponse")!=null&&request.getParameter("note")!=null){
+        ResponsePrinter.setCORS(response);
+        try {
+//            if(request.getParameter("questionnaire")!=null&&request.getParameter("reponse")!=null&&request.getParameter("note")!=null){
                 int questionnaire = Integer.parseInt(request.getParameter("questionnaire"));
                 String reponse = request.getParameter("reponse");
                 double note = Double.parseDouble(request.getParameter("note"));
                 ChoixReponse.ajoutChoixReponse(questionnaire, reponse, note);
-            }else{
-                throw new Exception("Something is null");
-            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

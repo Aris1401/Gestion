@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Critere;
+import utility.ResponsePrinter;
 
 /**
  *
@@ -41,13 +42,14 @@ public class ListeCritereAPI extends HttpServlet {
         } catch (Exception ex) {
             response.getWriter().println(ex.getMessage());
         }
-        Gson gson = new Gson();
-        String json = gson.toJson(criteres);
-        response.setHeader("Access-Control-Allow-Origin", "*"); 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        response.getWriter().println(json);
+        ResponsePrinter.PrintToJSON(response, criteres);
+//        Gson gson = new Gson();
+//        String json = gson.toJson(criteres);
+//        response.setHeader("Acces
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//
+//        response.getWriter().println(json);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

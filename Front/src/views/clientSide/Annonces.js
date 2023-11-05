@@ -1,107 +1,110 @@
 import {
-  CButton,
-  CButtonGroup,
-  CCard,
-  CCardBody,
-  CCardText,
-  CCardTitle,
-  CNav,
-  CNavItem,
-  CNavLink,
+    CButton,
+    CButtonGroup,
+    CCard,
+    CCardBody,
+    CCardText,
+    CCardTitle,
+    CNav,
+    CNavItem,
+    CNavLink,
 } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
 import { makeRequest } from 'src/components/utility/Api'
-import AnnonceCard from './AnnonceCard'
+import AnnonceCard from '../../components/clientSide/AnnonceCard'
+import { CheckIfLoggedIn } from 'src/components/auth/CheckAuth'
 
 const Annonces = () => {
-  // Annonces de service selectionner
-  const [selectionService, setSelectionService] = useState(-1)
+    CheckIfLoggedIn()
 
-  const handleNavClick = (event, id) => {
-    setSelectionService(id)
-  }
+    // Annonces de service selectionner
+    const [selectionService, setSelectionService] = useState(-1)
 
-  // Obtenir tout les services
-  const [listeService, setListeService] = useState([])
-  const getServicesDispo = () => {
-    makeRequest({
-      url: 'ListeServiceController',
-      requestType: 'GET',
-      successCallback: (data) => {
-        setListeService(data)
-      },
-      failureCallback: (error) => {
-        alert(error)
-      },
-    })
-  }
+    const handleNavClick = (event, id) => {
+        setSelectionService(id)
+    }
 
-  useEffect(() => {
-    getServicesDispo()
-  }, [selectionService])
+    // Obtenir tout les services
+    const [listeService, setListeService] = useState([])
+    const getServicesDispo = () => {
+        makeRequest({
+            url: 'ListeServiceController',
+            requestType: 'GET',
+            successCallback: (data) => {
+                setListeService(data)
+            },
+            failureCallback: (error) => {
+                alert(error)
+            },
+        })
+    }
 
-  // Obtenir les listes
-  const [annonces, setAnnonces] = useState([])
+    useEffect(() => {
+        getServicesDispo()
+    }, [selectionService])
 
-  const obtenirAnnonces = () => {
-    makeRequest({
-      url: 'ListeAnnonceAPI',
-      requestType: 'GET',
-      successCallback: (data) => {
-        setAnnonces(data)
-      },
-      failureCallback: (error) => {
-        alert(error)
-      },
-    })
-  }
+    // Obtenir les listes
+    const [annonces, setAnnonces] = useState([])
 
-  useEffect(() => {
-    obtenirAnnonces()
-  }, [selectionService])
+    const obtenirAnnonces = () => {
+        makeRequest({
+            url: 'ListeAnnonceAPI',
+            requestType: 'GET',
+            successCallback: (data) => {
+                setAnnonces(data)
+            },
+            failureCallback: (error) => {
+                alert(error)
+            },
+        })
+    }
 
-  return (
-    <div>
-      <div style={{ marginTop: '1rem' }} className="d-flex justify-content-center">
-        <CButtonGroup role="group">
-          <CButton
-            onClick={(e) => {
-              handleNavClick(e, -1)
-            }}
-            className={selectionService === -1 ? 'active' : ''}
-            variant="outline"
-          >
-            All
-          </CButton>
+    useEffect(() => {
+        obtenirAnnonces()
+    }, [selectionService])
 
-          {listeService.map((service, index) => {
-            return (
-              <CButton
-                variant="outline"
-                key={service.id}
-                onClick={(e) => {
-                  handleNavClick(e, service.id)
-                }}
-                className={selectionService === service.id ? 'active' : ''}
-              >
-                {service.nom}
-              </CButton>
-            )
-          })}
-        </CButtonGroup>
-      </div>
+    return (
+        <div>
+            <div style={{ marginTop: '1rem' }} className="d-flex justify-content-center">
+                <CButtonGroup role="group">
+                    <CButton
+                        onClick={(e) => {
+                            handleNavClick(e, -1)
+                        }}
+                        className={selectionService === -1 ? 'active' : ''}
+                        variant="outline"
+                    >
+                        All
+                    </CButton>
 
-      <div className="d-flex align-items-start" style={{marginTop: '1rem', gap: '1rem'}}>
-        {annonces.map((annonce, index) => {
-          return selectionService === -1 ? (
-            <AnnonceCard annonce={annonce} key={annonce.id} />
-          ) : annonce.service === selectionService ? (
-            <AnnonceCard annonce={annonce} key={annonce.id} />
-          ) : null
-        })}
-      </div>
-    </div>
-  )
+                    {listeService.map((service, index) => {
+                        return (
+                            <CButton
+                                variant="outline"
+                                key={service.id}
+                                onClick={(e) => {
+                                    handleNavClick(e, service.id)
+                                }}
+                                className={selectionService === service.id ? 'active' : ''}
+                            >
+                                {service.nom}
+                            </CButton>
+                        )
+                    })}
+                </CButtonGroup>
+            </div>
+
+            <div className="d-flex align-items-start" style={{ marginTop: '1rem', gap: '1rem' }}>
+                {annonces.map((annonce, index) => {
+                    return selectionService === -1 ? (
+                        <AnnonceCard annonce={annonce} key={annonce.id} />
+                    ) : annonce.service === selectionService ? (
+                        <AnnonceCard annonce={annonce} key={annonce.id} />
+                    ) : null
+                })}
+            </div>
+        </div>
+    )
 }
 
 export default Annonces

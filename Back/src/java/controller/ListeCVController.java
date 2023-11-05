@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.CV;
 import model.CritereBesoin;
+import utility.ResponsePrinter;
 
 /**
  *
@@ -27,17 +28,19 @@ import model.CritereBesoin;
 public class ListeCVController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        try {
             int besoin = Integer.parseInt(request.getParameter("besoin"));
-            ArrayList<CV> allCVForBesoins = CV.getAllCVForBesoin(besoin);
-            Gson gson = new Gson();
-            String json = gson.toJson(allCVForBesoins);
-            response.setHeader("Access-Control-Allow-Origin", "*"); 
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
+            ArrayList<CV> allCVForBesoins = CV.getCVFromBesoin(besoin);
+            ResponsePrinter.PrintToJSON(response, allCVForBesoins);
+//            Gson gson = new Gson();
+//            String json = gson.toJson(allCVForBesoins);
+//            response.setHeader(" 
+//            response.setContentType("application/json");
+//            response.setCharacterEncoding("UTF-8");
             
-            response.getWriter().println(json);
+//            response.getWriter().println(json);
+        } catch (Exception e) {
+            response.getWriter().print(e.getMessage());
         }
     }
 

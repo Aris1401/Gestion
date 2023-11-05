@@ -1,5 +1,10 @@
 import React from 'react'
 import DetailsBesoin from './views/besoins/DetailsBesoin'
+import Criteres from './views/criteres/Criteres'
+import EtatDePaie from './views/etatDePaie/EtatDePaie'
+import DemandeCongee from './views/demandeCongee/DemandeCongee'
+import DetailsCV from './views/detailsCV/DetailsCV'
+import ListePersonnel from './views/listePersonnel/ListePersonnel'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -100,7 +105,12 @@ const routes = [
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
   { path: '/besoin', name: 'Besoins', element: Besoins },
-  { path: '/besoin/:id/*', name: 'Details Besoin', element: DetailsBesoin},
+  { path: '/besoin/:id/*', name: 'Details Besoin', element: DetailsBesoin },
+  { path: '/criteres', name: 'Criteres', element: Criteres },
+  { path: '/etatdepaie', name: 'Etat De Paie', element: EtatDePaie },
+  { path: '/demandecongee', name: 'Demande de congee', element: DemandeCongee },
+  { path: '/detailsCV/:id', name: 'Detail CV', element: DetailsCV },
+  { path: '/listepersonnel', name: 'Liste Personnel', element: ListePersonnel}
 ]
 
 export default routes

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.TestQuestionnaire;
+import utility.ResponsePrinter;
 
 /**
  *
@@ -24,13 +25,13 @@ import model.TestQuestionnaire;
 public class AjoutQuestionnaireController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
-        response.setContentType("text/html;charset=UTF-8");
+        ResponsePrinter.setCORS(response);
         try (PrintWriter out = response.getWriter()) {
-            if(request.getParameter("besoin")!=null&&request.getParameter("question")!=null&&request.getParameter("estchoixmultiple")!=null&&request.getParameter("note")!=null){
+            if(request.getParameter("besoin")!=null&&request.getParameter("question")!=null&&request.getParameter("estchoixmultiple")!=null){
                 int besoin = Integer.parseInt(request.getParameter("besoin"));
                 String question = request.getParameter("question");
                 boolean estchoixmultiple = Boolean.valueOf(request.getParameter("estchoixmultiple"));
-                double note = Double.parseDouble(request.getParameter("note"));
+                double note = 0;
                 TestQuestionnaire.ajoutQuestionnaire(besoin, question, estchoixmultiple, note);
             }else{
                 throw new Exception("Something is null");

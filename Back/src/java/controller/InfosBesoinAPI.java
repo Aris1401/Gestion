@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Besoin;
+import utility.ResponsePrinter;
 
 /**
  *
@@ -35,16 +36,10 @@ public class InfosBesoinAPI extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*"); 
-        
         try {
             Besoin besoin = Besoin.getBesoinById(Integer.parseInt(request.getParameter("id")));
             
-            Gson gson = new Gson();
-            String json = gson.toJson(besoin);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().print(json);
+            ResponsePrinter.PrintToJSON(response, besoin);
         } catch (Exception ex) {
             response.getWriter().print(ex.getMessage());
         }

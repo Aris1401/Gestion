@@ -4,6 +4,9 @@
  */
 package model;
 
+import aris.bdd.annotations.ExcludeFromInsertion;
+import aris.bdd.annotations.ExcludeFromSelection;
+import aris.bdd.generic.GenericDAO;
 import dbAccess.ConnectTo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -95,5 +98,14 @@ public class Profil {
             }
         }
         return allProfils;
+    }
+    
+    public static Profil getProfil(int id) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO profilDAO = new GenericDAO();
+        profilDAO.setCurrentClass(Profil.class);
+        profilDAO.addToSelection("id", id, "");
+        return (Profil) profilDAO.getFromDatabase(c).get(0);
     }
 }

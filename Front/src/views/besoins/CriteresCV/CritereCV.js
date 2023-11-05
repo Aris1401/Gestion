@@ -10,8 +10,37 @@ import {
     CRow,
 } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { json, useLocation, useParams } from 'react-router-dom'
 import { makeRequest } from 'src/components/utility/Api'
+
+export const getCriteresForCV = () => {
+    return new Promise((resolve, reject) => {
+        makeRequest({
+            url: 'ListeCritereAPI',
+            successCallback: (data) => {
+                resolve(data)
+            },
+            failureCallback: (error) => {
+                alert(error)
+            },
+        })
+    })
+}
+
+export const getSousCriteres = (critere) => {
+    return new Promise((resolve, reject) => {
+        makeRequest({
+            url: `ListeSousCritereAPI?critere=${critere.id}`,
+            requestType: 'GET',
+            successCallback: (data) => {
+                resolve(data)
+            },
+            errorCallback: (error) => {
+                reject(error)
+            },
+        })
+    })
+}
 
 const CritereCV = (props) => {
     // Besoin alternative
@@ -60,9 +89,9 @@ const CritereCV = (props) => {
     }
 
     const handleCritereInputsChange = (e) => {
-      const {id, value} = e.target
+        const { id, value } = e.target
 
-      setCriteresInputs(prev => ({...prev, [id]: value}))
+        setCriteresInputs((prev) => ({ ...prev, [id]: value }))
     }
 
     // Sous critere
@@ -101,102 +130,187 @@ const CritereCV = (props) => {
         getSousCritere()
     }, [criteres])
 
-    // Obtenir la note des sous-critere
-    const [notesSousCritere, setNotesSousCritere] = useState({})
-    const getNoteSousCritere = () => {
-        let tempNotesSousCriteres = {}
-
-        criteres.map((critere, index) => {
-            sousCriteres[critere.id].map((sousCritere, index) => {
-                makeRequest({
-                    url: `NoteSousCritereAPI?besoin=${id}&sousCritere=${sousCritere.id}`,
-                    requestType: 'GET',
-                    successCallback: (data) => {
-                        tempNotesSousCriteres = notesSousCritere
-                        tempNotesSousCriteres[sousCritere.id] = data
-                    },
-                    failureCallback: (error) => {
-                        alert(error)
-                    },
-                })
-            })
-        })
-
-        setNotesSousCritere(tempNotesSousCriteres)
-    }
-
-    useEffect(() => {
-        getNoteSousCritere()
-    }, [location])
-
     // Sous criteres inputs
     const [sousCritereInputs, setSousCritereInputs] = useState({})
     const handleSousCritereInputChange = (e) => {
-      const {id, value} = e.target
+        const { id, value } = e.target
 
-      setSousCritereInputs(prev => ({...prev, [id]: value}))
+        setSousCritereInputs((prev) => ({ ...prev, [id]: value }))
     }
 
+    // Initiliwing the sous critere note
+    const initializeSousCritereNote = () => {
+        let tempInputs = { ...sousCritereInputs } // create a shallow copy of sousCritereInputs
+
+        let promises = [] // array to hold all the promises
+
+        criteres.forEach((critere) => {
+            sousCriteres[critere.id].forEach((sousCritere) => {
+                // create a new promise for each request
+                let promise = new Promise((resolve, reject) => {
+                    makeRequest({
+                        url: `NoteSousCritereAPI?besoin=${
+                            props.besoin ? props.besoin.id : id
+                        }&sousCritere=${sousCritere.id}`,
+                        requestType: 'GET',
+                        successCallback: (data) => {
+                            if (data != null) tempInputs[sousCritere.id] = data.note
+                            resolve() // resolve the promise when the request is successful
+                        },
+                    })
+                })
+
+                // add the promise to the array
+                promises.push(promise)
+            })
+        })
+
+        // use Promise.all() to wait for all the promises to resolve
+        Promise.all(promises)
+            .then(() => {
+                setSousCritereInputs(tempInputs)
+            })
+            .catch((error) => {
+                console.error('An error occurred: ', error)
+                // handle the error
+            })
+    }
+
+    useEffect(() => {
+        initializeSousCritereNote()
+    }, [sousCriteres])
     
+    useEffect(() => {
+        
+        console.log('TEST: ' + JSON.stringify(sousCritereInputs))
+    }, [sousCritereInputs])
+
     // Submitting the form
+    const handleCritereNotationForm = (e) => {
+        // Preventing the deafult action of the form
+        e.preventDefault()
+
+        // Getting all the inputs of the form
+        console.log(JSON.stringify(sousCritereInputs))
+        console.log(JSON.stringify(criteresInputs))
+
+        // Looping through the critere inputs
+        for (var key in criteresInputs) {
+            makeRequest({
+                url: `AjoutCritereController?besoin=${id}&critere=${key}&coefficient=${criteresInputs[key]}`,
+                requestType: 'GET',
+                successCallback: (data) => {},
+                failureCallback: (error) => {
+                    alert(error)
+                },
+            })
+        }
+
+        // Looping through sous critere inputs
+        for (var key in sousCritereInputs) {
+            makeRequest({
+                url: `AjoutNoteSousCritereController?besoin=${id}&sousCritere=${key}&note=${sousCritereInputs[key]}`,
+                requestType: 'GET',
+                successCallback: (data) => {},
+                failureCallback: (error) => {
+                    alert(error)
+                },
+            })
+        }
+    }
+
+    // Ajout de nouveau sous critere
+    const [newSousCritere, setNewSousCritere] = useState({})
+    const handleNewSousCritereChange = (e) => {
+        const {id, value} = e.target;
+        setNewSousCritere(prev => ({...prev, [id]: value}))
+    }
+    const handleNewSousCritereForm = (e, critere) => {
+        // Preventimg default action
+        e.preventDefault()
+
+        // Preparing the data
+        let add = new FormData()
+        add.set('critere', critere)
+        add.set('nom', newSousCritere)
+
+        // Sending the new sous critere
+        makeRequest({
+            url: `SousCritere`,
+            requestType: 'POST',
+            values: add,
+            successCallback: (data) => {
+                getCriteres()
+            },
+            failureCallback: (error) => {
+                alert(error)
+            },
+        })
+    }
 
     return (
         <CContainer style={{ marginTop: '1rem' }}>
             <CRow>
                 <h6>Modifier criteres de selection</h6>
             </CRow>
-            <CForm>
-                <CRow>
+            <CForm onSubmit={handleCritereNotationForm}>
+                <CRow className='d-flex gap-2'>
                     {criteres.map((critere, index) => {
                         return (
-                            <CRow key={critere.nom}>
-                                <CCol xs={1}>
-                                    <CFormInput
-                                        label={critere.nom}
-                                        name={critere.nom}
-                                        id={critere.id}
-                                        type="number"
-                                        onChange={handleCritereInputsChange}
-                                        value={
-                                            criteresInputs[critere.id] !== undefined
-                                                ? criteresInputs[critere.id]
-                                                : 0
-                                        }
-                                    />
-                                </CCol>
+                            <>
+                                <CRow key={critere.nom}>
+                                    <CCol xs={1}>
+                                        <CFormInput
+                                            label={critere.nom}
+                                            name={critere.nom}
+                                            id={critere.id}
+                                            type="number"
+                                            onChange={handleCritereInputsChange}
+                                            value={
+                                                criteresInputs[critere.id] !== undefined
+                                                    ? criteresInputs[critere.id]
+                                                    : 0
+                                            }
+                                        />
+                                    </CCol>
 
-                                <CCol xs={5}></CCol>
+                                    <CCol xs={5}></CCol>
 
-                                <CCol xs={6}>
-                                    {sousCriteres[critere.id] !== undefined &&
-                                        sousCriteres[critere.id].map((sousCritere, index_sous) => {
-                                            return (
-                                                <CRow key={sousCritere.nom}>
-                                                    <CInputGroup>
-                                                        <CInputGroupText>
-                                                            {sousCritere.nom}
-                                                        </CInputGroupText>
-                                                        <CFormInput
-                                                            name={sousCritere.nom}
-                                                            type="number"
-                                                            id={sousCritere.id}
-                                                            onChange={handleSousCritereInputChange}
-                                                            value={
-                                                                sousCritereInputs[
-                                                                    sousCritere.id
-                                                                ] !== undefined
-                                                                    ? sousCritereInputs[
-                                                                          sousCritere.id
-                                                                      ]
-                                                                    : 0
-                                                            }
-                                                        />
-                                                    </CInputGroup>
-                                                </CRow>
-                                            )
-                                        })}
-                                </CCol>
-                            </CRow>
+                                    <CCol xs={6} className='d-flex gap-3 flex-column'>
+                                        {sousCriteres[critere.id] !== undefined &&
+                                            sousCriteres[critere.id].map(
+                                                (sousCritere, index_sous) => {
+                                                    return (
+                                                        <CRow key={sousCritere.nom + "-" + sousCritere.id}>
+                                                            <CInputGroup>
+                                                                <CInputGroupText>
+                                                                    {sousCritere.nom}
+                                                                </CInputGroupText>
+                                                                <CFormInput
+                                                                    name={sousCritere.nom}
+                                                                    type="number"
+                                                                    id={sousCritere.id}
+                                                                    onChange={
+                                                                        handleSousCritereInputChange
+                                                                    }
+                                                                    value={
+                                                                        sousCritereInputs[
+                                                                            sousCritere.id
+                                                                        ] !== undefined
+                                                                            ? sousCritereInputs[
+                                                                                  sousCritere.id
+                                                                              ]
+                                                                            : 0
+                                                                    }
+                                                                />
+                                                            </CInputGroup>
+                                                        </CRow>
+                                                    )
+                                                },
+                                            )}
+                                    </CCol>
+                                </CRow>
+                            </>
                         )
                     })}
                 </CRow>

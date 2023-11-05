@@ -5,7 +5,9 @@
  */
 package model;
 
+import aris.bdd.generic.GenericDAO;
 import dbAccess.ConnectTo;
+import generalisationIante.BDD;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
  *
  * @author BEST
  */
-public class SousCritere
+public class SousCritere extends BDD
 {
     	int id;
         int critere;
@@ -54,36 +56,6 @@ public class SousCritere
         this.setId(id);
         this.setNom(nom);
         this.setCritere(critere);
-    }
-    
-    public static void insertSousCritere(int id,String nom,int critere) throws Exception{
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        String query = "insert into sousCritere(critere,nom)values(?,?)";
-        try {
-            connection = ConnectTo.postgreS();
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, critere);
-            preparedStatement.setString(2,nom);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
     
     public static ArrayList<SousCritere> getAllSousCriteresByCritere(int critere) throws Exception{
@@ -131,5 +103,37 @@ public class SousCritere
             }
         }
         return sousCriteres;
+    }
+    
+    public static void insertSousCritere(String nom, int critere) {
+        SousCritere sousCritere = new SousCritere();
+        sousCritere.setNom(nom);
+        sousCritere.setCritere(critere);
+        
+        sousCritere.dontSave("id");
+        sousCritere.save();
+    }
+    
+    public static void modifierSousCritere(int id, String nom) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO sousCritere = new GenericDAO();
+        sousCritere.setCurrentClass(SousCritere.class);
+        sousCritere.addToSetUpdate("nom", nom);
+        sousCritere.addToSelection("id", id, "");
+        sousCritere.updateInDatabase(c);
+        
+        c.close();
+    }
+    
+    public static void deleteSousCritere(int id) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO sousCritere = new GenericDAO();
+        sousCritere.setCurrentClass(SousCritere.class);
+        sousCritere.addToSelection("id", id, "");
+        sousCritere.deleteFromDatabase(c);
+        
+        c.close();
     }
 }

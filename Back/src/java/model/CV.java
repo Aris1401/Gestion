@@ -5,6 +5,7 @@
  */
 package model;
 
+import aris.bdd.generic.GenericDAO;
 import dbAccess.ConnectTo;
 import generalisationIante.BDD;
 import java.sql.Connection;
@@ -12,8 +13,11 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  *
@@ -26,7 +30,7 @@ public class CV extends BDD
     private String prenom ;
     private String adresse ;
     private String email ;
-    private int contact ;
+    private String contact ;
     private String description ;
     private Date dateNaissance ;
     private String preuvediplome;
@@ -76,11 +80,11 @@ public class CV extends BDD
         this.email = email;
     }
 
-    public int getContact() {
+    public String getContact() {
         return contact;
     }
 
-    public void setContact(int contact) {
+    public void setContact(String contact) {
         this.contact = contact;
     }
 
@@ -151,7 +155,7 @@ public class CV extends BDD
     public CV() {
     }
 
-    public CV(int id, String nom, String prenom, String adresse, String email, int contact, String description, Date dateNaissance, String preuvediplome, String preuvetravail, int besoin, int personne, int status, Date dateecriture) {
+    public CV(int id, String nom, String prenom, String adresse, String email, String contact, String description, Date dateNaissance, String preuvediplome, String preuvetravail, int besoin, int personne, int status, Date dateecriture) {
         this.setId(id);
         this.setNom(nom);
         this.setPrenom(prenom);
@@ -168,70 +172,66 @@ public class CV extends BDD
         this.setDateecriture(dateecriture);
     }
 
-    
-    
-    public static ArrayList<CV> getAllCVForBesoin(int besoin) throws Exception{
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        ArrayList<CV> allCV = new ArrayList<>();
-        String query = "SELECT * FROM CV where besoin = ?";
-        try {
-            connection = ConnectTo.postgreS();
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1,besoin);
-            resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                CV cv = new CV();
-                cv.setId(resultSet.getInt(1));
-                cv.setNom(resultSet.getString(2));
-                cv.setPrenom(resultSet.getString(3));
-                cv.setAdresse(resultSet.getString(4));
-                cv.setEmail(resultSet.getString(5));
-                cv.setContact(resultSet.getInt(6));
-                cv.setDescription(resultSet.getString(7));
-                cv.setDateNaissance(resultSet.getDate(8));
-                cv.setPreuvediplome(resultSet.getString(9));
-                cv.setPreuvetravail(resultSet.getString(10));
-                cv.setBesoin(resultSet.getInt(11));
-                cv.setPersonne(resultSet.getInt(12));
-                cv.setStatus(resultSet.getInt(13));
-                cv.setDateecriture(resultSet.getDate(14));
-                allCV.add(cv);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (preparedStatement != null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return allCV;
+    public static ArrayList<CV> getCVFromBesoin(int besoin) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO cvs = new GenericDAO();
+        cvs.setCurrentClass(CV.class);
+        cvs.addToSelection("besoin", besoin, "");
+        ArrayList<CV> listeCV = cvs.getFromDatabase(c);
+        
+        c.close();
+        
+        return listeCV;
     }
  
+    public static CV dejaPostulter(int personne, int besoin) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO cvDAO = new GenericDAO();
+        cvDAO.setCurrentClass(CV.class);
+        cvDAO.addToSelection("personne", personne, "and");
+        cvDAO.addToSelection("besoin", besoin,"");
+        
+        ArrayList<CV> postulation = cvDAO.getFromDatabase(c);
+        if (!postulation.isEmpty()) return postulation.get(0);
+        
+        c.close();
+        
+        return null;
+    }
+    
+    public static CV reponduAuTest(int personne, int besoin) throws Exception {
+        CV cv = CV.dejaPostulter(personne, besoin);
+        if (cv == null) return null;
+        
+        // Si a deja postuler
+        // Obtenir les reponses aux tests
+        Connection c = ConnectTo.postgreS();
+        GenericDAO reponses = new GenericDAO();
+        reponses.setCurrentClass(ReponseQuestionnaire.class);
+        reponses.addToSelection("cv", cv.getId(), "");
+        
+        ArrayList<ReponseQuestionnaire> reponsesArray = reponses.getFromDatabase(c);
+        if (reponsesArray.isEmpty()) return null;
+        
+        return cv;
+    }
+    
+    public static CV getCVById(int cv) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO cvs = new GenericDAO();
+        cvs.setCurrentClass(CV.class);
+        cvs.addToSelection("id", cv, "");
+        return cvs.getFromDatabase(c).isEmpty() ? null : (CV) cvs.getFromDatabase(c).get(0);
+    }
+    
 //////////////////////////////////////////////////////////////////////////////////
-    public void InsertCV(String nom,String prenom,String adresse,String email,int contact,String description,Date dateNaissance,String preuvediplome,String preuvetravail,int besoin,int personne,int status,Date dateecriture)
+    public void InsertCV(String nom,String prenom,String adresse,String email,String contact,String description,Date dateNaissance,String preuvediplome,String preuvetravail,int besoin,int personne)
     {
         CV cv = new CV();
-        cv.setId(id);
+        
         cv.setNom(nom);
         cv.setPrenom(prenom);
         cv.setAdresse(adresse);
@@ -243,12 +243,41 @@ public class CV extends BDD
         cv.setPreuvetravail(preuvetravail);
         cv.setBesoin(besoin);
         cv.setPersonne(personne);
-        cv.setStatus(status);
-        cv.setDateecriture(dateecriture);
+        cv.setStatus(1);
+        cv.setDateecriture(new Date(System.currentTimeMillis()));
         cv.dontSave("id");
         cv.save();
     }       
 ////////////////////////////////////////////////////////////////////////////////
 
-        
+    @Override
+    public String toString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        return "YourClassName{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", adresse='" + adresse + '\'' +
+                ", email='" + email + '\'' +
+                ", contact='" + contact + '\'' +
+                ", description='" + description + '\'' +
+                ", dateNaissance=" + (dateNaissance != null ? dateFormat.format(dateNaissance) : null) +
+                ", preuvediplome='" + preuvediplome + '\'' +
+                ", preuvetravail='" + preuvetravail + '\'' +
+                ", besoin=" + besoin +
+                ", personne=" + personne +
+                ", status=" + status +
+                ", dateecriture=" + (dateecriture != null ? dateFormat.format(dateecriture) : null) +
+                '}';
+    }
+    
+    public int calculerAge() {
+        LocalDate dob = dateNaissance.toLocalDate();
+        LocalDate maintenant = LocalDate.now();
+
+        Period difference = Period.between(dob, maintenant);
+        return difference.getYears();
+    }
+
 }

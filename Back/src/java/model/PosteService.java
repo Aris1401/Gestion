@@ -82,6 +82,7 @@ public class PosteService extends BDD{
         }
         
         return postes;
+    }
 
     public static ArrayList<PosteService> getPosteServiceByService(int service) throws Exception{
         Connection connection = null;
@@ -129,5 +130,19 @@ public class PosteService extends BDD{
             }
         }
         return allPosteServices;
+    }
+    
+    public static PosteService getPosteServiceById(int id) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO posteServiceDAO = new GenericDAO();
+        posteServiceDAO.setCurrentClass(PosteService.class);
+        posteServiceDAO.addToSelection("id", id, "");
+        
+        ArrayList<PosteService> postes = posteServiceDAO.getFromDatabase(c);
+        
+        c.close();
+        
+        return postes.isEmpty() ? null : postes.get(0);
     }
 }

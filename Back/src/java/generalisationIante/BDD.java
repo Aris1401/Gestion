@@ -98,15 +98,15 @@ public class BDD {
         
         requete += string +" values "+ string1;
         this.confirme(requete );
-//          System.out.println(requete +"ppppppppppppppp");
+          System.out.println(requete +"ppppppppppppppp");
     }
     public void delete(){
         String requete = "delete from "+this.getClass().getSimpleName()+" ";
         this.confirme(requete);
     }
     
-    public void deletePrestation(int idPrestation, String nomTable) {
-    String requete = "DELETE FROM " + nomTable + " WHERE idPrestation = " + idPrestation;
+    public void delete(int id, String nomTable) {
+    String requete = "DELETE FROM " + nomTable + " WHERE idPrestation = " + id;
     this.confirme(requete);
 }
 

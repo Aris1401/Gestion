@@ -199,7 +199,7 @@ public class GenericDAO<T> {
 	}
 	
 	public String getSetUpdate() {
-		String setUpdateString = "SET";
+		String setUpdateString = " SET";
 		
 		int i = 0;
 		for (Map.Entry<String, SetUpdateObjectDAO> update : setUpdate.entrySet()) {
@@ -265,6 +265,29 @@ public class GenericDAO<T> {
 		return databaseResults;
 	}
 	
+        public void updateInDatabase(Connection c) throws Exception {
+            if (c == null) throw  new Exception("Connection null");
+            
+            // Creation de statement
+            Statement stat = c.createStatement();
+            
+            // Requete
+            String requete = "UPDATE " + getCurrentClassName() + getSetUpdate() + " " +  getCurrentSelection();
+            System.out.println(requete);
+            stat.executeUpdate(requete);
+        }
+        
+        public void deleteFromDatabase(Connection c) throws SQLException, Exception {
+            if (c == null) throw new Exception("Connexion est null");
+            
+            // Creation de statement
+            Statement stat = c.createStatement();
+            
+            // Creation de la requete
+            String requete = "DELETE FROM " + getCurrentClassName() + " WHERE " + getCurrentSelection();
+            stat.executeUpdate(requete);
+        }
+        
 	public int saveInDatabse(Connection c) throws SQLException {
 		if (c == null) return -1;
 		
