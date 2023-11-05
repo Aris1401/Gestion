@@ -304,5 +304,12 @@ public class Besoin extends BDD
         nombrePersonne = (int)reponse;
         return nombrePersonne*3;
     }
-
+    
+    public int getNombreCandidatEntretient() {
+        return getNombreCandidatReel() * 3;
+    }
+    
+    public int getNombreCandidatReel() {
+        return (int) (getVolumeTaches() / getTauxJourHomme());
+    }
 }

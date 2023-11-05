@@ -359,7 +359,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
+create or replace view totalnote as (
+	Select cv.besoin as besoin, nt.idcv as cv, sum((nc.note_totale * nc.coefficient_total) + nt.note) as total
+	from notetest as nt
+	join notescv as nc on nt.idcv = nc.cv_id
+	join cv as cv on cv.id = nt.idcv
+	group by nt.idcv, cv.besoin
+);
 
 COMMENT ON TABLE configconge IS 'Exemple:
 Nom: "Duree maximum congee"

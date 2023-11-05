@@ -3,6 +3,21 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { makeRequest } from 'src/components/utility/Api'
 
+export const detailsCV = (cv) => {
+  return new Promise((resolve, reject) => {
+    makeRequest({
+      url: `CV?cv=${cv}`,
+      requestType: "GET",
+      successCallback: (data) => {
+        resolve(data)
+      },
+      failureCallback: (error) => {
+        reject(error)
+      }
+    })
+  })
+}
+
 const ListeCV = (props) => {
   const location = useLocation()
 
