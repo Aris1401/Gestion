@@ -7,6 +7,8 @@ insert into SousCritere(nom, critere) values ('Bacc', 1), ('Bepc', 1), ('Cepe', 
 insert into posteservice(service, titreposte) values (1, 'Maintenance'), (2, 'Comptable'), (3, 'Garde');
 
 insert into profil (nom, rang) values ('Client', 0);
+insert into profil (nom, rang) values ('Personnel', 1);
+
 
 INSERT INTO personne (
     nom, 

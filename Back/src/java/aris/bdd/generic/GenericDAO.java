@@ -199,7 +199,7 @@ public class GenericDAO<T> {
 	}
 	
 	public String getSetUpdate() {
-		String setUpdateString = "SET";
+		String setUpdateString = " SET";
 		
 		int i = 0;
 		for (Map.Entry<String, SetUpdateObjectDAO> update : setUpdate.entrySet()) {
@@ -272,7 +272,8 @@ public class GenericDAO<T> {
             Statement stat = c.createStatement();
             
             // Requete
-            String requete = "UPDATE " + getCurrentClassName() + " SET " + getSetUpdate() + " WHERE " + getCurrentSelection();
+            String requete = "UPDATE " + getCurrentClassName() + getSetUpdate() + " " +  getCurrentSelection();
+            System.out.println(requete);
             stat.executeUpdate(requete);
         }
         

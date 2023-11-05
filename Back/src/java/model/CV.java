@@ -15,7 +15,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  *
@@ -176,7 +178,11 @@ public class CV extends BDD
         GenericDAO cvs = new GenericDAO();
         cvs.setCurrentClass(CV.class);
         cvs.addToSelection("besoin", besoin, "");
-        return cvs.getFromDatabase(c);
+        ArrayList<CV> listeCV = cvs.getFromDatabase(c);
+        
+        c.close();
+        
+        return listeCV;
     }
  
     public static CV dejaPostulter(int personne, int besoin) throws Exception {
@@ -264,6 +270,14 @@ public class CV extends BDD
                 ", status=" + status +
                 ", dateecriture=" + (dateecriture != null ? dateFormat.format(dateecriture) : null) +
                 '}';
+    }
+    
+    public int calculerAge() {
+        LocalDate dob = dateNaissance.toLocalDate();
+        LocalDate maintenant = LocalDate.now();
+
+        Period difference = Period.between(dob, maintenant);
+        return difference.getYears();
     }
 
 }

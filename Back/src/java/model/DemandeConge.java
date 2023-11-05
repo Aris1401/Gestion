@@ -11,12 +11,12 @@ import java.sql.Timestamp;
  * @author Henintsoa & Hery
  */
 public class DemandeConge {
-    private int id;
-    private int motif;
-    private Timestamp datedebut;
-    private Timestamp datefin;
-    private String description;
-    private int status;
+     int id;
+     int motif;
+     Timestamp datedebut;
+     Timestamp datefin;
+     String description;
+     int status;
 
     public int getId() {
         return id;

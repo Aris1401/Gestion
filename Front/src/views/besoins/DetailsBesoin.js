@@ -99,9 +99,6 @@ const DetailsBesoin = () => {
                     <CContainer>
                         <CRow>
                             <CCol>
-                                <CButton onClick={() => setVisibilityListeCandidature(true)}>Afficher meilleures candidatures</CButton>
-                            </CCol>
-                            <CCol>
                                 <CRow>
                                     <CCol>Volume de taches: {besoin.volumeTaches}h</CCol>
                                     <CCol>Taux Jour/Homme: {besoin.tauxJourHomme}jour/homme</CCol>

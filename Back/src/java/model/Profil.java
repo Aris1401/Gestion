@@ -4,6 +4,8 @@
  */
 package model;
 
+import aris.bdd.annotations.ExcludeFromInsertion;
+import aris.bdd.annotations.ExcludeFromSelection;
 import aris.bdd.generic.GenericDAO;
 import dbAccess.ConnectTo;
 import java.sql.Connection;
