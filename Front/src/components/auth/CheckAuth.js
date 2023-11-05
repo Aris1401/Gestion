@@ -35,6 +35,17 @@ const RedirectToAccessedPage = () => {
     }, [])
 }
 
+const CheckIfLoggedIn = () => {
+    let navigate = useNavigate()
+    useEffect(() => {
+        CheckAuth().then((compte) => {
+          if (compte === null) {
+            return navigate("/login")
+          }
+        })
+    }, [])
+}
+
 const CheckPageAuthority = () => {
     // let navigate = useNavigate()
     // useEffect(() => {
@@ -46,4 +57,4 @@ const CheckPageAuthority = () => {
     // }, [])
 }
 
-export { CheckAuth, RedirectToAccessedPage, CheckPageAuthority };
+export { CheckAuth, RedirectToAccessedPage, CheckPageAuthority, CheckIfLoggedIn };

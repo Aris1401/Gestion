@@ -154,7 +154,7 @@ const CritereCV = (props) => {
                         }&sousCritere=${sousCritere.id}`,
                         requestType: 'GET',
                         successCallback: (data) => {
-                            tempInputs[sousCritere.id] = data.note
+                            if (data != null) tempInputs[sousCritere.id] = data.note
                             resolve() // resolve the promise when the request is successful
                         },
                     })
@@ -178,8 +178,12 @@ const CritereCV = (props) => {
 
     useEffect(() => {
         initializeSousCritereNote()
-        console.log('TEST: ' + JSON.stringify(sousCritereInputs))
     }, [sousCriteres])
+    
+    useEffect(() => {
+        
+        console.log('TEST: ' + JSON.stringify(sousCritereInputs))
+    }, [sousCritereInputs])
 
     // Submitting the form
     const handleCritereNotationForm = (e) => {
@@ -216,15 +220,19 @@ const CritereCV = (props) => {
     }
 
     // Ajout de nouveau sous critere
-    const [newSousCritere, setNewSousCritere] = useState()
+    const [newSousCritere, setNewSousCritere] = useState({})
+    const handleNewSousCritereChange = (e) => {
+        const {id, value} = e.target;
+        setNewSousCritere(prev => ({...prev, [id]: value}))
+    }
     const handleNewSousCritereForm = (e, critere) => {
         // Preventimg default action
         e.preventDefault()
 
         // Preparing the data
         let add = new FormData()
-        add.set("critere", critere)
-        add.set("nom", newSousCritere)
+        add.set('critere', critere)
+        add.set('nom', newSousCritere)
 
         // Sending the new sous critere
         makeRequest({
@@ -233,9 +241,10 @@ const CritereCV = (props) => {
             values: add,
             successCallback: (data) => {
                 getCriteres()
-            }, failureCallback: (error) => {
+            },
+            failureCallback: (error) => {
                 alert(error)
-            }
+            },
         })
     }
 
@@ -245,63 +254,63 @@ const CritereCV = (props) => {
                 <h6>Modifier criteres de selection</h6>
             </CRow>
             <CForm onSubmit={handleCritereNotationForm}>
-                <CRow>
+                <CRow className='d-flex gap-2'>
                     {criteres.map((critere, index) => {
                         return (
-                            <CRow key={critere.nom}>
-                                <CCol xs={1}>
-                                    <CFormInput
-                                        label={critere.nom}
-                                        name={critere.nom}
-                                        id={critere.id}
-                                        type="number"
-                                        onChange={handleCritereInputsChange}
-                                        value={
-                                            criteresInputs[critere.id] !== undefined
-                                                ? criteresInputs[critere.id]
-                                                : 0
-                                        }
-                                    />
-                                </CCol>
+                            <>
+                                <CRow key={critere.nom}>
+                                    <CCol xs={1}>
+                                        <CFormInput
+                                            label={critere.nom}
+                                            name={critere.nom}
+                                            id={critere.id}
+                                            type="number"
+                                            onChange={handleCritereInputsChange}
+                                            value={
+                                                criteresInputs[critere.id] !== undefined
+                                                    ? criteresInputs[critere.id]
+                                                    : 0
+                                            }
+                                        />
+                                    </CCol>
 
-                                <CCol xs={5}></CCol>
+                                    <CCol xs={5}></CCol>
 
-                                <CCol xs={6}>
-                                    {sousCriteres[critere.id] !== undefined &&
-                                        sousCriteres[critere.id].map((sousCritere, index_sous) => {
-                                            return (
-                                                <CRow key={sousCritere.nom}>
-                                                    <CInputGroup>
-                                                        <CInputGroupText>
-                                                            {sousCritere.nom}
-                                                        </CInputGroupText>
-                                                        <CFormInput
-                                                            name={sousCritere.nom}
-                                                            type="number"
-                                                            id={sousCritere.id}
-                                                            onChange={handleSousCritereInputChange}
-                                                            value={
-                                                                sousCritereInputs[
-                                                                    sousCritere.id
-                                                                ] !== undefined
-                                                                    ? sousCritereInputs[
-                                                                          sousCritere.id
-                                                                      ]
-                                                                    : 0
-                                                            }
-                                                        />
-                                                    </CInputGroup>
-
-                                                    {/* Ajouter nouveau sous critere */}
-                                                    <CForm onSubmit={(e) => handleNewSousCritereForm(e, critere.id)}>
-                                                        <CFormInput name='new-souscritere' id="new-souscritere" value={newSousCritere} onChange={(e) => {setNewSousCritere(e.target.value)}} />
-                                                        <CButton type='submit'>Ajouter</CButton>
-                                                    </CForm>
-                                                </CRow>
-                                            )
-                                        })}
-                                </CCol>
-                            </CRow>
+                                    <CCol xs={6} className='d-flex gap-3 flex-column'>
+                                        {sousCriteres[critere.id] !== undefined &&
+                                            sousCriteres[critere.id].map(
+                                                (sousCritere, index_sous) => {
+                                                    return (
+                                                        <CRow key={sousCritere.nom + "-" + sousCritere.id}>
+                                                            <CInputGroup>
+                                                                <CInputGroupText>
+                                                                    {sousCritere.nom}
+                                                                </CInputGroupText>
+                                                                <CFormInput
+                                                                    name={sousCritere.nom}
+                                                                    type="number"
+                                                                    id={sousCritere.id}
+                                                                    onChange={
+                                                                        handleSousCritereInputChange
+                                                                    }
+                                                                    value={
+                                                                        sousCritereInputs[
+                                                                            sousCritere.id
+                                                                        ] !== undefined
+                                                                            ? sousCritereInputs[
+                                                                                  sousCritere.id
+                                                                              ]
+                                                                            : 0
+                                                                    }
+                                                                />
+                                                            </CInputGroup>
+                                                        </CRow>
+                                                    )
+                                                },
+                                            )}
+                                    </CCol>
+                                </CRow>
+                            </>
                         )
                     })}
                 </CRow>

@@ -121,7 +121,7 @@ const Postuler = () => {
             isFormData: true,
             values: cv,
             successCallback: (data) => {
-
+                return navigate("/acceuil/annonces")
             }, 
             failureCallback: (error) => {
                 alert(error)
