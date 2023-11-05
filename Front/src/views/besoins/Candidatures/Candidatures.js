@@ -10,11 +10,12 @@ import {
     CModalFooter,
     CModalHeader,
     CModalTitle,
+    CNavLink,
     CRow,
     CTable,
 } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { NavLink, useParams } from 'react-router-dom'
 import { makeRequest } from 'src/components/utility/Api'
 import { detailsCV } from '../ListeCV/ListeCV'
 
@@ -26,6 +27,46 @@ export const listeMeilleuresCandidatures = (besoin) => {
             successCallback: (data) => {
                 resolve(data)
             },
+        })
+    })
+}
+
+export const entretientPourCv = (cv) => {
+    return new Promise((resolve, reject) => {
+        makeRequest({
+            url: `Entretient?cv=${cv}`,
+            requestType: 'GET',
+            successCallback: (data) => {
+                resolve(data)
+            },
+            failureCallback: (error) => {
+                alert(error)
+                reject()
+            }
+        })
+    })
+}
+
+export const AjouterDateEntretient = (dureeEntretient, dateEntretient, selectedCV) => {
+    // Creating a new form data to be sent
+    let entretientData = new FormData()
+    entretientData.set("dateEntretient", dateEntretient)
+    entretientData.set("dureeEntretient", dureeEntretient)
+    entretientData.set("cv", selectedCV)
+
+    return new Promise((resolve, reject) => {
+        makeRequest({
+            url: `Entretient`,
+            isFormData: true,
+            requestType: 'POST',
+            values: entretientData,
+            successCallback: (data) => {
+                resolve()
+            },
+            failureCallback: (error) => {
+                alert(error)
+                reject()
+            }
         })
     })
 }
@@ -76,28 +117,42 @@ const Candidatures = () => {
         setCandidaturesItems([])
 
         candidatures.forEach((candidature) => {
-            detailsCV(candidature.cv).then((data) => {
-                let listeCandidature = {
-                    nom: data.nom,
-                    prenom: data.prenom,
-                    note: candidature.total,
-                    informations: <CButton>Plus d&apos;informations</CButton>,
-                    entretient: (
-                        <CButton
-                            onClick={(e) => {
-                                // Resetting values
-                                setDateEntretient()
-                                setDureeEntretient()
+            // Check si a deja obtenu un entretient
+            entretientPourCv(candidature.cv).then((entretientCV) => {
+                detailsCV(candidature.cv).then((data) => {
+                    // Chemin vers les details du cv de la personne
+                    let pathDetails = `/detailsCV/${candidature.cv}`;
+                    let listeCandidature = {
+                        nom: data.nom,
+                        prenom: data.prenom,
+                        note: candidature.total,
+                        informations: <CButton>
+                                <CNavLink to={pathDetails} component={NavLink}>Plus d&apos;informations</CNavLink>
+                            </CButton>,
+                        entretient:
+                            entretientCV == null ?
+                                <CButton
+                                    onClick={(e) => {
+                                        // Resetting values
+                                        setDateEntretient()
+                                        setDureeEntretient()
 
-                                setEntretientModalVisibility(true)
-                            }}
-                        >
-                            Arranger une date
-                        </CButton>
-                    ),
-                    _cellProps: { id: { scope: 'row' } },
-                }
-                setCandidaturesItems((prev) => [...prev, listeCandidature])
+                                        // Setting the selected candidat
+                                        setSelectedCandidat(data.id)
+
+                                        setEntretientModalVisibility(true)
+                                    }}
+                                >
+                                    Arranger une date
+                                </CButton>
+                                :
+                                `${entretientCV.dateEntretient} (${entretientCV.dureeEntretient} minutes)`
+
+                        ,
+                        _cellProps: { id: { scope: 'row' } },
+                    }
+                    setCandidaturesItems((prev) => [...prev, listeCandidature])
+                })
             })
         })
     }, [candidatures])
@@ -108,6 +163,16 @@ const Candidatures = () => {
     // Date entretient inputs
     const [dateEntretient, setDateEntretient] = useState()
     const [dureeEntretient, setDureeEntretient] = useState()
+    const [selectedCandidat, setSelectedCandidat] = useState()
+
+    // Ajouter date entretient
+    const handleEntretientFormSubmit = (e) => {
+        e.preventDefault()
+
+        AjouterDateEntretient(dureeEntretient, dateEntretient, selectedCandidat).then(() => {
+            setEntretientModalVisibility(false)
+        })
+    }
 
     return (
         <>
@@ -120,7 +185,9 @@ const Candidatures = () => {
                     setEntretientModalVisibility(false)
                 }}
             >
-                <CForm>
+                <CForm
+                    onSubmit={handleEntretientFormSubmit}
+                >
                     <CModalHeader>
                         <CModalTitle>Arrangement de date</CModalTitle>
                     </CModalHeader>
@@ -132,7 +199,7 @@ const Candidatures = () => {
                             <CCol xs={8}>
                                 <CInputGroup id="date-entretient">
                                     <CFormInput
-                                        type="date"
+                                        type="datetime-local"
                                         value={dateEntretient}
                                         onChange={(e) => {
                                             setDateEntretient(e.target.value)
@@ -152,7 +219,7 @@ const Candidatures = () => {
                         </CRow>
                     </CModalBody>
                     <CModalFooter>
-                        <CButton>Ajouter date</CButton>
+                        <CButton type='submit'>Ajouter date</CButton>
                     </CModalFooter>
                 </CForm>
             </CModal>
