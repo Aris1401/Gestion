@@ -13,74 +13,49 @@ import {
     CFormCheck,
     CFormInput,
     CFormTextarea,
+    CNavLink,
     CRow,
 } from '@coreui/react'
 import React, { useEffect, useState } from 'react'
-import { redirect, useNavigate, useParams } from 'react-router-dom'
-import { getBesoinDetails } from '../besoins/DetailsBesoin'
-import { getCriteresForCV, getSousCriteres } from '../besoins/CriteresCV/CritereCV'
-import { number } from 'prop-types'
+import { detailsCV } from '../besoins/ListeCV/ListeCV'
+import { useNavigate, useParams } from 'react-router-dom'
+import CIcon from '@coreui/icons-react'
+import { cilCloudDownload } from '@coreui/icons'
+import { getCriteresForCV } from '../besoins/CriteresCV/CritereCV'
 import { makeRequest } from 'src/components/utility/Api'
 
-const Postuler = () => {
-    // Getting the current besoin
-    const { besoin } = useParams()
-
-    // Navidaton
-    const navigate = useNavigate()
-
-    // Getting the besoin details
-    const [currentBesoin, setCurrentBesoin] = useState()
-    useEffect(() => {
-        getBesoinDetails(besoin).then((data) => {
-            setCurrentBesoin(data)
+export const reponseCriteresCV = (cv, critere) => {
+    return new Promise((resolve, reject) => {
+        makeRequest({
+            url: `ReponsesPourCV?cv=${cv}&critere=${critere}`,
+            requestType: 'GET',
+            successCallback: (data) => {
+                resolve(data)
+            },
+            failureCallback: (error) => {
+                alert(error)
+            }
         })
-    }, [])
+    })
+}
 
-    // Criteres CV
-    const [listeCriteres, setListeCriteres] = useState([])
-    const [listeSousCritere, setListeSousCritere] = useState({})
-
-    useEffect(() => {
-        getCriteresForCV().then((data) => {
-            setListeCriteres(data)
+export const checkObtenuEntretient = (cv) => {
+    return new Promise((resolve, reject) => {
+        makeRequest({
+            url: `CheckEntretient?cv=${cv}`,
+            requestType: 'GET',
+            successCallback: (data) => {
+                resolve(data)
+            },
+            failureCallback: (error) => {
+                alert(error)
+                reject(error)
+            }
         })
-    }, [])
+    })
+}
 
-    const initSousCriteres = async () => {
-        let tempData = {}
-
-        let request = listeCriteres.map(
-            (critereItem) =>
-                new Promise((resolve, reject) => {
-                    getSousCriteres(critereItem).then((data) => {
-                        tempData[critereItem.id] = data
-
-                        // alert(JSON.stringify(tempData))
-                        resolve()
-                    })
-                }),
-        )
-
-        await Promise.all(request)
-        setListeSousCritere(tempData)
-    }
-
-    useEffect(() => {
-        initSousCriteres()
-        // alert()
-    }, [listeCriteres])
-
-    useEffect(() => {
-        console.log(JSON.stringify(listeSousCritere))
-    }, [listeSousCritere])
-
-    // Reponses checkbox
-    const [reponseCritere, setReponseCritere] = useState({})
-    const hamdleReponseCritereChange = (e) => {
-        setReponseCritere((prev) => ({ ...prev, [e.target.id]: e.target.checked }))
-    }
-
+const DetailsCV = () => {
     // CV inputs
     const [nom, setNom] = useState()
     const [prenom, setPrenom] = useState()
@@ -89,87 +64,96 @@ const Postuler = () => {
     const [email, setEmail] = useState()
     const [contact, setContact] = useState()
     const [description, setDescription] = useState()
-    const [preuveDiplome, setPreuveDiplome] = useState()
-    const [preuveDeTravail, setPreuveDeTravail] = useState()
+    const [preuveDiplome, setPreuveDiplome] = useState([])
+    const [preuveDeTravail, setPreuveDeTravail] = useState([])
 
-    const handleCVFormSubmit = (e) => {
-        e.preventDefault()
+    // Obtenir l'id du cv courant
+    const { id } = useParams();
 
-        let cv = new FormData()
-        cv.set('nom', nom)
-        cv.set('prenom', prenom)
-        cv.set('addresse', addresse)
-        cv.set('dateNaissance', datenaissance)
-        cv.set('email', email)
-        cv.set('contact', contact)
-        cv.set('description', description)
-        cv.set('besoin', besoin)
+    // Verifier si la personne a deja obtenu un entretient
+    const [hasEntretient, setHasEntretient] = useState(false)
+    const [entretient, setEntretient] = useState();
 
-        // Preuves de diplome
-        for (let i = 0; i < preuveDiplome.length; i++) {
-            cv.append(`preuveDiplome${i + 1}`, preuveDiplome[i])
-        }
+    // Obtenir les details du cv
+    useEffect(() => {
+        detailsCV(id).then((data) => {
+            setNom(data.nom)
+            setPrenom(data.prenom)
+            setAddresse(data.adresse)
+            setDateNaissance(data.dateNaissance)
+            setEmail(data.email)
+            setContact(data.contact)
+            setDescription(data.description)
 
-        // Preuves de travail
-        for (let i = 0; i < preuveDeTravail.length; i++) {
-            cv.append(`preuveDeTravail${i + 1}`, preuveDeTravail[i])
-        }
+            // Traitement preuve diplome et preuve de travail
+            let diplomes = data.preuvediplome.split(",");
+            let travails = data.preuvetravail.split(",");
 
-        let insertCVrequest = () => {
-            return new Promise((resolve, reject) => {
-                makeRequest({
-                    url: 'InsertCVController',
-                    requestType: 'POST',
-                    isFormData: true,
-                    values: cv,
-                    successCallback: (data) => {
-                        resolve()
-                    },
-                    failureCallback: (error) => {
-                        alert(error)
-                        reject()
-                    },
-                })
-            })
-        }
+            setPreuveDiplome(diplomes)
+            setPreuveDeTravail(travails)
 
-        insertCVrequest().then(() => {
-            // Semding the critere values
-            listeCriteres.forEach((critere) => {
-                listeSousCritere[critere.id].forEach((item) => {
-                    if (reponseCritere[item.id]) {
-                        makeRequest({
-                            url: `AjoutReponseCV?critere=${critere.id}&sousCritere=${item.id}&besoin=${besoin}`,
-                            requestType: 'GET',
-                            successCallback: (data) => {
-                                return navigate('/acceuil/annonces')
-                            },
-                            failureCallback: (error) => {
-                                alert(error)
-                            },
-                        })
-                    }
-                })
+            // Changer le state de besoin
+            checkObtenuEntretient(data.id).then((entretientData) => {
+                if (entretientData != null) {
+                    setHasEntretient(true)
+                    setEntretient(entretientData);
+                }
+              })
+        })
+    }, [])
+
+    // Obtention des criteres
+    const [criteres, setCriteres] = useState([])
+    useEffect(() => {
+        getCriteresForCV().then((criteresCV) => {
+            setCriteres(criteresCV)
+        })
+    }, [])
+
+    // Obtenir les sous criteres repondu
+    const [sousCriteres, setSousCriteres] = useState({})
+    useEffect(() => {
+        criteres.forEach((critere) => {
+            reponseCriteresCV(id, critere.id).then((data) => {
+                setSousCriteres(
+                    (prev) => ({
+                        ...prev,
+                        [critere.id]: data
+                    })
+                    )
             })
         })
+    }, [criteres])
 
-        // Redirecting
-        redirect('/acceuil')
-    }
+    // Embaucher cv
+    const navigate = useNavigate()
+    const handleEmbaucheCv = () => {
+        makeRequest({
+            url: `EmbaucherCV?cv=${id}`,
+            requestType: 'GET',
+            successCallback: (data) => {
+                return new navigate("/besoin")
+            },
+            failureCallback: (error) => {
+                alert(error)
+            }
+        })
+    } 
 
     return (
         <CContainer style={{ marginTop: '1rem', marginBottom: '3rem' }}>
             <CCard>
                 <CCardHeader className="text-center">
-                    <h3>Jointure de CV</h3>
+                    <h3>Details de CV</h3>
                 </CCardHeader>
 
                 <CCardBody>
-                    <CForm onSubmit={handleCVFormSubmit} className="d-flex flex-column gap-3">
+                    <CForm className="d-flex flex-column gap-3">
                         {/* Nom - prenom */}
                         <CRow>
                             <CCol>
                                 <CFormInput
+                                readOnly
                                     name="nom"
                                     label="Nom"
                                     id="nom"
@@ -181,6 +165,7 @@ const Postuler = () => {
                             </CCol>
                             <CCol>
                                 <CFormInput
+                                readOnly
                                     name="prenom"
                                     label="Prenom"
                                     id="prenom"
@@ -196,6 +181,7 @@ const Postuler = () => {
                         <CRow>
                             <CCol xs={8}>
                                 <CFormInput
+                                readOnly
                                     name="adresse"
                                     label="Addresse"
                                     id="addresse"
@@ -208,10 +194,11 @@ const Postuler = () => {
 
                             <CCol xs={4}>
                                 <CFormInput
+                                readOnly
                                     name="datenaissance"
                                     label="Date de naissance"
                                     id="datenaissance"
-                                    type="date"
+                                    type="text"
                                     value={datenaissance}
                                     onChange={(e) => setDateNaissance(e.target.value)}
                                 />
@@ -222,6 +209,7 @@ const Postuler = () => {
                         <CRow>
                             <CCol xs={9}>
                                 <CFormInput
+                                readOnly
                                     name="email"
                                     label="Email"
                                     id="email"
@@ -233,6 +221,7 @@ const Postuler = () => {
                             </CCol>
                             <CCol xs={3}>
                                 <CFormInput
+                                readOnly
                                     name="contact"
                                     label="Contact"
                                     id="contact"
@@ -248,6 +237,7 @@ const Postuler = () => {
                         <CRow>
                             <CCol>
                                 <CFormTextarea
+                                readOnly
                                     name="description"
                                     rows={4}
                                     id="description"
@@ -262,25 +252,23 @@ const Postuler = () => {
                         {/* Preuves */}
                         <CRow>
                             <CCol>
-                                <CFormInput
-                                    type="file"
-                                    multiple
-                                    name="preuvediplome"
-                                    id="preuvediplome"
-                                    label="Preuve diplome"
-                                    onChange={(e) => setPreuveDiplome(e.target.files)}
-                                />
+                                <h6>Preuves de diplomes</h6>
+                                {preuveDiplome.map((preuve, index) => {
+                                    return (
+                                        <CButton key={index}>
+                                            <CNavLink href={preuve}><CIcon icon={cilCloudDownload} />{` Preuve diplome ${index + 1}`}</CNavLink>
+                                        </CButton>
+                                    )
+                                })}
                             </CCol>
 
                             <CCol>
-                                <CFormInput
-                                    type="file"
-                                    multiple
-                                    name="preuvetravail"
-                                    id="preuvetravail"
-                                    label="Preuve de travail"
-                                    onChange={(e) => setPreuveDeTravail(e.target.files)}
-                                />
+                                <h6>Preuves de traivails</h6>
+                                {preuveDeTravail.map((preuve, index) => {
+                                    return (
+                                        <CButton key={index}><CNavLink href={preuve}><CIcon icon={cilCloudDownload} />{` Preuve travail ${index + 1}`}</CNavLink></CButton>
+                                    )
+                                })}
                             </CCol>
                         </CRow>
 
@@ -289,36 +277,20 @@ const Postuler = () => {
                                 <CAccordionHeader>Criteres de CV</CAccordionHeader>
                                 <CAccordionBody>
                                     <CRow xs={{ cols: 2 }}>
-                                        {listeCriteres.map((critereItem, index) => {
+                                        {criteres.map((critereItem, index) => {
                                             return (
                                                 <div key={critereItem.id}>
                                                     <CCol>
                                                         <h6>{critereItem.nom}</h6>
                                                     </CCol>
                                                     <CCol>
-                                                        {listeSousCritere[critereItem.id] ==
+                                                        {sousCriteres[critereItem.id] ==
                                                         undefined
                                                             ? null
-                                                            : listeSousCritere[critereItem.id].map(
+                                                            : sousCriteres[critereItem.id].map(
                                                                   (item) => {
                                                                       return (
-                                                                          <CFormCheck
-                                                                              key={item.id}
-                                                                              label={item.nom}
-                                                                              id={item.id}
-                                                                              checked={
-                                                                                  reponseCritere[
-                                                                                      item.id
-                                                                                  ] == undefined
-                                                                                      ? false
-                                                                                      : reponseCritere[
-                                                                                            item.id
-                                                                                        ]
-                                                                              }
-                                                                              onChange={
-                                                                                  hamdleReponseCritereChange
-                                                                              }
-                                                                          />
+                                                                          <p key={item.nom} className='text-dark px-4' >{item.nom}</p>
                                                                       )
                                                                   },
                                                               )}
@@ -333,7 +305,7 @@ const Postuler = () => {
 
                         <CRow className="d-grid gap-2">
                             <CCol className="d-grid gap-2">
-                                <CButton type="submit">Postuler</CButton>
+                                {hasEntretient && <CButton onClick={(e) => {handleEmbaucheCv()}} type="submit">{`Embaucher - Entretient: ${entretient.dateEntretient}`}</CButton>}
                             </CCol>
                         </CRow>
                     </CForm>
@@ -343,4 +315,4 @@ const Postuler = () => {
     )
 }
 
-export default Postuler
+export default DetailsCV

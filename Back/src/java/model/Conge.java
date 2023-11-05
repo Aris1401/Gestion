@@ -11,10 +11,10 @@ import java.sql.Timestamp;
  * @author Henintsoa & Hery
  */
 public class Conge {
-    private int id;
-    private Timestamp datedebut;
-    private Timestamp datefin;
-    private int demande;
+     int id;
+     Timestamp datedebut;
+     Timestamp datefin;
+     int demande;
 
     public int getId() {
         return id;

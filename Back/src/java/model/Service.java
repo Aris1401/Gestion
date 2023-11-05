@@ -5,7 +5,10 @@
  */
 package model;
 
+import aris.bdd.generic.GenericDAO;
+import dbAccess.ConnectTo;
 import generalisationIante.BDD;
+import java.sql.Connection;
 import java.sql.Date;
 import java.util.ArrayList;
 
@@ -49,4 +52,18 @@ public class Service extends BDD
       }
       return services;  
    } 
+        
+        public static Service getServiceById(int id) throws Exception {
+            Connection c = ConnectTo.postgreS();
+            
+            GenericDAO serviceDAO = new GenericDAO();
+            serviceDAO.setCurrentClass(Service.class);
+            serviceDAO.addToSelection("id", id, "");
+            
+            ArrayList<Service> services = serviceDAO.getFromDatabase(c);
+            
+            c.close();
+            
+            return services.isEmpty() ? null : services.get(0);
+        }
 }

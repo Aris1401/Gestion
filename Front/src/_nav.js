@@ -301,6 +301,12 @@ const _nav = [
     icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
   },
   {
+    component: CNavItem,
+    name: 'Demande de congee',
+    icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
+    to: '/demandecongee'
+  },
+  {
     component: CNavGroup,
     name: 'RH',
     icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
@@ -313,8 +319,18 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Criteres',
-        to: '/criteres',
+      to: '/criteres',
       },
+      {
+        component: CNavItem,
+        name: 'Liste personnel',
+        to: '/listepersonnel',
+      },
+      {
+        component: CNavItem,
+        name: 'Etat de paie',
+        to: '/etatdepaie',
+      }
     ]
   }
 ]
