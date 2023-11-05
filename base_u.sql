@@ -290,6 +290,15 @@ CREATE  TABLE avantagenaturecontrat (
 	CONSTRAINT fk_avantagenaturecontratcontrat FOREIGN KEY ( contrat ) REFERENCES contrat( id )   
  );
 
+CREATE TABLE heuresupplementaire (
+	id                   integer  NOT NULL  ,
+	personne			 integer    ,
+	datedebut			 timestamp	,
+	datefin				 timestamp	,
+	CONSTRAINT pk_heuresupplementaire PRIMARY KEY ( id ),
+	CONSTRAINT fk_heuresupplementairepersonne FOREIGN KEY ( personne ) REFERENCES personne( id )
+);
+
 CREATE OR REPLACE VIEW listepersonnel AS SELECT 
 cv.nom,
 cv.prenom,
