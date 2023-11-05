@@ -4,6 +4,11 @@
  */
 package model;
 
+import dbAccess.ConnectTo;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 /**
  *
  * @author Henintsoa & Hery
@@ -11,7 +16,7 @@ package model;
 public class ReponseQuestionnaire {
     private int id;
     private int questionnaire;
-    private int reponse;
+    private String reponse;
     private int cv;
 
     public int getId() {
@@ -30,11 +35,11 @@ public class ReponseQuestionnaire {
         this.questionnaire = questionnaire;
     }
 
-    public int getReponse() {
+    public String getReponse() {
         return reponse;
     }
 
-    public void setReponse(int reponse) {
+    public void setReponse(String reponse) {
         this.reponse = reponse;
     }
 
@@ -49,14 +54,41 @@ public class ReponseQuestionnaire {
     public ReponseQuestionnaire() {
     }
 
-    public ReponseQuestionnaire(int id, int questionnaire, int reponse, int cv) {
+    public ReponseQuestionnaire(int id, int questionnaire, String reponse, int cv) {
         this.setId(id);
         this.setQuestionnaire(questionnaire);
         this.setReponse(reponse);
         this.setCv(cv);
     }
     
-    
-    
-    
+    public static void ajoutReponseQuestionnaire(int questionnaire, String reponse, int cv)throws Exception{
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        String query = "insert into reponsequestionnaire(questionnaire,reponse,cv)values(?,?,?)";
+        try {
+            connection = ConnectTo.postgreS();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,questionnaire);
+            preparedStatement.setString(2,reponse);
+            preparedStatement.setInt(4,cv);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {//2860
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }   
 }

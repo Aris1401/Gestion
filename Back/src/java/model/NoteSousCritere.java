@@ -5,10 +5,12 @@
  */
 package model;
 
+import aris.bdd.generic.GenericDAO;
 import dbAccess.ConnectTo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
@@ -19,7 +21,7 @@ public class NoteSousCritere
     int id;
     int sousCritere;
     double note;
-    int critereBesoin;
+    int besoin;
 
     public int getId() {
         return id;
@@ -45,35 +47,49 @@ public class NoteSousCritere
         this.note = note;
     }
 
-    public int getCritereBesoin() {
-        return critereBesoin;
+    public int getBesoin() {
+        return besoin;
     }
 
-    public void setCritereBesoin(int critereBesoin) {
-        this.critereBesoin = critereBesoin;
+    public void setBesoin(int besoin) {
+        this.besoin = besoin;
     }
 
     public NoteSousCritere() {
         
     }
 
-    public NoteSousCritere(int id, int sousCritere, double note, int critereBesoin) {
+    public NoteSousCritere(int id, int sousCritere, double note, int besoin) {
         this.id = id;
         this.sousCritere = sousCritere;
         this.note = note;
-        this.critereBesoin = critereBesoin;
+        this.besoin = besoin;
     }
     
-    public static void addNoteSousCritere(int sousCritere,double note,int critereBesoin) throws Exception{
+    public static NoteSousCritere getNoteSousCritere(int sousCritere, int besoin) throws Exception {
+        Connection c = ConnectTo.postgreS();
+        
+        GenericDAO<NoteSousCritere> noteGeneric = new GenericDAO<>();
+        noteGeneric.setCurrentClass(NoteSousCritere.class);
+        noteGeneric.addToSelection("sousCritere", sousCritere, "and");
+        noteGeneric.addToSelection("besoin", besoin, "");
+        
+        ArrayList<NoteSousCritere> notes = noteGeneric.getFromDatabase(c);
+        if (notes.size() <= 0) return null;
+        
+        return notes.get(0);
+    }
+    
+    public static void addNoteSousCritere(int sousCritere,double note,int besoin) throws Exception{
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        String query = "insert into noteSousCritere(sousCritere,note,critereBesoin)values(?,?,?)";
+        String query = "insert into noteSousCritere(sousCritere,note,besoin)values(?,?,?)";
         try {
             connection = ConnectTo.postgreS();
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1,sousCritere);
             preparedStatement.setDouble(2,note);
-            preparedStatement.setInt(3,critereBesoin);
+            preparedStatement.setInt(3,besoin);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

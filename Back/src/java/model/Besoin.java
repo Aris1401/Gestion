@@ -174,7 +174,7 @@ public class Besoin extends BDD
             preparedStatement.setDouble(6, tauxJourHomme);
             preparedStatement.setDate(7, dateBesoin);
             preparedStatement.setDate(8, dateFin);
-            preparedStatement.setInt(9, 0);
+            preparedStatement.setInt(9, 10);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -213,7 +213,7 @@ public class Besoin extends BDD
             Date dateBesoin = new Date(calendar.getTime().getTime());
             preparedStatement.setDate(7, dateBesoin);
             preparedStatement.setDate(8, dateFin);
-            preparedStatement.setInt(9, 0);
+            preparedStatement.setInt(9, 10);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
